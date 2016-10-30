@@ -1,0 +1,15 @@
+Dit is een gedistribueerde memory game.
+Voor dit project werd er gebruik gemaakt van maven voor de verschillende projecten werkende te krijgen.
+Projecten moeten dus geladen worden als maven project in eclipse/intellij.
+Er wordt voor de communicatie gebruik gemaakt van RMI. 
+
+De algemene structuur is het volgende:
+## MEMORYSTART ##
+De module zal gebruikt worden om de eerste servers op te starten en de databases op te zetten.
+
+## MEMORYSERVER ##
+Dit zijn de verschillende servers die de verbinding gaan leggen tussen de verschillende clients en databases.
+
+## MEMORYCLIENT ##
+Dit is de code horende bij de client.
+Voor de GUI te maken wordt er gebruik gemaakt van JavaFX.
