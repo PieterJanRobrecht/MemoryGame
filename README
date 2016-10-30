@@ -13,3 +13,11 @@ Dit zijn de verschillende servers die de verbinding gaan leggen tussen de versch
 ## MEMORYCLIENT ##
 Dit is de code horende bij de client.
 Voor de GUI te maken wordt er gebruik gemaakt van JavaFX.
+	*Start login scherm = login.fxml
+		MVC:
+		->LoginView = UI elementen van LobbyView -> bevat update methode voor het updaten v/d GUI
+		->LoginController = Uitvoeren van taken -> doet notify zal GUI updaten
+	
+	*Komt in lobby = lobby.fxml
+	*Spel = spel.fxml?
+	
