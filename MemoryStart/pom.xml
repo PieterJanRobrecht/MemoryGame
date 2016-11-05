@@ -12,6 +12,13 @@
         <module>../MemoryServer</module>
         <module>../MemoryClient</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>MemoryGame</groupId>
+            <artifactId>MemoryServer</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 
 </project>
