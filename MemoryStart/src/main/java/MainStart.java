@@ -41,6 +41,5 @@ public class MainStart {
     private static void startDispatchingUsers() {
         System.out.println("Starting dispatcher");
         Dispatcher dispatcher = new Dispatcher(serverList);
-        dispatcher.run();
     }
 }

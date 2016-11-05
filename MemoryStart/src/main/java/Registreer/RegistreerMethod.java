@@ -25,4 +25,9 @@ public class RegistreerMethod extends UnicastRemoteObject implements IRegistreer
         //Opgelet logica best zoals chat voorbeeld
         return serverList.get(0);
     }
+
+    public boolean checkCredentials(String name, String pas) throws RemoteException{
+
+        return true;
+    }
 }
