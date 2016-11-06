@@ -1,6 +1,5 @@
 
 import Controller.LoginController;
-import Interface.IRegistreerMethod;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -46,7 +45,7 @@ public class MainClient extends Application{
         try{
             Registry myRegistry = LocateRegistry.getRegistry ("localhost", 45016);
 
-            IRegistreerMethod impl = (IRegistreerMethod) myRegistry.lookup("RegistreerService");
+            Registreer.IRegistreerMethod impl = (Registreer.IRegistreerMethod) myRegistry.lookup("RegistreerService");
 
             loginController.setImplementation(impl);
         }catch (Exception e){

@@ -1,6 +1,6 @@
 package Controller;
 
-import Interface.IRegistreerMethod;
+import Registreer.IRegistreerMethod;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

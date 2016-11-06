@@ -1,4 +1,4 @@
-package Interface;
+package Registreer;
 
 //import Model.User;
 //import Threads.Server;
