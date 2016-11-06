@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
@@ -15,8 +16,10 @@ import java.rmi.RemoteException;
 
 public class LoginController {
 
+//    @FXML
+//    private TextField passwordText;
     @FXML
-    private TextField passwordText;
+    private PasswordField passwordText;
 
     @FXML
     private TextField userNameText;
@@ -49,9 +52,12 @@ public class LoginController {
 
         //get reference to the button's stage
         stage = (Stage) userNameText.getScene().getWindow();
+        stage.setTitle("Welkom in de memory lobby");
 
         try {
-            root = FXMLLoader.load(getClass().getResource("Lobby.fxml"));
+            //root = FXMLLoader.load(getClass().getResource("Lobby.fxml"));
+            FXMLLoader loader = new FXMLLoader();
+            root = (Parent) loader.load(getClass().getClassLoader().getResource("Lobby.fxml").openStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
