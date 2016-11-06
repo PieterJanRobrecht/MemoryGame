@@ -1,50 +1,58 @@
 package Controller;
 
-import SpelLogica.Game;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
-import java.util.Set;
-
-/**
- * Created by michi on 6/11/2016.
- */
 public class LobbyController {
 
+    @FXML
+    private TableColumn<?, ?> numbersOfPlayersColumn;
 
     @FXML
-
-    private TableView<Game> overzichtGames;
-
-    @FXML
-    private TableColumn<Game, Integer> aantalSpelers;
+    private TableColumn<?, ?> joinColumn;
 
     @FXML
-    private TableColumn<Game, String> gameNaam;
+    private TextArea globalChat;
 
     @FXML
-    private TableColumn<Game, Integer> gewenstAantal;
+    private TableColumn<?, ?> nameColumn;
 
     @FXML
-    public void fillTable(){
-        //aantalSpelers.setCellFactory(new PropertyValueFactory<SpelLogica.Game, String>("aantal spelers"));
-        overzichtGames.setItems(getGames());
-        overzichtGames.getColumns().addAll(aantalSpelers,gewenstAantal, gameNaam);
+    private TextArea lobbyChat;
+
+    @FXML
+    private TextArea playerList;
+
+    @FXML
+    private TableColumn<?, ?> maxPlayersColumn;
+
+    @FXML
+    private TableColumn<?, ?> spectateColumn;
+
+    @FXML
+    private TextField sendTextField;
+
+    @FXML
+    void sendMessage(ActionEvent event) {
+
     }
 
-    //Get all games
-    public ObservableList<Game> getGames(){
-        ObservableList<Game> games = FXCollections.observableArrayList();
+    @FXML
+    void logOut(ActionEvent event) {
 
-        //later uit database halen!
-        games.add(new Game(1,2,"thema SCRUBZ met Michiel!"));
-        games.add(new Game(3,4,"thema Pokémon met PJ!"));
+    }
 
-        return games;
+    @FXML
+    void makeNewGame(ActionEvent event) {
+
+    }
+
+    @FXML
+    void about(ActionEvent event) {
+
     }
 
 }
