@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<SplitPane dividerPositions="0.628140703517588" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1">
-  <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="190.0" prefWidth="598.0">
-         <children>
-            <TableView layoutX="-2.0" prefHeight="247.0" prefWidth="486.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="bezetting" />
-                <TableColumn prefWidth="75.0" text="max spelers" />
-                <TableColumn prefWidth="275.0" text="naam spel" />
-              </columns>
-            </TableView>
-         </children></AnchorPane>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-  </items>
-</SplitPane>
+<TableView fx:id="overzichtGames" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <columns>
+    <TableColumn fx:id="aantalSpelers" prefWidth="94.0" text="aantal spelers" />
+    <TableColumn fx:id="gewenstAantal" prefWidth="98.0" text="gewenst aantal" />
+      <TableColumn fx:id="gameNaam" prefWidth="309.0" text="omschrijving" />
+      <TableColumn prefWidth="124.0" text="deelnemen" />
+  </columns>
+</TableView>

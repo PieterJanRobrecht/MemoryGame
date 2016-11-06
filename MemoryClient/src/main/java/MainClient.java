@@ -1,4 +1,5 @@
 
+import Controller.LobbyController;
 import Controller.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +37,13 @@ public class MainClient extends Application{
             assert (loginController != null);
 
             registry(loginController);
+
+            //foefel
+//            Parent wortel = (Parent) loader.load(getClass().getClassLoader().getResource("Lobby.fxml").openStream());
+//
+//            LobbyController lobbyController = loader.<LobbyController>getController();
+//            lobbyController.fillTable();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
