@@ -5,19 +5,16 @@ Er wordt voor de communicatie gebruik gemaakt van RMI.
 
 De algemene structuur is het volgende:
 ## MEMORYSTART ##
-De module zal gebruikt worden om de eerste servers op te starten en de databases op te zetten.
+De module start op en met de verschillende final ints kan je kiezen hoeveel db (heeft als naar db1.db in de map van intellij project) en servers die in het begin opstart. (Nu is het 1 db en 1 server)
+De client doet een RMI op de dispatcher die deel is van de StartServer en krijgt dan te horen welke server die moet contacteren om naar in een lobby te komen.
 
 ## MEMORYSERVER ##
-Dit zijn de verschillende servers die de verbinding gaan leggen tussen de verschillende clients en databases.
+Heeft een basis implementatie met een beetje code maar dit is nog niet uitgetest.
+
+## MEMORYDATABASE ##
+Code voor het ontvragen van de database. Bevat onderandere de code voor het maken van een database en een tabel met user (enkel naam en ww op dit moment)
 
 ## MEMORYCLIENT ##
-Dit is de code horende bij de client.
-Voor de GUI te maken wordt er gebruik gemaakt van JavaFX.
-	*Start login scherm = login.fxml
-		MVC:
-		->LoginView = UI elementen van LobbyView -> bevat update methode voor het updaten v/d GUI
-		->LoginController = Uitvoeren van taken -> doet notify zal GUI updaten
-	
-	*Komt in lobby = lobby.fxml
-	*Spel = spel.fxml?
+Start op met een login scherm. Bij duwen op login -> rmi -> opvragen van server aan dispatcher kant. 
+Vanaf dan zou die moeten communiceren met de server via rmi.
 	
