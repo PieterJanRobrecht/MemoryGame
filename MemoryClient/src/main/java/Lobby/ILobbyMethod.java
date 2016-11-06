@@ -1,4 +1,4 @@
-package Interfaces;
+package Lobby;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
