@@ -30,7 +30,7 @@ public class MainStart {
         //TODO Kijken voor methode om db connectie te sluiten
         databaseList = new ArrayList<Database>();
         for (int i = 0; i < NUMBER_OF_DATABASES; i++) {
-            Database db = new Database("db1");
+            Database db = new Database("db"+i);
             databaseList.add(db);
         }
 
