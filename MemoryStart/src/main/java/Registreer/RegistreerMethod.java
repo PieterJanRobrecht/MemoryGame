@@ -1,6 +1,6 @@
 package Registreer;
 
-import Model.User;
+//import Model.User;
 import Threads.Server;
 
 import java.rmi.RemoteException;
@@ -17,14 +17,14 @@ public class RegistreerMethod extends UnicastRemoteObject implements IRegistreer
         this.serverList= serverList;
     }
 
-    public void addClient(User user) throws RemoteException {
-    }
-
-    public Server getServer(int userId)throws RemoteException {
-        //TODO Schrijven van de logica voor het verdelen van de load
-        //Opgelet logica best zoals chat voorbeeld
-        return serverList.get(0);
-    }
+//    public void addClient(User user) throws RemoteException {
+//    }
+//
+//    public Server getServer(int userId)throws RemoteException {
+//        //TODO Schrijven van de logica voor het verdelen van de load
+//        //Opgelet logica best zoals chat voorbeeld
+//        return serverList.get(0);
+//    }
 
     public boolean checkCredentials(String name, String pas) throws RemoteException{
 
