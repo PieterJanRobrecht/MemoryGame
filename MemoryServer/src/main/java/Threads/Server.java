@@ -31,4 +31,12 @@ public class Server {
         }
         System.out.println("Registry ready on server " + serverID);
     }
+
+    public int getServerID() {
+        return serverID;
+    }
+
+    public static int getSERVERPOORT() {
+        return SERVERPOORT;
+    }
 }

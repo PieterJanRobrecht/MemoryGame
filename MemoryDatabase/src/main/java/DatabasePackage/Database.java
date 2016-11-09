@@ -1,8 +1,6 @@
 package DatabasePackage;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by Pieter-Jan on 05/11/2016.
@@ -41,5 +39,29 @@ public class Database {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
+    }
+
+    public boolean checkCredentials(String name, String pas) {
+        try {
+            String query = "SELECT (count(*) > 0) as found FROM USER WHERE \"NAME\" LIKE ? AND \"WW\" LIKE ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1, name);
+            pst.setString(2, pas);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                // Only expecting a single result
+                if (rs.next()) {
+                    boolean found = rs.getBoolean(1); // "found" column
+                    if (found) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

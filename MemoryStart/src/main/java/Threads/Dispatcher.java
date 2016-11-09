@@ -1,5 +1,6 @@
 package Threads;
 
+import DatabasePackage.Database;
 import Lobby.LobbyMethod;
 import Registreer.RegistreerMethod;
 
@@ -12,10 +13,12 @@ import java.util.List;
  */
 public class Dispatcher {
     private List<Server> serverList;
+    private Database database;
     private final static int SERVERPOORT = 45016;
 
-    public Dispatcher(List<Server> serverList) {
+    public Dispatcher(List<Server> serverList, Database database) {
         this.serverList = serverList;
+        this.database = database;
         startRegistry();
     }
 
@@ -24,7 +27,7 @@ public class Dispatcher {
             Registry registry = LocateRegistry.createRegistry(SERVERPOORT);
 
             // create a new service named CounterService
-            registry.rebind("RegistreerService", new RegistreerMethod(serverList));
+            registry.rebind("RegistreerService", new RegistreerMethod(serverList,database));
         } catch (Exception e) {
             e.printStackTrace();
         }
