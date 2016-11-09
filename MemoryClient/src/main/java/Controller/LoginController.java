@@ -80,12 +80,18 @@ public class LoginController {
 
     private void registry(LobbyController lobbyController) {
         try{
+            //Zodanig dat de dispatcher weet welke user er op welke server zit
             int serverpoort = implementation.getServer(user);
+
             Registry myRegistry = LocateRegistry.getRegistry ("localhost", serverpoort);
 
             ILobbyMethod impl = (ILobbyMethod) myRegistry.lookup("LobbyService");
 
             lobbyController.setImplementation(impl);
+
+            //Zodanig dat de server weet welke user er bij hem zit
+            impl.addUser(user);
+            lobbyController.updatePlayerList();
             System.out.println("Client verbonden met registry op poort "+serverpoort);
         }catch (Exception e){
             e.printStackTrace();

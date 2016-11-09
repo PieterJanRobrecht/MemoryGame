@@ -3,11 +3,22 @@ package Controller;
 import Lobby.ILobbyMethod;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+
+import java.rmi.RemoteException;
+import java.util.List;
+
+import static java.lang.Thread.sleep;
 
 public class LobbyController {
+
+    @FXML
+    private TableView<?> lobbyPane;
+
+    @FXML
+    private BorderPane detailsPane;
 
     @FXML
     private TableColumn<?, ?> numbersOfPlayersColumn;
@@ -36,6 +47,15 @@ public class LobbyController {
     @FXML
     private TextField sendTextField;
 
+    @FXML
+    private Label labelGespeeld;
+
+    @FXML
+    private Label labelVerloren;
+
+    @FXML
+    private Label labelGewonnen;
+
     private ILobbyMethod implementation;
 
     @FXML
@@ -45,7 +65,14 @@ public class LobbyController {
 
     @FXML
     void showDetails(ActionEvent event) {
+        detailsPane.setVisible(true);
+        lobbyPane.setVisible(false);
+    }
 
+    @FXML
+    void backToLobby(ActionEvent event) {
+        detailsPane.setVisible(false);
+        lobbyPane.setVisible(true);
     }
 
     @FXML
@@ -61,6 +88,25 @@ public class LobbyController {
     @FXML
     void about(ActionEvent event) {
 
+    }
+
+    public void updatePlayerList(){
+        //TODO Goed implementeren zodanig dat deze blijft updaten
+        List<String> users = null;
+
+        try {
+            users = implementation.getUserNames();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        if (users != null) {
+            playerList.clear();
+            for (String name :
+                    users) {
+                playerList.appendText(name + "\r\n");
+            }
+        }
     }
 
     public void setImplementation(ILobbyMethod implementation) {
