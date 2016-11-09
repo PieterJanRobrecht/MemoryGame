@@ -64,4 +64,24 @@ public class Database {
         }
         return false;
     }
+
+    public int getID(String userName) {
+        int id = -1;
+        System.out.println("LOOKUP USER " +userName);
+        try {
+            String query = "SELECT ID FROM USER WHERE \"NAME\" LIKE ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1, userName);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    id = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("RETURN ID "+ id);
+        return id;
+    }
 }

@@ -1,5 +1,6 @@
 package Controller;
 
+import Lobby.ILobbyMethod;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -35,8 +36,15 @@ public class LobbyController {
     @FXML
     private TextField sendTextField;
 
+    private ILobbyMethod implementation;
+
     @FXML
     void sendMessage(ActionEvent event) {
+
+    }
+
+    @FXML
+    void showDetails(ActionEvent event) {
 
     }
 
@@ -55,4 +63,7 @@ public class LobbyController {
 
     }
 
+    public void setImplementation(ILobbyMethod implementation) {
+        this.implementation = implementation;
+    }
 }

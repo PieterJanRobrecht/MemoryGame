@@ -2,6 +2,8 @@ package Registreer;
 
 //import Model.User;
 
+import Model.User;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -10,6 +12,7 @@ import java.rmi.RemoteException;
  */
 public interface IRegistreerMethod extends Remote {
 //    void addClient(User user) throws RemoteException;
-    int getServer(int UserId) throws RemoteException;
+    User getUser(String userName) throws RemoteException;
+    int getServer(User user) throws RemoteException;
     boolean checkCredentials(String name, String pas) throws RemoteException;
 }

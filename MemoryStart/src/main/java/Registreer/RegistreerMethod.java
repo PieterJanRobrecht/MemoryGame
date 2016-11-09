@@ -2,6 +2,7 @@ package Registreer;
 
 //import Model.User;
 import DatabasePackage.Database;
+import Model.User;
 import Threads.Server;
 
 import java.rmi.RemoteException;
@@ -20,12 +21,24 @@ public class RegistreerMethod extends UnicastRemoteObject implements IRegistreer
         this.database = database;
     }
 
-//    public void addClient(User user) throws RemoteException {
+    public User getUser(String userName) throws RemoteException {
+        User gebruiker = new User();
+
+        gebruiker.setNaam(userName);
+        gebruiker.setId(database.getID(userName));
+
+        Main.MainStart.getUserList().add(gebruiker);
+
+        return gebruiker;
+    }
+
+    //    public void addClient(User user) throws RemoteException {
 //    }
 //
-    public int getServer(int userId)throws RemoteException {
+    public int getServer(User user)throws RemoteException {
         //TODO Schrijven van de logica voor het verdelen van de load
         //Opgelet logica best zoals chat voorbeeld
+        //Mapping doen van user 1 in server 2, ...
 
         int poort = Server.getSERVERPOORT() + serverList.get(0).getServerID();
         return poort;

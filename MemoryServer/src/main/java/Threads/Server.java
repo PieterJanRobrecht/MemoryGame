@@ -25,7 +25,7 @@ public class Server {
             Registry registry = LocateRegistry.createRegistry(SERVERPOORT + serverID);
 
             // create a new service named CounterService
-            registry.rebind("LobbyService", new LobbyMethod());
+            registry.rebind("LobbyService", new LobbyMethod(database));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,5 +38,9 @@ public class Server {
 
     public static int getSERVERPOORT() {
         return SERVERPOORT;
+    }
+
+    public void setDatabase(Database database) {
+        this.database = database;
     }
 }
