@@ -76,6 +76,7 @@ public class LoginController {
         assert (lobbyController != null);
 
         registry(lobbyController);
+        lobbyController.setThisUser(user);
     }
 
     private void registry(LobbyController lobbyController) {
@@ -92,6 +93,7 @@ public class LoginController {
             //Zodanig dat de server weet welke user er bij hem zit
             impl.addUser(user);
             lobbyController.updatePlayerList();
+            lobbyController.setServerPoort(serverpoort);
             System.out.println("Client verbonden met registry op poort "+serverpoort);
         }catch (Exception e){
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package Lobby;
 
 import Model.User;
+import SpelLogica.Game;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -12,4 +13,5 @@ import java.util.List;
 public interface ILobbyMethod extends Remote {
     void addUser(User user) throws RemoteException;
     List<String> getUserNames()throws RemoteException;
+    Game canMakeGame(User user) throws RemoteException;
 }
