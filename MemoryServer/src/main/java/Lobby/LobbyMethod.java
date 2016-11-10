@@ -65,7 +65,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
             if(found){
                 game = new Game(gameID);
                 game.addUser(user);
-                runningGames.add(game);
+//                runningGames.add(game);
             }
 
         }

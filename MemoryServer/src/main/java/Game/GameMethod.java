@@ -21,6 +21,6 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
     @Override
     public void makeGame(Game game) throws RemoteException {
-        //Maak spel maar niet meer toevoegen aan lijst(heeft die namelijk al)
+        runningGames.add(game);
     }
 }

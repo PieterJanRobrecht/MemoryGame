@@ -5,11 +5,15 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import SpelLogica.Game;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 public class GameBuilderController {
@@ -58,6 +62,37 @@ public class GameBuilderController {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+        startGameWindow();
+    }
+
+    private void startGameWindow() {
+        Stage stage;
+        Parent root = null;
+
+        //get reference to the button's stage
+        stage = (Stage) sizeDropDown.getScene().getWindow();
+        stage.setTitle("Welkom in de Memory Lobby");
+        FXMLLoader loader = new FXMLLoader();
+
+        try {
+            //root = FXMLLoader.load(getClass().getResource("Lobby.fxml"));
+            root = (Parent) loader.load(getClass().getClassLoader().getResource("Game.fxml").openStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+
+        //Ophalen van de controller horende bij de view klasse
+        GameController gameController = loader.<GameController>getController();
+        assert (gameController != null);
+
+        gameController.setImplementation(implementation);
+        gameController.setGame(game);
     }
 
     public void initMakeGameView() {

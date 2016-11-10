@@ -2,6 +2,7 @@ package SpelLogica;
 
 import Model.User;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +10,7 @@ import java.util.Set;
 /**
  * Created by michi on 6/11/2016.
  */
-public class Game {
+public class Game implements Serializable{
     private List<User> gamers;
     private int nGewensteGamers;
     private int gameId;
@@ -34,6 +35,10 @@ public class Game {
 
     public int getGameId() {
         return gameId;
+    }
+
+    public int getGrootteVeld() {
+        return grootteVeld;
     }
 
     public void setAantalSpelers(int aantalSpelers) {
