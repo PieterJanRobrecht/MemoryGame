@@ -1,6 +1,7 @@
 package Controller;
 
 import Game.IGameMethod;
+import Model.User;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import SpelLogica.Game;
@@ -18,7 +20,10 @@ import java.rmi.RemoteException;
 
 public class GameBuilderController {
 
-    private AnchorPane mainPane;
+    private Stage lobbyStage;
+
+    @FXML
+    private TextField nameField;
 
     @FXML
     private ComboBox<String> sizeDropDown;
@@ -34,21 +39,23 @@ public class GameBuilderController {
     private final int GROOTTE_VELD = 1; //1 = 2x2 , 2= 2x2 en 4x4, 3= 2x2 4x4 8x8
     private final int AANTAL_THEMAS = 1;
     private Game game;
+    private User user;
 
     @FXML
     void cancel(ActionEvent event) {
-        //TODO delete game van server
-        mainPane.setVisible(true);
-
-        Stage stage = (Stage) playersDropDown.getScene().getWindow();
-        stage.close();
+        setOnExitAction();
     }
 
     @FXML
     void makeGame(ActionEvent event) {
+        //TODO Beveiligen op slechte input
+
+        String name = nameField.getText();
+        game.setName(name);
+
         String output = playersDropDown.getSelectionModel().getSelectedItem();
         String[] split = output.split(" ");
-        game.setAantalSpelers(Integer.parseInt(split[0]));
+        game.setMaxAantalSpelers(Integer.parseInt(split[0]));
 
         output = sizeDropDown.getSelectionModel().getSelectedItem();
         split = output.split("x");
@@ -59,6 +66,7 @@ public class GameBuilderController {
 
         try {
             implementation.makeGame(game);
+            implementation.makeField(game.getGameId());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -72,7 +80,7 @@ public class GameBuilderController {
 
         //get reference to the button's stage
         stage = (Stage) sizeDropDown.getScene().getWindow();
-        stage.setTitle("Welkom in de Memory Lobby");
+        stage.setTitle("Game");
         FXMLLoader loader = new FXMLLoader();
 
         try {
@@ -93,6 +101,11 @@ public class GameBuilderController {
 
         gameController.setImplementation(implementation);
         gameController.setGame(game);
+        gameController.setUser(user);
+        gameController.setLobbyStage(lobbyStage);
+
+        gameController.makeFieldWithInfoServer();
+        gameController.setOnExitAction();
     }
 
     public void initMakeGameView() {
@@ -117,11 +130,31 @@ public class GameBuilderController {
         this.implementation = implementation;
     }
 
-    public void setMainPane(AnchorPane mainPane) {
-        this.mainPane = mainPane;
-    }
-
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public void setLobbyStage(Stage lobbyStage) {
+        this.lobbyStage = lobbyStage;
+    }
+
+    public void setOnExitAction() {
+        Stage stage = (Stage) playersDropDown.getScene().getWindow();
+        stage.setOnCloseRequest(we -> {
+            lobbyStage.show();
+
+            try {
+                implementation.releaseGame(game);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            Stage stageBuilder = (Stage) playersDropDown.getScene().getWindow();
+            stageBuilder.close();
+        });
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

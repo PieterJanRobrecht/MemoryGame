@@ -4,6 +4,7 @@ import Lobby.ILobbyMethod;
 import Model.User;
 import Registreer.IRegistreerMethod;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
@@ -77,6 +79,7 @@ public class LoginController {
 
         registry(lobbyController);
         lobbyController.setThisUser(user);
+        lobbyController.setOnExitAction();
     }
 
     private void registry(LobbyController lobbyController) {
@@ -92,7 +95,7 @@ public class LoginController {
 
             //Zodanig dat de server weet welke user er bij hem zit
             impl.addUser(user);
-            lobbyController.updatePlayerList();
+            lobbyController.startUpdateThreads();
             lobbyController.setServerPoort(serverpoort);
             System.out.println("Client verbonden met registry op poort "+serverpoort);
         }catch (Exception e){
