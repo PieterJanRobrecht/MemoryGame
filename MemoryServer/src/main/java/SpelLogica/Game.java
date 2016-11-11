@@ -71,4 +71,15 @@ public class Game implements Serializable {
     public void setMaxAantalSpelers(int maxAantalSpelers) {
         this.maxAantalSpelers = maxAantalSpelers;
     }
+
+    public void removeUser(User user) {
+        int index =0;
+        for(int i=0;i<gamers.size();i++){
+            if(gamers.get(i).getId()==user.getId()){
+                index=i;
+            }
+        }
+        gamers.remove(index);
+        aantalSpelers--;
+    }
 }

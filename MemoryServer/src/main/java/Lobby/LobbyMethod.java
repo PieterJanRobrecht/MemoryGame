@@ -74,6 +74,19 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
     }
 
     @Override
+    public boolean addUserToGame(User thisUser, Game game) throws RemoteException {
+        if(game.getAantalSpelers() < game.getMaxAantalSpelers()){
+            for(int i=0;i<runningGames.size();i++){
+                if(game.getGameId()==runningGames.get(i).getGameId()){
+                    runningGames.get(i).addUser(thisUser);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public Game canMakeGame(User user) throws RemoteException {
         int gameID = -1;
         Game game = null;

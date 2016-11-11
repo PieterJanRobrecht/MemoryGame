@@ -64,6 +64,7 @@ public class LobbyController {
     private Label labelGewonnen;
 
     private ILobbyMethod implementation;
+    private IGameMethod implementationGame;
     private User thisUser;
     private int serverPoort;
     private Stage thisStage;
@@ -102,7 +103,7 @@ public class LobbyController {
         }
 
         if (game != null) {
-            setViewGame(game);
+            setViewGameBuilder(game);
         } else {
             Notifications.create()
                     .title("ERROR")
@@ -154,10 +155,8 @@ public class LobbyController {
                                     btn.setOnAction((ActionEvent event) ->
                                     {
                                         if (input.equals("Join")) {
-                                            //TODO kijken om view goed te zetten
                                             Game game = getTableView().getItems().get(getIndex());
-                                            //implementation.addUserToGame();
-                                            //start met luisteren wat die moet doen
+                                            joinGame(game);
                                         }
                                         if (input.equals("Spectate")) {
                                             //TODO kom in spectator mode
@@ -174,6 +173,57 @@ public class LobbyController {
                 };
         actionCol.setCellFactory(cellFactory);
         return actionCol;
+    }
+
+    private void joinGame(Game game) {
+        try {
+            boolean result = implementation.addUserToGame(thisUser,game);
+            if(!result){
+                Notifications.create()
+                        .title("ERROR")
+                        .text("Maximum aantal spelers bereikt")
+                        .showWarning();
+            }else{
+                Stage stage = (Stage) lobbyPane.getScene().getWindow();
+                stage.hide();
+                setViewGame(game);
+                //start met luisteren wat die moet doen
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setViewGame(Game game) {
+        Stage stage = new Stage();
+        Parent root = null;
+
+        stage.setTitle("Game");
+        FXMLLoader loader = new FXMLLoader();
+
+        try {
+            //root = FXMLLoader.load(getClass().getResource("Lobby.fxml"));
+            root = (Parent) loader.load(getClass().getClassLoader().getResource("Game.fxml").openStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //create a new scene with root and set the stage
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+
+        //Ophalen van de controller horende bij de view klasse
+        GameController gameController = loader.<GameController>getController();
+        assert (gameController != null);
+
+        gameController.setImplementation(implementationGame);
+        gameController.setGame(game);
+        gameController.setUser(thisUser);
+        gameController.setLobbyStage((Stage) lobbyPane.getScene().getWindow());
+
+        gameController.makeFieldWithInfoOfServer();
+        gameController.setOnExitAction();
     }
 
 
@@ -222,7 +272,7 @@ public class LobbyController {
         }
     }
 
-    private void setViewGame(Game game) {
+    private void setViewGameBuilder(Game game) {
         Stage stage = new Stage();
         Parent root = null;
 
@@ -260,9 +310,9 @@ public class LobbyController {
         try {
             Registry myRegistry = LocateRegistry.getRegistry("localhost", serverPoort + 1);
 
-            IGameMethod impl = (IGameMethod) myRegistry.lookup("GameService");
+            implementationGame = (IGameMethod) myRegistry.lookup("GameService");
 
-            gameBuilderController.setImplementation(impl);
+            gameBuilderController.setImplementation(implementationGame);
             gameBuilderController.initMakeGameView();
 
             System.out.println("Client verbonden met game registry op poort " + serverPoort + 1);

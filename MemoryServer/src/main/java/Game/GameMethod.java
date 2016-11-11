@@ -2,6 +2,7 @@ package Game;
 
 import DatabasePackage.Database;
 import Lobby.LobbyMethod;
+import Model.User;
 import SpelLogica.Game;
 
 import java.rmi.RemoteException;
@@ -31,17 +32,19 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public void releaseGame(Game game) throws RemoteException {
-        runningGames.remove(game);
-
-        int index =-1;
-        for(int i=0;i<runningGames.size();i++){
-            if(runningGames.get(i).getGameId() == game.getGameId()){
-                index = i;
+    public void releaseGame(Game game, User user) throws RemoteException {
+        game.removeUser(user);
+        if (game.getAantalSpelers() == 0) {
+            int index = -1;
+            for (int i = 0; i < runningGames.size(); i++) {
+                if (runningGames.get(i).getGameId() == game.getGameId()) {
+                    index = i;
+                }
+            }
+            if (index != -1) {
+                runningGames.remove(index);
             }
         }
-        if(index!=-1){
-            runningGames.remove(index);
-        }
+
     }
 }

@@ -1,5 +1,6 @@
 package Game;
 
+import Model.User;
 import SpelLogica.Game;
 
 import java.rmi.Remote;
@@ -11,5 +12,5 @@ import java.rmi.RemoteException;
 public interface IGameMethod extends Remote {
     void makeGame(Game game) throws RemoteException;
     void makeField(int gameId) throws RemoteException;
-    void releaseGame(Game game) throws RemoteException;
+    void releaseGame(Game game, User user) throws RemoteException;
 }

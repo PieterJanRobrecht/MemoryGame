@@ -104,7 +104,7 @@ public class GameBuilderController {
         gameController.setUser(user);
         gameController.setLobbyStage(lobbyStage);
 
-        gameController.makeFieldWithInfoServer();
+        gameController.makeFieldWithInfoOfServer();
         gameController.setOnExitAction();
     }
 
@@ -144,7 +144,7 @@ public class GameBuilderController {
             lobbyStage.show();
 
             try {
-                implementation.releaseGame(game);
+                implementation.releaseGame(game,user);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

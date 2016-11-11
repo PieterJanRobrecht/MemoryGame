@@ -23,7 +23,7 @@ public class GameController {
     private User user;
 
 
-    public void makeFieldWithInfoServer() {
+    public void makeFieldWithInfoOfServer() {
         //Ophalen foto's van db
         //Haal info op over waar welke figuren komen
         //Maken van de nodige click listeners
@@ -47,7 +47,7 @@ public class GameController {
             lobbyStage.show();
 
             try {
-                implementation.releaseGame(game);
+                implementation.releaseGame(game,user);
             } catch (RemoteException e) {
                 e.printStackTrace();
                 System.out.println("Error after clossing game");

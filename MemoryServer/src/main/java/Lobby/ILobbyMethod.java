@@ -16,4 +16,5 @@ public interface ILobbyMethod extends Remote {
     Game canMakeGame(User user) throws RemoteException;
     List<Game> getRunningGames() throws RemoteException;
     void logOutUser(User thisUser) throws RemoteException;
+    boolean addUserToGame(User thisUser, Game game) throws RemoteException;
 }
