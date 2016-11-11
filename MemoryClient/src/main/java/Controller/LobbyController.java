@@ -195,6 +195,7 @@ public class LobbyController {
     }
 
     private void setViewGame(Game game) {
+        registry();
         Stage stage = new Stage();
         Parent root = null;
 
@@ -273,6 +274,7 @@ public class LobbyController {
     }
 
     private void setViewGameBuilder(Game game) {
+        registry();
         Stage stage = new Stage();
         Parent root = null;
 
@@ -296,7 +298,8 @@ public class LobbyController {
         assert (gameBuilderController != null);
 
         gameBuilderController.setGame(game);
-        registry(gameBuilderController);
+        gameBuilderController.setImplementation(implementationGame);
+        gameBuilderController.initMakeGameView();
 
         thisStage = (Stage) lobbyPane.getScene().getWindow();
         thisStage.hide();
@@ -306,14 +309,11 @@ public class LobbyController {
         gameBuilderController.setUser(thisUser);
     }
 
-    private void registry(GameBuilderController gameBuilderController) {
+    private void registry() {
         try {
             Registry myRegistry = LocateRegistry.getRegistry("localhost", serverPoort + 1);
 
             implementationGame = (IGameMethod) myRegistry.lookup("GameService");
-
-            gameBuilderController.setImplementation(implementationGame);
-            gameBuilderController.initMakeGameView();
 
             System.out.println("Client verbonden met game registry op poort " + serverPoort + 1);
         } catch (Exception e) {

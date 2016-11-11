@@ -33,14 +33,14 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
     @Override
     public void releaseGame(Game game, User user) throws RemoteException {
-        game.removeUser(user);
-        if (game.getAantalSpelers() == 0) {
-            int index = -1;
-            for (int i = 0; i < runningGames.size(); i++) {
-                if (runningGames.get(i).getGameId() == game.getGameId()) {
-                    index = i;
-                }
+        int index = -1;
+        for (int i = 0; i < runningGames.size(); i++) {
+            if (runningGames.get(i).getGameId() == game.getGameId()) {
+                index = i;
             }
+        }
+        runningGames.get(index).removeUser(user);
+        if (runningGames.get(index).getAantalSpelers() == 0) {
             if (index != -1) {
                 runningGames.remove(index);
             }
