@@ -177,13 +177,13 @@ public class LobbyController {
 
     private void joinGame(Game game) {
         try {
-            boolean result = implementation.addUserToGame(thisUser,game);
-            if(!result){
+            boolean result = implementation.addUserToGame(thisUser, game);
+            if (!result) {
                 Notifications.create()
                         .title("ERROR")
                         .text("Maximum aantal spelers bereikt")
                         .showWarning();
-            }else{
+            } else {
                 Stage stage = (Stage) lobbyPane.getScene().getWindow();
                 stage.hide();
                 setViewGame(game);
@@ -229,28 +229,29 @@ public class LobbyController {
 
 
     public void startUpdateThreads() {
-        new Thread() {
-            public void run() {
-                while (true) {
-                    List<String> users = null;
+        try {
+            new Thread() {
+                public void run() {
+                    while (true) {
+                        List<String> users = null;
 
-                    try {
-                        users = implementation.getUserNames();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                        try {
+                            users = implementation.getUserNames();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
 
-                    if (users != null) {
-                        playerList.clear();
-                        for (String name :
-                                users) {
-                            playerList.appendText(name + "\r\n");
+                        if (users != null) {
+                            playerList.clear();
+                            for (String name :
+                                    users) {
+                                playerList.appendText(name + "\r\n");
+                            }
                         }
                     }
                 }
-            }
-        }.start();
-        try {
+            }.start();
+
             new Thread() {
                 public void run() {
                     while (true) {
@@ -268,7 +269,7 @@ public class LobbyController {
                     }
                 }
             }.start();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
