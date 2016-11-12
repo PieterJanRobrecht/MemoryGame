@@ -1,6 +1,9 @@
 package DatabasePackage;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Pieter-Jan on 05/11/2016.
@@ -39,6 +42,21 @@ public class Database {
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
+
+        stmt = null;
+        try {
+            stmt = databaseConnection.createStatement();
+            String sql = "CREATE TABLE IMAGES "+
+                    "(ID INT PRIMARY KEY AUTOINCREMENT NOT NULL,"+
+                    " THEMA VARCHAR(40) NOT NULL, "+
+                    " IMAGE BLOB)";
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+
     }
 
     public boolean checkCredentials(String name, String pas) {
@@ -83,5 +101,25 @@ public class Database {
         }
         System.out.println("RETURN ID "+ id);
         return id;
+    }
+
+    public List<Integer> getRandomAfbeeldingen(String thema, int aantal){
+        List<Integer> mogelijkeIDs = new ArrayList<Integer>();
+        try{
+            String query = "SELECT ID FROM IMAGES WHERE THEMA=?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1, thema);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    mogelijkeIDs.add(rs.getInt(1));
+                }
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        while(mogelijkeIDs.size()>aantal){
+            mogelijkeIDs.remove(mogelijkeIDs.get(new Random().nextInt(mogelijkeIDs.size())));
+        }
+        return mogelijkeIDs;
     }
 }

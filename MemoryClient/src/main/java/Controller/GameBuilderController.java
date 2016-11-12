@@ -66,7 +66,7 @@ public class GameBuilderController {
 
         try {
             implementation.makeGame(game);
-            implementation.makeField(game.getGameId());
+            //implementation.makeField(game.getGameId());
         } catch (RemoteException e) {
             e.printStackTrace();
         }

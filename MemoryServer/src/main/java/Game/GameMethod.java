@@ -24,12 +24,13 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     @Override
     public void makeGame(Game game) throws RemoteException {
         runningGames.add(game);
+
+        System.out.println("veld maken:");
+        //TODO Veld opmaken (misschien met nummers en 2d array)
+        int aantalFiguren= (int) (Math.pow(game.getGrootteVeld(),2) / 2);
+        game.maakVeld(database.getRandomAfbeeldingen(game.getThema(),aantalFiguren));
     }
 
-    @Override
-    public void makeField(int gameId) throws RemoteException {
-        //TODO Veld opmaken (misschien met nummers en 2d array)
-    }
 
     @Override
     public void releaseGame(Game game, User user) throws RemoteException {

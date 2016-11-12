@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -17,7 +18,8 @@ public class Game implements Serializable {
     private int maxAantalSpelers;
     private int gameId;
     private String thema;
-    private int grootteVeld;
+    //private int grootteVeld; //Dit is het aantal figuren in in rij of kolom
+    private int[][] veld;
     private int aantalSpelers;
 
     public Game(int gameID) {
@@ -32,12 +34,16 @@ public class Game implements Serializable {
         }
     }
 
+    public String getThema() {
+        return thema;
+    }
+
     public int getGameId() {
         return gameId;
     }
 
     public int getGrootteVeld() {
-        return grootteVeld;
+        return veld[0].length;
     }
 
     public void setAantalSpelers(int aantalSpelers) {
@@ -45,7 +51,8 @@ public class Game implements Serializable {
     }
 
     public void setGrootteVeld(int grootteVeld) {
-        this.grootteVeld = grootteVeld;
+        this.veld = new int[grootteVeld][grootteVeld];
+        //this.grootteVeld = grootteVeld;
     }
 
     public void setThema(String thema) {
@@ -70,6 +77,21 @@ public class Game implements Serializable {
 
     public void setMaxAantalSpelers(int maxAantalSpelers) {
         this.maxAantalSpelers = maxAantalSpelers;
+    }
+
+    public void maakVeld(List<Integer> mogelijkeIDs){
+        mogelijkeIDs.addAll(mogelijkeIDs); //iedere figuur zit twee keer in de lijst
+        int id, index, lengte = veld[0].length;
+        for(int i=0;i<lengte;i++){
+            for(int j=0;j<lengte;j++){
+                index = new Random().nextInt(mogelijkeIDs.size());
+                id=mogelijkeIDs.get(index);
+                veld[i][j] = id;
+                mogelijkeIDs.remove(index);
+                System.out.print("  "+id);
+            }
+            System.out.println();
+        }
     }
 
     public void removeUser(User user) {

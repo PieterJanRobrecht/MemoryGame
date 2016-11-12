@@ -11,6 +11,5 @@ import java.rmi.RemoteException;
  */
 public interface IGameMethod extends Remote{
     void makeGame(Game game) throws RemoteException;
-    void makeField(int gameId) throws RemoteException;
     void releaseGame(Game game, User user) throws RemoteException;
 }

@@ -49,7 +49,6 @@ public class LoginController {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
     }
 
     private void setViewLobby() {
