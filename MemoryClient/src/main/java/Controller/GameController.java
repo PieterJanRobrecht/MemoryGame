@@ -123,8 +123,7 @@ public class GameController {
                 System.out.println("Error after clossing game");
             }
 
-            Stage stageBuilder = (Stage) speelveld.getScene().getWindow();
-            stageBuilder.close();
+            stage.close();
         });
     }
 
