@@ -144,6 +144,24 @@ public class Database {
             e.printStackTrace();
         }
         return fileBytes;
+    }
 
+    public byte[] getImage(int id) {
+        Image img;
+        BufferedImage bufImg;
+        byte[] fileBytes = null;
+        try {
+            String query = "SELECT IMAGE FROM IMAGES WHERE ID=?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setInt(1, id);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    fileBytes = rs.getBytes(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return fileBytes;
     }
 }
