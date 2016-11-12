@@ -1,10 +1,8 @@
 package Game;
 
 import DatabasePackage.Database;
-import Lobby.LobbyMethod;
 import Model.User;
 import SpelLogica.Game;
-import javafx.scene.image.Image;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -50,8 +48,8 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
     }
     @Override
-    public Image getBackgroundImage() throws RemoteException {
-        return database.getBackgroundImage();
+    public byte[] getBackgroundImage(String thema) throws RemoteException {
+        return database.getBackgroundImage(thema);
     }
 
 }

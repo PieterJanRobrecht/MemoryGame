@@ -1,21 +1,12 @@
 package DatabasePackage;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 
-import javax.imageio.ImageIO;
-import javax.xml.ws.Response;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Pieter-Jan on 05/11/2016.
@@ -59,7 +50,7 @@ public class Database {
         try {
             stmt = databaseConnection.createStatement();
             String sql = "CREATE TABLE IMAGES " +
-                    "(ID INT PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     " THEMA VARCHAR(40) NOT NULL, " +
                     " IMAGE BLOB)";
             stmt.executeUpdate(sql);
@@ -135,31 +126,24 @@ public class Database {
         return mogelijkeIDs;
     }
 
-    public Image getBackgroundImage() {
-        //TODO afbeelding uit database halen ipv. referentei (misschien achtergrond per thema?)
+    public byte[] getBackgroundImage(String thema) {
+        Image achtergrond;
+        BufferedImage img;
+        byte[] fileBytes = null;
         try {
-            // Grab the InputStream for the image.
-            InputStream in = getClass().getResourceAsStream("MemoryGame/MemoryDatabase/src/resources/achterkant.jpg");
-            // Then read it in.
-            BufferedImage bf = ImageIO.read(in);
-
-            //omzetten naar image javafx
-            WritableImage wr = null;
-            if (bf != null) {
-                wr = new WritableImage(bf.getWidth(), bf.getHeight());
-                PixelWriter pw = wr.getPixelWriter();
-                for (int x = 0; x < bf.getWidth(); x++) {
-                    for (int y = 0; y < bf.getHeight(); y++) {
-                        pw.setArgb(x, y, bf.getRGB(x, y));
-                    }
+            String query = "SELECT IMAGE FROM IMAGES WHERE THEMA=?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            String searchString = thema + "_Background";
+            pst.setString(1, searchString);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    fileBytes = rs.getBytes(1);
                 }
-                return wr;
             }
-
-        } catch (IOException e) {
-            System.out.println("The image was not loaded.");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return null;
+        return fileBytes;
 
     }
 }
