@@ -75,6 +75,10 @@ public class Game implements Serializable {
         return maxAantalSpelers;
     }
 
+    public List<User> getGamers() {
+        return gamers;
+    }
+
     public void setMaxAantalSpelers(int maxAantalSpelers) {
         this.maxAantalSpelers = maxAantalSpelers;
     }

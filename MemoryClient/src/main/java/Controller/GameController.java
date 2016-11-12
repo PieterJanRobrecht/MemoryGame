@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.beans.EventHandler;
 import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * Created by Pieter-Jan on 09/11/2016.
@@ -29,7 +30,7 @@ public class GameController {
     private Label grootteSpel;
 
     @FXML
-    private Label nSpelers;
+    private Label huidigeSpelers;
 
     @FXML
     private GridPane memoryCardGrid;
@@ -44,9 +45,7 @@ public class GameController {
         int grootte = game.getGrootteVeld();
         grootteSpel.setText(grootte + " op " + grootte);
 
-        int nSp = game.getAantalSpelers();
-        int maxSp = game.getMaxAantalSpelers();
-        nSpelers.setText(nSp + " van de "+maxSp);
+        startAantalSpelersThread();
 
         //backImage = implementation.getBackgroundImage();
 
@@ -75,6 +74,29 @@ public class GameController {
 
     //Thread maken die vraagt aan de server wat die moet doen
     //Server antwoord ofwel -> gok ofwel -> kijk
+
+    public void startAantalSpelersThread(){
+        new Thread(){
+            List<User> gebruikers;
+            String string;
+            public void run() {
+                while (true) {
+                    string = "";
+                    gebruikers = null;
+                    gebruikers = game.getGamers();
+
+                    if (gebruikers != null){
+                        gebruikers.clear();
+                        for (User name : gebruikers){
+                            string.concat(name.getNaam() + "\r\n");
+                        }
+
+                    }
+                    huidigeSpelers.setText(string);
+                }
+            }
+        }.start();
+    }
 
     public void setImplementation(IGameMethod implementation) {
         this.implementation = implementation;
