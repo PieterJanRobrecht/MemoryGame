@@ -52,4 +52,15 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         return database.getBackgroundImage(thema);
     }
 
+    @Override
+    public Game getGameById(int id) throws RemoteException {
+        int index=-1;
+        for (int i = 0; i < runningGames.size(); i++) {
+            if (runningGames.get(i).getGameId() == id) {
+                index = i;
+            }
+        }
+        return runningGames.get(index);
+    }
+
 }

@@ -3,6 +3,7 @@ package Controller;
 import Game.IGameMethod;
 import Model.User;
 import SpelLogica.Game;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -88,16 +89,25 @@ public class GameController {
             public void run() {
                 while (true) {
                     string = "";
-                    gebruikers = game.getGamers();
+                    try {
+                        gebruikers = implementation.getGameById(game.getGameId()).getGamers();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
 
                     if (gebruikers != null){
-                        gebruikers.clear();
+//                        gebruikers.clear();
                         for (User name : gebruikers){
-                            string.concat(name.getNaam() + "\r\n");
+                            string += name.getNaam() + "\r\n";
                         }
 
                     }
                     huidigeSpelers.setText(string);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }.start();
