@@ -2,8 +2,6 @@ package Controller;
 
 import Game.IGameMethod;
 import Model.User;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +9,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import SpelLogica.Game;
 
@@ -47,7 +44,7 @@ public class GameBuilderController {
     }
 
     @FXML
-    void makeGame(ActionEvent event) {
+    void makeGame(ActionEvent event) throws RemoteException {
         //TODO Beveiligen op slechte input
 
         String name = nameField.getText();
@@ -66,7 +63,6 @@ public class GameBuilderController {
 
         try {
             implementation.makeGame(game);
-            //implementation.makeField(game.getGameId());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -74,7 +70,7 @@ public class GameBuilderController {
         startGameWindow();
     }
 
-    private void startGameWindow() {
+    private void startGameWindow() throws RemoteException {
         Stage stage;
         Parent root = null;
 
@@ -104,7 +100,7 @@ public class GameBuilderController {
         gameController.setUser(user);
         gameController.setLobbyStage(lobbyStage);
 
-        gameController.makeFieldWithInfoOfServer();
+        gameController.constructGrid();
         gameController.setOnExitAction();
     }
 

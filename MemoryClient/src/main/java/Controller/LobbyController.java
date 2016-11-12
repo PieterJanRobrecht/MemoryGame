@@ -4,7 +4,6 @@ import Game.IGameMethod;
 import Lobby.ILobbyMethod;
 import Model.User;
 import SpelLogica.Game;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +17,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.controlsfx.control.Notifications;
 
-import javax.swing.table.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -194,7 +192,7 @@ public class LobbyController {
         }
     }
 
-    private void setViewGame(Game game) {
+    private void setViewGame(Game game) throws RemoteException {
         registry();
         Stage stage = new Stage();
         Parent root = null;
@@ -223,7 +221,7 @@ public class LobbyController {
         gameController.setUser(thisUser);
         gameController.setLobbyStage((Stage) lobbyPane.getScene().getWindow());
 
-        gameController.makeFieldWithInfoOfServer();
+        gameController.constructGrid();
         gameController.setOnExitAction();
     }
 
