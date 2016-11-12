@@ -14,6 +14,7 @@ import java.util.Set;
  */
 public class Game implements Serializable {
     private List<User> gamers;
+    private List<Integer> imageIDs;
     private String name;
     private int maxAantalSpelers;
     private int gameId;
@@ -32,6 +33,10 @@ public class Game implements Serializable {
             gamers.add(u);
             aantalSpelers++;
         }
+    }
+
+    public int[][] getVeld() {
+        return veld;
     }
 
     public String getThema() {
@@ -79,11 +84,17 @@ public class Game implements Serializable {
         return gamers;
     }
 
+    public List<Integer> getImageIDs() {
+        return imageIDs;
+    }
+
     public void setMaxAantalSpelers(int maxAantalSpelers) {
         this.maxAantalSpelers = maxAantalSpelers;
     }
 
     public void maakVeld(List<Integer> mogelijkeIDs){
+        imageIDs = new ArrayList<Integer>();
+        imageIDs.addAll(mogelijkeIDs);
         mogelijkeIDs.addAll(mogelijkeIDs); //iedere figuur zit twee keer in de lijst
         int id, index, lengte = veld[0].length;
         for(int i=0;i<lengte;i++){
@@ -96,6 +107,7 @@ public class Game implements Serializable {
             }
             System.out.println();
         }
+        System.out.println("mogelijke IDs: "+imageIDs);
     }
 
     public void removeUser(User user) {

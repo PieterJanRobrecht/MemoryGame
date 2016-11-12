@@ -4,21 +4,26 @@ import Game.IGameMethod;
 import Model.User;
 import SpelLogica.Game;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.event.EventHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Pieter-Jan on 09/11/2016.
@@ -28,6 +33,9 @@ public class GameController {
     private IGameMethod implementation;
     private Game game;
     private Image backImage;
+    private Map images;
+
+    private final EventHandler imageViewClickEventHandler = clickEventHandler();
 
     @FXML
     private Label grootteSpel;
@@ -66,16 +74,78 @@ public class GameController {
                 imageView.setFitHeight(100);
                 imageView.setEffect(new DropShadow(5, Color.BLACK));
 
-//                imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
+                imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
                 speelveld.add(imageView, i, j);
             }
         }
 
         //Ophalen foto's van db
+
+        game = implementation.getGame(game.getGameId()); //nodig omdat de verandering om de game op server niet aangepast zijn op de lokale kopie!
+        List<Integer> IDs = game.getImageIDs();
+        images = new HashMap<Integer, Image>();
+        if(IDs == null){
+            System.out.println("fout met de IDs");
+        }
+        else {
+            for (int ID : IDs) {
+                bytes = implementation.getImage(ID);
+                img = null;
+                try {
+                    img = ImageIO.read(new ByteArrayInputStream(bytes));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                images.put(ID, SwingFXUtils.toFXImage(img, null));
+                System.out.println("foto op client opgeslagen met id " + ID);
+            }
+        }
+
         //Haal info op over waar welke figuren komen
         //Maken van de nodige click listeners
         //Starten van thread die luistert naar de server
 
+    }
+
+    private EventHandler clickEventHandler() {
+        /**
+         * handler for all click events
+         */
+        return new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                if (!(event.getSource() instanceof ImageView)) return;
+
+                ImageView clickedImageView = (ImageView) event.getSource();
+
+                int col = GridPane.getColumnIndex(clickedImageView);
+                int row = GridPane.getRowIndex(clickedImageView);
+
+//                int selectedCardIndex = row * CARDS_PER_ROW + col;
+//                logger.debug("selected memory card index: " + selectedCardIndex);
+//
+//                /* with large images this is a performance bottleneck! */
+//                /* v2 should use an image cache */
+//                if (guess.addGuess(selectedCardIndex)) {
+//                    clickedImageView.setImage(new Image(memoryGame.getCard(selectedCardIndex).toURI().toString()));
+//                }
+//
+//                if (guess.validGuesses()) {
+//                    if (memoryGame.isMatch(guess)) {
+//                        logger.info("found a matching pair!");
+//                        memoryCardGrid.getChildren().get(guess.getFirstGuessIndex()).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
+//                        memoryCardGrid.getChildren().get(guess.getSecondGuessIndex()).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
+//                        guess = new Guess();
+//                    }
+//                    if (guess.isScrewed()) {
+//                        logger.info("no matching pair");
+//                        ((ImageView)memoryCardGrid.getChildren().get(guess.getFirstGuessIndex())).setImage(backSide);
+//                        ((ImageView)memoryCardGrid.getChildren().get(guess.getSecondGuessIndex())).setImage(backSide);
+//                        guess = new Guess();
+//                    }
+//                }
+            }
+        };
     }
 
     //Thread maken die vraagt aan de server wat die moet doen

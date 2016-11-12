@@ -13,5 +13,8 @@ public interface IGameMethod extends Remote {
     void makeGame(Game game) throws RemoteException;
     void releaseGame(Game game, User user) throws RemoteException;
     byte[] getBackgroundImage(String thema) throws RemoteException;
+    byte[] getImage(int id) throws RemoteException;
+    Game getGame(Integer in) throws RemoteException;
+
 
 }
