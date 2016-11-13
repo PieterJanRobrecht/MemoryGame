@@ -101,15 +101,16 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     public Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException{
         for(Game game: runningGames){
             if (game.getGameId() == gameID){
-                while(true){
-                    return game.getBuzzyUserID();
-                }
-//                int nieuweBuzzyUserID = game.getBuzzyUserID();
-//                while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
-//                    nieuweBuzzyUserID = game.getBuzzyUserID();
+//                while(true){
+//                    return game.getBuzzyUserID();
 //                }
-//                System.out.println("buzzyUserID geupdate van "+vorigeBuzzyUserID+" naar "+game.getBuzzyUserID());
-//                return game.getBuzzyUserID();
+                int nieuweBuzzyUserID = game.getBuzzyUserID();
+                while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
+                    System.out.println("oude "+vorigeBuzzyUserID+" nieuwe"+nieuweBuzzyUserID);
+                    nieuweBuzzyUserID = game.getBuzzyUserID();
+                }
+                System.out.println("buzzyUserID geupdate van "+vorigeBuzzyUserID+" naar "+game.getBuzzyUserID());
+                return game.getBuzzyUserID();
             }
         }
         return -2;
