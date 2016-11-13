@@ -27,7 +27,6 @@ public class Move implements Serializable {
     }
 
     public boolean addCardToMove(int cardX, int cardY){
-        System.out.println("tovoegen van "+cardX+" "+cardY);
         switch (aatalKaarten) {
             case 0: {
                 cardX1 = cardX;

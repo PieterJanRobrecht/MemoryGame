@@ -6,6 +6,7 @@ import SpelLogica.Move;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * Created by Pieter-Jan on 09/11/2016.
@@ -20,6 +21,7 @@ public interface IGameMethod extends Remote {
     boolean doMove(Integer gameID,Integer userID, Move m) throws RemoteException;
     boolean voldoendeSpelers(Integer gameID) throws  RemoteException;
     Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException;
+    int getNieuwGevondeImages(List<Integer> reedsGevonden, Integer gameID) throws RemoteException;
 
 
 }

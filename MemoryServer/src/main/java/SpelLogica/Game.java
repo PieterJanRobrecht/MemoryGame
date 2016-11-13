@@ -12,16 +12,17 @@ import java.util.List;
  */
 public class Game implements Serializable {
     private LinkedHashMap<User, Integer> punten; //voordeel t.o.v. gewone hashmap: volgorde van toevoegen wordt behouden
-    private List<Integer> imageIDs, userIDs;
+    private List<Integer> imageIDs, userIDs, reedsGevondenImages;
     private String name, thema;
     private int aantalSpelers, maxAantalSpelers, gameId, buzzyUserID = -1;
-    private int[][] veld;
+    private int[][] veld;//ontdekte combinaties zijn negatief
     private boolean uitgespeeld = false;
 
     public Game(int gameID) {
         this.gameId = gameID;
         punten = new LinkedHashMap<User, Integer>();
         userIDs = new ArrayList<Integer>();
+        reedsGevondenImages = new ArrayList<Integer>();
     }
 
     public void addUser(User u) {
@@ -49,6 +50,10 @@ public class Game implements Serializable {
 
     public int[][] getVeld() {
         return veld;
+    }
+
+    public List<Integer> getReedsGevondenImages() {
+        return reedsGevondenImages;
     }
 
     public String getThema() {
@@ -144,6 +149,7 @@ public class Game implements Serializable {
         if( idEersteKaart == idTweedeKaart ){
             punten.put(user, punten.get(user)+1);
             System.out.println(" speler "+user.getNaam()+" heeft "+punten.get(user)+" punten.");
+            reedsGevondenImages.add(idEersteKaart);
             return true;
         }
         return false;

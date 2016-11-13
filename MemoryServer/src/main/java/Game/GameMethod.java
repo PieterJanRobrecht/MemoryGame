@@ -101,16 +101,33 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     public Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException{
         for(Game game: runningGames){
             if (game.getGameId() == gameID){
-//                while(true){
-//                    return game.getBuzzyUserID();
-//                }
                 int nieuweBuzzyUserID = game.getBuzzyUserID();
                 while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
-                    System.out.println("oude "+vorigeBuzzyUserID+" nieuwe"+nieuweBuzzyUserID);
+                    System.out.print(""); //vreemd, als je deze syso weg haalt werkt het niet...
                     nieuweBuzzyUserID = game.getBuzzyUserID();
                 }
-                System.out.println("buzzyUserID geupdate van "+vorigeBuzzyUserID+" naar "+game.getBuzzyUserID());
                 return game.getBuzzyUserID();
+            }
+        }
+        return -2;
+    }
+
+    @Override
+    public int getNieuwGevondeImages(List<Integer> reedsGevonden, Integer gameID) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                List<Integer>ondertussenGevonden = game.getReedsGevondenImages();
+                while(reedsGevonden.size() == ondertussenGevonden.size()){//wachten
+                    System.out.print("");
+                    ondertussenGevonden = game.getReedsGevondenImages();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println("nieuwe afbeelding gevonden");
+                return ondertussenGevonden.get(reedsGevonden.size());
             }
         }
         return -2;

@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class GameController {
     private Map <Integer, Image> images;
     private Move move;
     private int buzzyUserID;
-
+    private List<Integer> gevondenImages;
     private final EventHandler imageViewClickEventHandler = clickEventHandler();
 
     @FXML
@@ -101,7 +102,7 @@ public class GameController {
                     e.printStackTrace();
                 }
                 images.put(ID, SwingFXUtils.toFXImage(img, null));
-                System.out.println("foto op client opgeslagen met id " + ID);
+//                System.out.println("foto op client opgeslagen met id " + ID);
             }
         }
 
@@ -165,7 +166,36 @@ public class GameController {
     //Thread maken die vraagt aan de server wat die moet doen
     //Server antwoord ofwel -> gok ofwel -> kijk
 
+    public void toonAfbeelding(int afbeeldingId){
+        int[][] veld = game.getVeld();
+        int lengte = veld.length;
+        for(int i = 0;i<lengte;i++){
+            for(int j = 0; j<lengte; j++){
+                if (veld[i][j] == afbeeldingId){
+                    int index = i*game.getGrootteVeld()+j; //kan ook omgekeerd zijn
+                    ((ImageView)speelveld.getChildren().get(index)).setImage(images.get(afbeeldingId));
+                    speelveld.getChildren().get(index).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
+                }
+            }
+        }
+    }
+
     public void startTreads(){
+        new Thread(){
+            public void run(){
+                gevondenImages = new ArrayList<Integer>();
+                int nieuweGevondenImage;
+                while (true){
+                    try{
+                        nieuweGevondenImage = implementation.getNieuwGevondeImages(gevondenImages, game.getGameId());
+                        toonAfbeelding(nieuweGevondenImage);
+                    }catch (RemoteException e){
+                        e.printStackTrace();
+
+                    }
+                }
+            }
+        }.start();
         new Thread(){
             public void run(){
                 while (true){
