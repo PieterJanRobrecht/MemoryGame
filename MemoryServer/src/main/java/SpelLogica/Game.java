@@ -11,14 +11,14 @@ import java.util.List;
  * Created by michi on 6/11/2016.
  */
 public class Game implements Serializable {
-    private Map<User, Integer> punten;
+    private HashMap<User, Integer> punten;
     private List<Integer> imageIDs;
     private String name;
     private int maxAantalSpelers;
     private int gameId;
     private String thema;
     //private int grootteVeld; //Dit is het aantal figuren in in rij of kolom
-    private int[][] veld; //indien reeds opgelost dan veranderen we het id naar negatief
+    private int[][] veld;
     private int aantalSpelers;
 
     public Game(int gameID) {
@@ -28,9 +28,10 @@ public class Game implements Serializable {
 
     public void addUser(User u) {
         if (aantalSpelers < maxAantalSpelers || aantalSpelers==0) {
-            punten.put(u,0);
+            punten.put(u,5);
             aantalSpelers++;
         }
+        System.out.println("gamer toegevoegd: "+u.getNaam()+" en zijn beginpunten zijn "+punten.get(u));
     }
 
     public int[][] getVeld() {
@@ -56,6 +57,15 @@ public class Game implements Serializable {
     public void setGrootteVeld(int grootteVeld) {
         this.veld = new int[grootteVeld][grootteVeld];
         //this.grootteVeld = grootteVeld;
+    }
+
+    public User getUserFromGame(Integer userID){
+        for ( User user : punten.keySet() ) {
+            if (user.getId() == userID){
+                return user;
+            }
+        }
+        return null;
     }
 
     public void setThema(String thema) {
@@ -106,7 +116,6 @@ public class Game implements Serializable {
             }
             System.out.println();
         }
-        System.out.println("mogelijke IDs: "+imageIDs);
     }
 
     public void removeUser(User user) {
@@ -114,13 +123,13 @@ public class Game implements Serializable {
         aantalSpelers--;
     }
 
-    public boolean doMove(User user, Move move){
+    public boolean doMove(Integer userID, Move move){
         int idEersteKaart = veld[move.getCardX1()][move.getCardY1()];
         int idTweedeKaart = veld[move.getCardX2()][move.getCardY2()];
-        if( (idEersteKaart == idTweedeKaart) && (idEersteKaart > -1) ){
-            //punten.put(user, punten.get(user)+1);
-            veld[move.getCardX1()][move.getCardY1()] = -idEersteKaart;
-            veld[move.getCardX2()][move.getCardY2()] = -idTweedeKaart;
+        User user = getUserFromGame(userID);
+        if( idEersteKaart == idTweedeKaart ){
+            punten.put(user, punten.get(user)+1);
+            System.out.println(" speler "+user.getNaam()+" heeft "+punten.get(user)+" punten.");
             return true;
         }
         return false;

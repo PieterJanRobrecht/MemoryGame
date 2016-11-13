@@ -16,7 +16,7 @@ public interface IGameMethod extends Remote {
     byte[] getBackgroundImage(String thema) throws RemoteException;
     byte[] getImage(int id) throws RemoteException;
     Game getGame(Integer in) throws RemoteException;
-    boolean doMove(Integer gameID,User u, Move m) throws RemoteException;
+    boolean doMove(Integer gameID,Integer userID, Move m) throws RemoteException;
 
 
 

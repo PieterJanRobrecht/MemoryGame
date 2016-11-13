@@ -70,10 +70,10 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public boolean doMove(Integer gameID,User u, Move m) throws RemoteException{
+    public boolean doMove(Integer gameID,Integer userID, Move m) throws RemoteException{
         for(Game game: runningGames){
             if (game.getGameId() == gameID){
-                return game.doMove(u, m);
+                return game.doMove(userID, m);
             }
         }
         return false;

@@ -139,12 +139,12 @@ public class GameController {
                         int index1 = move.getCardX1()*game.getGrootteVeld()+move.getCardY1();
                         int index2 = move.getCardX2()*game.getGrootteVeld()+move.getCardY2();
 
-                        if (implementation.doMove(game.getGameId(), user, move)) {
+                        if (implementation.doMove(game.getGameId(), user.getId(), move)) {
                             speelveld.getChildren().get(index1).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
                             speelveld.getChildren().get(index2).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
                         }
                         else {
-                            TimeUnit.SECONDS.sleep(2);
+                            TimeUnit.SECONDS.sleep(1);
                             ((ImageView)speelveld.getChildren().get(index1)).setImage(backImage);
                             ((ImageView)speelveld.getChildren().get(index2)).setImage(backImage);
                         }
