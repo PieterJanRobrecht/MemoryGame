@@ -3,6 +3,7 @@ package Game;
 import DatabasePackage.Database;
 import Model.User;
 import SpelLogica.Game;
+import SpelLogica.Move;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -68,16 +69,15 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         return null;
     }
 
-
     @Override
-    public Game getGameById(int id) throws RemoteException {
-        int index=-1;
-        for (int i = 0; i < runningGames.size(); i++) {
-            if (runningGames.get(i).getGameId() == id) {
-                index = i;
+    public boolean doMove(Integer gameID,User u, Move m) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                return game.doMove(u, m);
             }
         }
-        return runningGames.get(index);
+        return false;
     }
+
 
 }

@@ -4,33 +4,31 @@ import Model.User;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 /**
  * Created by michi on 6/11/2016.
  */
 public class Game implements Serializable {
-    private List<User> gamers;
+    private Map<User, Integer> punten;
     private List<Integer> imageIDs;
     private String name;
     private int maxAantalSpelers;
     private int gameId;
     private String thema;
     //private int grootteVeld; //Dit is het aantal figuren in in rij of kolom
-    private int[][] veld;
+    private int[][] veld; //indien reeds opgelost dan veranderen we het id naar negatief
     private int aantalSpelers;
 
     public Game(int gameID) {
         this.gameId = gameID;
-        gamers = new ArrayList<User>();
+        punten = new HashMap<User, Integer>();
     }
 
     public void addUser(User u) {
         if (aantalSpelers < maxAantalSpelers || aantalSpelers==0) {
-            gamers.add(u);
+            punten.put(u,0);
             aantalSpelers++;
         }
     }
@@ -81,7 +79,8 @@ public class Game implements Serializable {
     }
 
     public List<User> getGamers() {
-        return gamers;
+        List spelers = new ArrayList<User>(punten.keySet());
+        return spelers;
     }
 
     public List<Integer> getImageIDs() {
@@ -111,13 +110,19 @@ public class Game implements Serializable {
     }
 
     public void removeUser(User user) {
-        int index =0;
-        for(int i=0;i<gamers.size();i++){
-            if(gamers.get(i).getId()==user.getId()){
-                index=i;
-            }
-        }
-        gamers.remove(index);
+        punten.remove(user);
         aantalSpelers--;
+    }
+
+    public boolean doMove(User user, Move move){
+        int idEersteKaart = veld[move.getCardX1()][move.getCardY1()];
+        int idTweedeKaart = veld[move.getCardX2()][move.getCardY2()];
+        if( (idEersteKaart == idTweedeKaart) && (idEersteKaart > -1) ){
+            //punten.put(user, punten.get(user)+1);
+            veld[move.getCardX1()][move.getCardY1()] = -idEersteKaart;
+            veld[move.getCardX2()][move.getCardY2()] = -idTweedeKaart;
+            return true;
+        }
+        return false;
     }
 }

@@ -2,6 +2,7 @@ package Game;
 
 import Model.User;
 import SpelLogica.Game;
+import SpelLogica.Move;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -15,4 +16,6 @@ public interface IGameMethod extends Remote {
     byte[] getBackgroundImage(String thema) throws RemoteException;
     byte[] getImage(int id) throws RemoteException;
     Game getGame(Integer in) throws RemoteException;
+    boolean doMove(Integer gameID,User u, Move m) throws RemoteException;
+
 }

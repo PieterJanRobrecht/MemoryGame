@@ -3,6 +3,7 @@ package Controller;
 import Game.IGameMethod;
 import Model.User;
 import SpelLogica.Game;
+import SpelLogica.Move;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
@@ -25,6 +26,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Pieter-Jan on 09/11/2016.
@@ -34,7 +36,8 @@ public class GameController {
     private IGameMethod implementation;
     private Game game;
     private Image backImage;
-    private Map images;
+    private Map <Integer, Image> images;
+    private Move move;
 
     private final EventHandler imageViewClickEventHandler = clickEventHandler();
 
@@ -102,6 +105,8 @@ public class GameController {
             }
         }
 
+        move = new Move();
+
         //Haal info op over waar welke figuren komen
         //Maken van de nodige click listeners
         //Starten van thread die luistert naar de server
@@ -123,28 +128,33 @@ public class GameController {
                 int row = GridPane.getRowIndex(clickedImageView);
 
 //                int selectedCardIndex = row * CARDS_PER_ROW + col;
-//                logger.debug("selected memory card index: " + selectedCardIndex);
-//
-//                /* with large images this is a performance bottleneck! */
-//                /* v2 should use an image cache */
-//                if (guess.addGuess(selectedCardIndex)) {
-//                    clickedImageView.setImage(new Image(memoryGame.getCard(selectedCardIndex).toURI().toString()));
-//                }
-//
-//                if (guess.validGuesses()) {
-//                    if (memoryGame.isMatch(guess)) {
-//                        logger.info("found a matching pair!");
-//                        memoryCardGrid.getChildren().get(guess.getFirstGuessIndex()).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
-//                        memoryCardGrid.getChildren().get(guess.getSecondGuessIndex()).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
-//                        guess = new Guess();
-//                    }
-//                    if (guess.isScrewed()) {
-//                        logger.info("no matching pair");
-//                        ((ImageView)memoryCardGrid.getChildren().get(guess.getFirstGuessIndex())).setImage(backSide);
-//                        ((ImageView)memoryCardGrid.getChildren().get(guess.getSecondGuessIndex())).setImage(backSide);
-//                        guess = new Guess();
-//                    }
-//                }
+
+                int afbeeldingID = game.getVeld()[col][row];
+                if (move.addCardToMove(col, row)) {  //kan ook omgekeerd zijn
+                    clickedImageView.setImage(images.get(afbeeldingID));
+                }
+
+                if (move.isCompleet()) {
+                    try {
+                        int index1 = move.getCardX1()*game.getGrootteVeld()+move.getCardY1();
+                        int index2 = move.getCardX2()*game.getGrootteVeld()+move.getCardY2();
+
+                        if (implementation.doMove(game.getGameId(), user, move)) {
+                            speelveld.getChildren().get(index1).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
+                            speelveld.getChildren().get(index2).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
+                        }
+                        else {
+                            TimeUnit.SECONDS.sleep(2);
+                            ((ImageView)speelveld.getChildren().get(index1)).setImage(backImage);
+                            ((ImageView)speelveld.getChildren().get(index2)).setImage(backImage);
+                        }
+                        move = new Move();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         };
     }
@@ -160,7 +170,7 @@ public class GameController {
                 while (true) {
                     string = "";
                     try {
-                        gebruikers = implementation.getGameById(game.getGameId()).getGamers();
+                        gebruikers = implementation.getGame(game.getGameId()).getGamers();
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
