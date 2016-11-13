@@ -4,6 +4,7 @@ import Game.IGameMethod;
 import Model.User;
 import SpelLogica.Game;
 import SpelLogica.Move;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -201,7 +202,7 @@ public class GameController {
                         }
 
                     }
-                    huidigeSpelers.setText(string);
+                    Platform.runLater(() -> huidigeSpelers.setText(string));
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
