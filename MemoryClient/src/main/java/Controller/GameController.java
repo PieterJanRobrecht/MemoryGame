@@ -232,11 +232,10 @@ public class GameController {
                     }
 
                     if (gebruikers != null){
-                        //gebruikers.clear();//test
+                        //gebruikers.clear();
                         for (User name : gebruikers){
-                            string += name.getNaam() + "\r\n";
+                            string += name.getNaam() +" "+game.getPunten(name.getId())+ "\r\n";
                         }
-
                     }
                     Platform.runLater(() -> huidigeSpelers.setText(string));
                     try {

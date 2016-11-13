@@ -177,4 +177,9 @@ public class Game implements Serializable {
 
         System.out.println("next buzzy userID is "+buzzyUserID);
     }
+
+    public int getPunten(int userId){
+        User user = getUserFromGame(userId);
+        return punten.get(user);
+    }
 }
