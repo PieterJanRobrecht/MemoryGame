@@ -11,28 +11,28 @@ import java.util.List;
  * Created by michi on 6/11/2016.
  */
 public class Game implements Serializable {
-    private HashMap<User, Integer> punten;
+    private LinkedHashMap<User, Integer> punten; //voordeel t.o.v. gewone hashmap: volgorde van toevoegen wordt behouden
     private List<Integer> imageIDs;
-    private String name;
-    private int maxAantalSpelers;
-    private int gameId;
-    private String thema;
-    //private int grootteVeld; //Dit is het aantal figuren in in rij of kolom
+    private String name, thema;
+    private int aantalSpelers, maxAantalSpelers, gameId, buzzyUserID = -1;
     private int[][] veld;
-    private int aantalSpelers;
     private boolean uitgespeeld = false;
 
     public Game(int gameID) {
         this.gameId = gameID;
-        punten = new HashMap<User, Integer>();
+        punten = new LinkedHashMap<User, Integer>();
     }
 
     public void addUser(User u) {
         if (aantalSpelers < maxAantalSpelers || aantalSpelers==0) {
-            punten.put(u,5);
+            punten.put(u,0);
             aantalSpelers++;
+            if(buzzyUserID == -1){
+                buzzyUserID = u.getId(); //deze speler mag beginnen
+                System.out.println("speler die mag beginnen: "+u.getNaam());
+                System.out.println("spelers in het spel: "+punten.size());
+            }
         }
-        System.out.println("gamer toegevoegd: "+u.getNaam()+" en zijn beginpunten zijn "+punten.get(u));
     }
 
     public boolean isUitgespeeld() {
@@ -41,6 +41,14 @@ public class Game implements Serializable {
 
     public void setUitgespeeld(boolean uitgespeeld) {
         this.uitgespeeld = uitgespeeld;
+    }
+
+    public int getBuzzyUserID() {
+        return buzzyUserID;
+    }
+
+    public void setBuzzyUserID(int buzzyUserID) {
+        this.buzzyUserID = buzzyUserID;
     }
 
     public int[][] getVeld() {

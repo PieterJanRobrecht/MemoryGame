@@ -17,9 +17,7 @@ public interface IGameMethod extends Remote {
     byte[] getImage(int id) throws RemoteException;
     Game getGame(Integer in) throws RemoteException;
     boolean doMove(Integer gameID,Integer userID, Move m) throws RemoteException;
-    public boolean voldoendeSpelers(Integer gameID) throws  RemoteException;
+    boolean voldoendeSpelers(Integer gameID) throws  RemoteException;
+    Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException;
 
-
-
-
-    }
+}

@@ -4,7 +4,6 @@ import Game.IGameMethod;
 import Model.User;
 import SpelLogica.Game;
 import SpelLogica.Move;
-import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -38,6 +37,7 @@ public class GameController {
     private Image backImage;
     private Map <Integer, Image> images;
     private Move move;
+    private int buzzyUserID;
 
     private final EventHandler imageViewClickEventHandler = clickEventHandler();
 
@@ -59,8 +59,8 @@ public class GameController {
 
         int grootte = game.getGrootteVeld();
         grootteSpel.setText(grootte + " op " + grootte);
+        buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), -2);
 
-        startAantalSpelersThread();
 
         byte[] bytes = implementation.getBackgroundImage(game.getThema());
         BufferedImage img = null;
@@ -111,17 +111,15 @@ public class GameController {
         //Maken van de nodige click listeners
         //Starten van thread die luistert naar de server
 
+        startTreads();
     }
 
-    private EventHandler clickEventHandler() {
-        /**
-         * handler for all click events
-         */
+    private EventHandler clickEventHandler() { //handler for all click events
         return new EventHandler() {
             @Override
             public void handle(Event event) {
                 if (!(event.getSource() instanceof ImageView)) return;
-
+                if(buzzyUserID != user.getId()) return;
                 try {
                     if (!(implementation.voldoendeSpelers(game.getGameId()))) return;
                 }catch (RemoteException e){
@@ -132,8 +130,6 @@ public class GameController {
 
                 int col = GridPane.getColumnIndex(clickedImageView);
                 int row = GridPane.getRowIndex(clickedImageView);
-
-//                int selectedCardIndex = row * CARDS_PER_ROW + col;
 
                 int afbeeldingID = game.getVeld()[col][row];
                 if (move.addCardToMove(col, row)) {  //kan ook omgekeerd zijn
@@ -153,6 +149,7 @@ public class GameController {
                             TimeUnit.SECONDS.sleep(1);
                             ((ImageView)speelveld.getChildren().get(index1)).setImage(backImage);
                             ((ImageView)speelveld.getChildren().get(index2)).setImage(backImage);
+                            //implementation.nextBuzzyUser();
                         }
                         move = new Move();
                     } catch (RemoteException e) {
@@ -168,8 +165,20 @@ public class GameController {
     //Thread maken die vraagt aan de server wat die moet doen
     //Server antwoord ofwel -> gok ofwel -> kijk
 
-    public void startAantalSpelersThread(){
+    public void startTreads(){
         new Thread(){
+            public void run(){
+                while (true){
+                    try{
+                        buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
+                    }catch (RemoteException e){
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }.start();
+        new Thread(){ //voor wergeven spelers naast spel
             List<User> gebruikers;
             String string;
             public void run() {

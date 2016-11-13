@@ -89,6 +89,19 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         return false;
     }
 
-
-
+    @Override
+    public Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                while(true){
+                    if(game.getBuzzyUserID() != vorigeBuzzyUserID){
+                        return game.getBuzzyUserID();
+                    }
+                }
+            }
+        }
+        return -2;
     }
+
+
+}
