@@ -46,7 +46,15 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
                 runningGames.remove(index);
             }
         }
+    }
 
+    @Override
+    public void SetNextBuzzyUser(int gameID) throws  RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                game.setNextBuzzyID();
+            }
+        }
     }
 
     @Override
@@ -93,11 +101,18 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     public Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException{
         for(Game game: runningGames){
             if (game.getGameId() == gameID){
-                while(true){
-                    if(game.getBuzzyUserID() != vorigeBuzzyUserID){
-                        return game.getBuzzyUserID();
-                    }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                //while(true){
+                    //if(game.getBuzzyUserID() != vorigeBuzzyUserID){
+                        //System.out.println("buzzyUserID geupdate van "+vorigeBuzzyUserID+" naar "+game.getBuzzyUserID());
+                        return game.getBuzzyUserID();
+
+                    //}
+                //}
             }
         }
         return -2;

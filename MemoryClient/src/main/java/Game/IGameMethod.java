@@ -13,11 +13,13 @@ import java.rmi.RemoteException;
 public interface IGameMethod extends Remote {
     void makeGame(Game game) throws RemoteException;
     void releaseGame(Game game, User user) throws RemoteException;
+    void SetNextBuzzyUser(int gameID) throws  RemoteException;
     byte[] getBackgroundImage(String thema) throws RemoteException;
     byte[] getImage(int id) throws RemoteException;
     Game getGame(Integer in) throws RemoteException;
     boolean doMove(Integer gameID,Integer userID, Move m) throws RemoteException;
     boolean voldoendeSpelers(Integer gameID) throws  RemoteException;
     Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException;
+
 
 }

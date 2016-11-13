@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Game implements Serializable {
     private LinkedHashMap<User, Integer> punten; //voordeel t.o.v. gewone hashmap: volgorde van toevoegen wordt behouden
-    private List<Integer> imageIDs;
+    private List<Integer> imageIDs, userIDs;
     private String name, thema;
     private int aantalSpelers, maxAantalSpelers, gameId, buzzyUserID = -1;
     private int[][] veld;
@@ -21,16 +21,16 @@ public class Game implements Serializable {
     public Game(int gameID) {
         this.gameId = gameID;
         punten = new LinkedHashMap<User, Integer>();
+        userIDs = new ArrayList<Integer>();
     }
 
     public void addUser(User u) {
         if (aantalSpelers < maxAantalSpelers || aantalSpelers==0) {
             punten.put(u,0);
+            userIDs.add(u.getId());
             aantalSpelers++;
             if(buzzyUserID == -1){
                 buzzyUserID = u.getId(); //deze speler mag beginnen
-                System.out.println("speler die mag beginnen: "+u.getNaam());
-                System.out.println("spelers in het spel: "+punten.size());
             }
         }
     }
@@ -45,10 +45,6 @@ public class Game implements Serializable {
 
     public int getBuzzyUserID() {
         return buzzyUserID;
-    }
-
-    public void setBuzzyUserID(int buzzyUserID) {
-        this.buzzyUserID = buzzyUserID;
     }
 
     public int[][] getVeld() {
@@ -137,6 +133,7 @@ public class Game implements Serializable {
 
     public void removeUser(User user) {
         punten.remove(user);
+        userIDs.remove(new Integer(user.getId()));
         aantalSpelers--;
     }
 
@@ -154,5 +151,24 @@ public class Game implements Serializable {
 
     public boolean voldoendeSpelers(){
         return aantalSpelers == maxAantalSpelers;
+    }
+
+    public void setNextBuzzyID(){
+        boolean vorigeGepasseerd = false;
+        System.out.println("vorige buzzy userID is "+buzzyUserID);
+
+        for (int i: userIDs) {
+            if (i == buzzyUserID ) {
+                vorigeGepasseerd = true;
+            }
+            else if(vorigeGepasseerd){
+                buzzyUserID = i;
+                System.out.println("next buzzy userID is "+buzzyUserID);
+                return;
+            }
+        }//indien de laatste in rij de vorigeBuzzyUser was beginnen we weer opnieuw:
+        buzzyUserID = userIDs.get(0);
+
+        System.out.println("next buzzy userID is "+buzzyUserID);
     }
 }

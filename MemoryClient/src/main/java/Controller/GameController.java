@@ -149,7 +149,7 @@ public class GameController {
                             TimeUnit.SECONDS.sleep(1);
                             ((ImageView)speelveld.getChildren().get(index1)).setImage(backImage);
                             ((ImageView)speelveld.getChildren().get(index2)).setImage(backImage);
-                            //implementation.nextBuzzyUser();
+                            implementation.SetNextBuzzyUser(game.getGameId());
                         }
                         move = new Move();
                     } catch (RemoteException e) {
@@ -171,6 +171,7 @@ public class GameController {
                 while (true){
                     try{
                         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
+                        System.out.println("bij gebruiker "+user.getId() +" is de buzzyUser veranderd naar "+buzzyUserID);
                     }catch (RemoteException e){
                         e.printStackTrace();
                     }
