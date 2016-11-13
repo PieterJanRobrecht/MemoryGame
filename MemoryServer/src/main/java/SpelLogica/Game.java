@@ -20,6 +20,7 @@ public class Game implements Serializable {
     //private int grootteVeld; //Dit is het aantal figuren in in rij of kolom
     private int[][] veld;
     private int aantalSpelers;
+    private boolean uitgespeeld = false;
 
     public Game(int gameID) {
         this.gameId = gameID;
@@ -32,6 +33,14 @@ public class Game implements Serializable {
             aantalSpelers++;
         }
         System.out.println("gamer toegevoegd: "+u.getNaam()+" en zijn beginpunten zijn "+punten.get(u));
+    }
+
+    public boolean isUitgespeeld() {
+        return uitgespeeld;
+    }
+
+    public void setUitgespeeld(boolean uitgespeeld) {
+        this.uitgespeeld = uitgespeeld;
     }
 
     public int[][] getVeld() {
@@ -133,5 +142,9 @@ public class Game implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public boolean voldoendeSpelers(){
+        return aantalSpelers == maxAantalSpelers;
     }
 }

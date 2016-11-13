@@ -122,6 +122,12 @@ public class GameController {
             public void handle(Event event) {
                 if (!(event.getSource() instanceof ImageView)) return;
 
+                try {
+                    if (!(implementation.voldoendeSpelers(game.getGameId()))) return;
+                }catch (RemoteException e){
+                    e.printStackTrace();
+                }
+
                 ImageView clickedImageView = (ImageView) event.getSource();
 
                 int col = GridPane.getColumnIndex(clickedImageView);
@@ -176,7 +182,7 @@ public class GameController {
                     }
 
                     if (gebruikers != null){
-//                        gebruikers.clear();
+                        //gebruikers.clear();//test
                         for (User name : gebruikers){
                             string += name.getNaam() + "\r\n";
                         }

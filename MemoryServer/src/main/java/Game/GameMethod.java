@@ -79,5 +79,16 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         return false;
     }
 
+    @Override
+    public boolean voldoendeSpelers(Integer gameID) throws  RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                return game.voldoendeSpelers();
+            }
+        }
+        return false;
+    }
 
-}
+
+
+    }
