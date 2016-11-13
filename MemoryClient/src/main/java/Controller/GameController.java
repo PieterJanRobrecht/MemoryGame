@@ -171,12 +171,12 @@ public class GameController {
                 while (true){
                     try{
                         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
-                        Thread.sleep(1000);
+//                        Thread.sleep(1000);
                         //System.out.println("bij gebruiker "+user.getId() +" is de buzzyUser veranderd naar "+buzzyUserID);
                     }catch (RemoteException e){
                         e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
                     }
 
                 }
