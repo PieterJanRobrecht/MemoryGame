@@ -4,6 +4,7 @@ import Game.IGameMethod;
 import Model.User;
 import SpelLogica.Game;
 import SpelLogica.Move;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -201,9 +202,12 @@ public class GameController {
                 while (true){
                     try{
                         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
+//                        Thread.sleep(1000);
                         //System.out.println("bij gebruiker "+user.getId() +" is de buzzyUser veranderd naar "+buzzyUserID);
                     }catch (RemoteException e){
                         e.printStackTrace();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
                     }
 
                 }
@@ -228,7 +232,7 @@ public class GameController {
                         }
 
                     }
-                    huidigeSpelers.setText(string);
+                    Platform.runLater(() -> huidigeSpelers.setText(string));
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
