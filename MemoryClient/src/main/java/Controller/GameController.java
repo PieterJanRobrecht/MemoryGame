@@ -17,8 +17,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
+import org.controlsfx.control.Notifications;
 
 import javax.imageio.ImageIO;
+import javax.management.Notification;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -189,6 +191,7 @@ public class GameController {
                 while (true){
                     try{
                         nieuweGevondenImage = implementation.getNieuwGevondeImages(gevondenImages, game.getGameId());
+                        gevondenImages.add(nieuweGevondenImage);
                         toonAfbeelding(nieuweGevondenImage);
                     }catch (RemoteException e){
                         e.printStackTrace();
@@ -202,6 +205,9 @@ public class GameController {
                 while (true){
                     try{
                         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
+                        if (buzzyUserID == -999){
+                            gameAfgelopen();
+                        }
 //                        Thread.sleep(1000);
                         //System.out.println("bij gebruiker "+user.getId() +" is de buzzyUser veranderd naar "+buzzyUserID);
                     }catch (RemoteException e){
@@ -273,5 +279,11 @@ public class GameController {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void gameAfgelopen() {
+        Notification info = new Notification("test","test2",5);
+        System.out.println("game is afgelopen");
+        //link terug naar lobby
     }
 }

@@ -102,6 +102,10 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         for(Game game: runningGames){
             if (game.getGameId() == gameID){
                 int nieuweBuzzyUserID = game.getBuzzyUserID();
+                if(game.getReedsGevondenImages().size() == game.getGrootteVeld()){
+
+                    return -999; //teken dat spel afgelopen is
+                }
                 while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
                     System.out.print(""); //vreemd, als je deze syso weg haalt werkt het niet...
                     nieuweBuzzyUserID = game.getBuzzyUserID();
