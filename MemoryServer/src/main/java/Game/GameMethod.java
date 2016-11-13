@@ -98,14 +98,21 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
+    public boolean isGameDone(int nGevonden,int gameID) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                return nGevonden == game.getGrootteVeld();
+            }
+        }
+        return false;
+    }
+
+
+    @Override
     public Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException{
         for(Game game: runningGames){
             if (game.getGameId() == gameID){
                 int nieuweBuzzyUserID = game.getBuzzyUserID();
-                if(game.getReedsGevondenImages().size() == game.getGrootteVeld()){
-
-                    return -999; //teken dat spel afgelopen is
-                }
                 while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
                     System.out.print(""); //vreemd, als je deze syso weg haalt werkt het niet...
                     nieuweBuzzyUserID = game.getBuzzyUserID();
@@ -137,5 +144,14 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         return -2;
     }
 
+    @Override
+    public String getWinner(int gameID) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                return game.getWinner();
+            }
+        }
+        return null;
+    }
 
 }

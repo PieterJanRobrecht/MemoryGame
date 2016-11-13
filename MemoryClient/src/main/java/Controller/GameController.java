@@ -44,6 +44,7 @@ public class GameController {
     private int buzzyUserID;
     private List<Integer> gevondenImages;
     private final EventHandler imageViewClickEventHandler = clickEventHandler();
+    private boolean afgelopen = false;
 
     @FXML
     private Label grootteSpel;
@@ -53,6 +54,9 @@ public class GameController {
 
     @FXML
     private GridPane speelveld;
+
+    @FXML
+    private Label afgelopenText;
 
     private Stage lobbyStage;
     private User user;
@@ -88,7 +92,6 @@ public class GameController {
         }
 
         //Ophalen foto's van db
-
         game = implementation.getGame(game.getGameId()); //nodig omdat de verandering om de game op server niet aangepast zijn op de lokale kopie!
         List<Integer> IDs = game.getImageIDs();
         images = new HashMap<Integer, Image>();
@@ -122,6 +125,12 @@ public class GameController {
         return new EventHandler() {
             @Override
             public void handle(Event event) {
+                if(afgelopen){
+                    Platform.runLater(() -> afgelopenText.setText("STOP AUB."));
+                    //TODO hier moet een methode komen die de game afsluit, want game is voltooid als men hier op drukt
+                    //TODO + opslaan gegevens naar DB
+
+                }
                 if (!(event.getSource() instanceof ImageView)) return;
                 if(buzzyUserID != user.getId()) return;
                 try {
@@ -193,6 +202,9 @@ public class GameController {
                         nieuweGevondenImage = implementation.getNieuwGevondeImages(gevondenImages, game.getGameId());
                         gevondenImages.add(nieuweGevondenImage);
                         toonAfbeelding(nieuweGevondenImage);
+                        if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
+                            gameAfsluiten();
+                        }
                     }catch (RemoteException e){
                         e.printStackTrace();
 
@@ -205,8 +217,11 @@ public class GameController {
                 while (true){
                     try{
                         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
-                        if (buzzyUserID == -999){
-                            gameAfgelopen();
+                        if(buzzyUserID == user.getId()){
+                            Platform.runLater(() -> afgelopenText.setText("Jij bent aan de beurt..."));
+                        }
+                        else {
+                            Platform.runLater(() -> afgelopenText.setText("Wacht op jouw beurt..."));
                         }
 //                        Thread.sleep(1000);
                         //System.out.println("bij gebruiker "+user.getId() +" is de buzzyUser veranderd naar "+buzzyUserID);
@@ -280,9 +295,18 @@ public class GameController {
         this.user = user;
     }
 
-    public void gameAfgelopen() {
-        Notification info = new Notification("test","test2",5);
-        System.out.println("game is afgelopen");
-        //link terug naar lobby
+    private void gameAfsluiten() {
+        try{
+            String afscheidText = implementation.getWinner(game.getGameId());
+            Platform.runLater(() -> afgelopenText.setText(afscheidText+" Klik hier om terug naar de lobby te gaan."));
+            afgelopenText.addEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
+            System.out.println("game is afgelopen");
+            afgelopen = true;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            System.out.println("Error after clossing game");
+        }
     }
+
+
 }

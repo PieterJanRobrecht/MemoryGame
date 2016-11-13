@@ -74,7 +74,6 @@ public class Game implements Serializable {
 
     public void setGrootteVeld(int grootteVeld) {
         this.veld = new int[grootteVeld][grootteVeld];
-        //this.grootteVeld = grootteVeld;
     }
 
     public User getUserFromGame(Integer userID){
@@ -181,5 +180,18 @@ public class Game implements Serializable {
     public int getPunten(int userId){
         User user = getUserFromGame(userId);
         return punten.get(user);
+    }
+
+    public String getWinner(){
+        Map.Entry<User, Integer> maxEntry = null;
+
+        for (Map.Entry<User, Integer> entry : punten.entrySet())
+        {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0)
+            {
+                maxEntry = entry;
+            }
+        }
+        return "De winnaar is "+maxEntry.getKey().getNaam()+" met "+maxEntry.getValue()+" punten!";
     }
 }

@@ -20,8 +20,11 @@ public interface IGameMethod extends Remote {
     Game getGame(Integer in) throws RemoteException;
     boolean doMove(Integer gameID,Integer userID, Move m) throws RemoteException;
     boolean voldoendeSpelers(Integer gameID) throws  RemoteException;
+    boolean isGameDone(int nGevonden,int gameID) throws RemoteException;
     Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException;
     int getNieuwGevondeImages(List<Integer> reedsGevonden, Integer gameID) throws RemoteException;
+    String getWinner(int gameID) throws RemoteException;
+
 
 
 }
