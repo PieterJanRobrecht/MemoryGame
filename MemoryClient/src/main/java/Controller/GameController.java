@@ -144,6 +144,7 @@ public class GameController {
                 try {
                     if (implementation.addCardToMove(col, row, game.getGameId(), index)) {  //kan ook omgekeerd zijn
                         clickedImageView.setImage(images.get(afbeeldingID));
+                        System.out.println(" afbeelding weergeven");
                     }
                     move=implementation.getMove(game.getGameId(), index);
 

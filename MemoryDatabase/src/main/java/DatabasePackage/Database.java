@@ -40,6 +40,19 @@ public class Database {
                     "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     " NAME TEXT NOT NULL, " +
                     " WW TEXT NOT NULL)";
+
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
+
+        try {
+            stmt = databaseConnection.createStatement();
+            String sql = "ALTER TABLE USER ADD NWONGAMES INTEGER NOT NULL DEFAULT 0;" +
+                    " ALTER TABLE USER ADD NLOSTGAMES INTEGER NOT NULL DEFAULT 0; " +
+                    " ALTER TABLE USER ADD NSTARTEDGAMES INTEGER NOT NULL DEFAULT 0;";
+
             stmt.executeUpdate(sql);
             stmt.close();
         } catch (Exception e) {
