@@ -129,13 +129,14 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
             if (game.getGameId() == gameID) {
                 List<Integer> ondertussenGevonden = game.getReedsGevondenImages();
                 while (reedsGevonden.size() == ondertussenGevonden.size()) {//wachten
-                    System.out.print("");
-                    ondertussenGevonden = game.getReedsGevondenImages();
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    System.out.print("");
+                    ondertussenGevonden = game.getReedsGevondenImages();
+
                 }
                 System.out.println("nieuwe afbeelding gevonden");
                 return ondertussenGevonden.get(reedsGevonden.size());
