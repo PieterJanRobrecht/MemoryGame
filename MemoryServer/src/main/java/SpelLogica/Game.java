@@ -17,12 +17,15 @@ public class Game implements Serializable {
     private int aantalSpelers, maxAantalSpelers, gameId, buzzyUserID = -1;
     private int[][] veld;//ontdekte combinaties zijn negatief
     private boolean uitgespeeld = false;
+    private List<Move> moves;
 
     public Game(int gameID) {
         this.gameId = gameID;
         punten = new LinkedHashMap<User, Integer>();
         userIDs = new ArrayList<Integer>();
         reedsGevondenImages = new ArrayList<Integer>();
+        moves = new ArrayList<Move>();
+        moves.add(new Move());
     }
 
     public void addUser(User u) {
@@ -62,6 +65,14 @@ public class Game implements Serializable {
 
     public int getGameId() {
         return gameId;
+    }
+
+    public Move getMove(int index) throws InterruptedException {
+        while(moves.size()<=index){
+            //wachten
+            Thread.sleep(20);
+        }
+        return moves.get(index);
     }
 
     public int getGrootteVeld() {
@@ -193,5 +204,13 @@ public class Game implements Serializable {
             }
         }
         return "De winnaar is "+maxEntry.getKey().getNaam()+" met "+maxEntry.getValue()+" punten!";
+    }
+
+    public boolean addCardToMove(int col, int row, int index){
+        return moves.get(index).addCardToMove(col, row);
+    }
+
+    public void resetMove(){
+        moves.add(new Move());
     }
 }

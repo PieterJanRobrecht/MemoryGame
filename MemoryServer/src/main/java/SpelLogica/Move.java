@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class Move implements Serializable {
     private int cardX1, cardY1, cardX2, cardY2, aatalKaarten = 0;
+    private int lastCoord[] = new int[2];
 
     public Move(){}
 
@@ -24,6 +25,25 @@ public class Move implements Serializable {
 
     public int getCardY2() {
         return cardY2;
+    }
+
+    public int[] getLastCoord(int i) throws InterruptedException {
+        while(aatalKaarten <i){ //als nog geen nieuwe kaarten omgedraaid zijn, wacht dan
+            Thread.sleep(20);
+        }
+        switch (i) {
+            case 1: {
+                lastCoord[0]=cardX1;
+                lastCoord[1]=cardY1;
+                return lastCoord;
+            }
+            case 2: {
+                lastCoord[0]=cardX2;
+                lastCoord[1]=cardY2;
+                return lastCoord;
+            }
+        }
+        return null;
     }
 
     public boolean addCardToMove(int cardX, int cardY){

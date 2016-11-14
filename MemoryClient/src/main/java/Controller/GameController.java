@@ -41,7 +41,7 @@ public class GameController {
     private Image backImage;
     private Map <Integer, Image> images;
     private Move move;
-    private int buzzyUserID;
+    private int buzzyUserID, index=0;
     private List<Integer> gevondenImages;
     private final EventHandler imageViewClickEventHandler = clickEventHandler();
     private boolean afgelopen = false;
@@ -61,7 +61,6 @@ public class GameController {
     private Stage lobbyStage;
     private User user;
 
-    //private final EventHandler imageViewClickEventHandler = clickEventHandler();
 
     public void constructGrid() throws RemoteException {
 
@@ -95,6 +94,7 @@ public class GameController {
         game = implementation.getGame(game.getGameId()); //nodig omdat de verandering om de game op server niet aangepast zijn op de lokale kopie!
         List<Integer> IDs = game.getImageIDs();
         images = new HashMap<Integer, Image>();
+        gevondenImages = new ArrayList<Integer>();
         if(IDs == null){
             System.out.println("fout met de IDs");
         }
@@ -145,10 +145,15 @@ public class GameController {
                 int row = GridPane.getRowIndex(clickedImageView);
 
                 int afbeeldingID = game.getVeld()[col][row];
-                if (move.addCardToMove(col, row)) {  //kan ook omgekeerd zijn
-                    clickedImageView.setImage(images.get(afbeeldingID));
-                }
+                try {
+                    if (implementation.addCardToMove(col, row, game.getGameId(), index)) {  //kan ook omgekeerd zijn
+                        clickedImageView.setImage(images.get(afbeeldingID));
+                    }
+                    move=implementation.getMove(game.getGameId(), index);
 
+                }catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 if (move.isCompleet()) {
                     try {
                         int index1 = move.getCardX1()*game.getGrootteVeld()+move.getCardY1();
@@ -157,6 +162,12 @@ public class GameController {
                         if (implementation.doMove(game.getGameId(), user.getId(), move)) {
                             speelveld.getChildren().get(index1).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
                             speelveld.getChildren().get(index2).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
+
+                            gevondenImages.add(afbeeldingID);
+                            if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
+                                gameAfsluiten();
+
+                            }
                         }
                         else {
                             TimeUnit.SECONDS.sleep(1);
@@ -164,7 +175,8 @@ public class GameController {
                             ((ImageView)speelveld.getChildren().get(index2)).setImage(backImage);
                             implementation.SetNextBuzzyUser(game.getGameId());
                         }
-                        move = new Move();
+                        implementation.resetMove(game.getGameId());
+                        index++;
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
@@ -193,35 +205,73 @@ public class GameController {
     }
 
     public void startTreads(){
+//        new Thread(){
+//            public void run(){
+//                gevondenImages = new ArrayList<Integer>();
+//                int nieuweGevondenImage;
+//                while (true){
+//                    try{
+//                        nieuweGevondenImage = implementation.getNieuwGevondeImages(gevondenImages, game.getGameId());
+//                        gevondenImages.add(nieuweGevondenImage);
+//                        toonAfbeelding(nieuweGevondenImage);
+//                        if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
+//                            gameAfsluiten();
+//                        }
+//                    }catch (RemoteException e){
+//                        e.printStackTrace();
+//
+//                    }
+//                }
+//            }
+//        }.start();
         new Thread(){
             public void run(){
-                gevondenImages = new ArrayList<Integer>();
-                int nieuweGevondenImage;
-                while (true){
-                    try{
-                        nieuweGevondenImage = implementation.getNieuwGevondeImages(gevondenImages, game.getGameId());
-                        gevondenImages.add(nieuweGevondenImage);
-                        toonAfbeelding(nieuweGevondenImage);
-                        if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
-                            gameAfsluiten();
-                        }
-                    }catch (RemoteException e){
-                        e.printStackTrace();
+                int coordTempImage[]= new int[2];//0=x,1=y
+                int indexOud, index1, index2, afbeeldingId1, afbeeldingId2, x, y;
 
-                    }
-                }
-            }
-        }.start();
-        new Thread(){
-            public void run(){
-                while (true){
+                while (!afgelopen){
                     try{
                         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
                         if(buzzyUserID == user.getId()){
                             Platform.runLater(() -> afgelopenText.setText("Jij bent aan de beurt..."));
+                            System.out.println("jij bent aan de beurt");
+                            indexOud = index;
+                            while(indexOud == index){
+                                Thread.sleep(20);
+                            }
                         }
                         else {
                             Platform.runLater(() -> afgelopenText.setText("Wacht op jouw beurt..."));
+                            System.out.println("Iemand anders is aan de beurt");
+
+
+                            coordTempImage = implementation.getCoordFromMove(game.getGameId(),index, 1);
+                            x = coordTempImage[0];
+                            y = coordTempImage[1];
+                            afbeeldingId1 = game.getVeld()[x][y];
+                            index1 = x*game.getGrootteVeld()+y;
+                            ((ImageView)speelveld.getChildren().get(index1)).setImage(images.get(afbeeldingId1));
+
+                            coordTempImage = implementation.getCoordFromMove(game.getGameId(),index , 2);
+                            x = coordTempImage[0];
+                            y = coordTempImage[1];
+                            afbeeldingId2 = game.getVeld()[x][y];
+                            index2 = x*game.getGrootteVeld()+y;
+                            ((ImageView)speelveld.getChildren().get(index2)).setImage(images.get(afbeeldingId2));
+
+                            if(afbeeldingId1 == afbeeldingId2){
+                                gevondenImages.add(afbeeldingId1);
+                                if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
+                                    gameAfsluiten();
+                                }
+                            }
+                            else {
+                                TimeUnit.SECONDS.sleep(2);
+                                ((ImageView) speelveld.getChildren().get(index1)).setImage(backImage);
+                                ((ImageView) speelveld.getChildren().get(index2)).setImage(backImage);
+                            }
+                            index++;
+
                         }
 //                        Thread.sleep(1000);
                         //System.out.println("bij gebruiker "+user.getId() +" is de buzzyUser veranderd naar "+buzzyUserID);
@@ -229,6 +279,8 @@ public class GameController {
                         e.printStackTrace();
 //                    } catch (InterruptedException e) {
 //                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
 
                 }
@@ -297,11 +349,12 @@ public class GameController {
 
     private void gameAfsluiten() {
         try{
+            afgelopen = true;
             String afscheidText = implementation.getWinner(game.getGameId());
             Platform.runLater(() -> afgelopenText.setText(afscheidText+" Klik hier om terug naar de lobby te gaan."));
             afgelopenText.addEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
             System.out.println("game is afgelopen");
-            afgelopen = true;
+
         } catch (RemoteException e) {
             e.printStackTrace();
             System.out.println("Error after clossing game");

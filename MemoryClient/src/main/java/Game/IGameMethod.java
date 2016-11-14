@@ -15,15 +15,19 @@ public interface IGameMethod extends Remote {
     void makeGame(Game game) throws RemoteException;
     void releaseGame(Game game, User user) throws RemoteException;
     void SetNextBuzzyUser(int gameID) throws  RemoteException;
+    void resetMove(int gameID) throws RemoteException;
     byte[] getBackgroundImage(String thema) throws RemoteException;
     byte[] getImage(int id) throws RemoteException;
     Game getGame(Integer in) throws RemoteException;
     boolean doMove(Integer gameID,Integer userID, Move m) throws RemoteException;
     boolean voldoendeSpelers(Integer gameID) throws  RemoteException;
     boolean isGameDone(int nGevonden,int gameID) throws RemoteException;
+    boolean addCardToMove(int col, int row, int gameID, int index) throws RemoteException;
     Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException;
     int getNieuwGevondeImages(List<Integer> reedsGevonden, Integer gameID) throws RemoteException;
+    int[] getCoordFromMove(int gameID, int index, int i) throws  RemoteException;
     String getWinner(int gameID) throws RemoteException;
+    Move getMove(int gameID, int index) throws RemoteException;
 
 
 }

@@ -58,6 +58,16 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
+    public void resetMove(int gameID) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                game.resetMove();
+            }
+        }
+
+    }
+
+    @Override
     public byte[] getBackgroundImage(String thema) throws RemoteException {
         return database.getBackgroundImage(thema);
     }
@@ -107,16 +117,25 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         return false;
     }
 
+    @Override
+    public boolean addCardToMove(int col, int row, int gameID, int index) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                return game.addCardToMove(col, row, index);
+            }
+        }
+        return false;
+    }
 
     @Override
     public Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException{
         for(Game game: runningGames){
             if (game.getGameId() == gameID){
                 int nieuweBuzzyUserID = game.getBuzzyUserID();
-                while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
+                //while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
                     System.out.print(""); //vreemd, als je deze syso weg haalt werkt het niet...
                     nieuweBuzzyUserID = game.getBuzzyUserID();
-                }
+                //}
                 return game.getBuzzyUserID();
             }
         }
@@ -146,10 +165,35 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
+    public int[] getCoordFromMove(int gameID, int index, int i) throws RemoteException, InterruptedException {
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                return game.getMove(index).getLastCoord(i);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public String getWinner(int gameID) throws RemoteException{
         for(Game game: runningGames){
             if (game.getGameId() == gameID){
                 return game.getWinner();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Move getMove(int gameID, int index) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                try {
+                    return game.getMove(index);
+                }
+                catch(InterruptedException e){
+                    e.printStackTrace();
+                }
             }
         }
         return null;
