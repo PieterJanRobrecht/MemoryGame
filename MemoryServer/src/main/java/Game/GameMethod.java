@@ -42,9 +42,7 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         }
         if(index!=-1) {
             if (runningGames.get(index).getAantalSpelers() == 0) {
-                if (index != -1) {
-                    runningGames.remove(index);
-                }
+                runningGames.remove(index);
             }
         }
     }
