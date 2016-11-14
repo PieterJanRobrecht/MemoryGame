@@ -26,11 +26,11 @@ public class Game implements Serializable {
     }
 
     public void addUser(User u) {
-        if (aantalSpelers < maxAantalSpelers || aantalSpelers==0) {
-            punten.put(u,0);
+        if (aantalSpelers < maxAantalSpelers || aantalSpelers == 0) {
+            punten.put(u, 0);
             userIDs.add(u.getId());
             aantalSpelers++;
-            if(buzzyUserID == -1){
+            if (buzzyUserID == -1) {
                 buzzyUserID = u.getId(); //deze speler mag beginnen
             }
         }
@@ -76,9 +76,9 @@ public class Game implements Serializable {
         this.veld = new int[grootteVeld][grootteVeld];
     }
 
-    public User getUserFromGame(Integer userID){
-        for ( User user : punten.keySet() ) {
-            if (user.getId() == userID){
+    public User getUserFromGame(Integer userID) {
+        for (User user : punten.keySet()) {
+            if (user.getId() == userID) {
                 return user;
             }
         }
@@ -118,18 +118,18 @@ public class Game implements Serializable {
         this.maxAantalSpelers = maxAantalSpelers;
     }
 
-    public void maakVeld(List<Integer> mogelijkeIDs){
+    public void maakVeld(List<Integer> mogelijkeIDs) {
         imageIDs = new ArrayList<Integer>();
         imageIDs.addAll(mogelijkeIDs);
         mogelijkeIDs.addAll(mogelijkeIDs); //iedere figuur zit twee keer in de lijst
         int id, index, lengte = veld[0].length;
-        for(int i=0;i<lengte;i++){
-            for(int j=0;j<lengte;j++){
+        for (int i = 0; i < lengte; i++) {
+            for (int j = 0; j < lengte; j++) {
                 index = new Random().nextInt(mogelijkeIDs.size());
-                id=mogelijkeIDs.get(index);
+                id = mogelijkeIDs.get(index);
                 veld[i][j] = id;
                 mogelijkeIDs.remove(index);
-                System.out.print("  "+id);
+                System.out.print("  " + id);
             }
             System.out.println();
         }
@@ -141,57 +141,54 @@ public class Game implements Serializable {
         aantalSpelers--;
     }
 
-    public boolean doMove(Integer userID, Move move){
+    public boolean doMove(Integer userID, Move move) {
         int idEersteKaart = veld[move.getCardX1()][move.getCardY1()];
         int idTweedeKaart = veld[move.getCardX2()][move.getCardY2()];
         User user = getUserFromGame(userID);
-        if( idEersteKaart == idTweedeKaart ){
-            punten.put(user, punten.get(user)+1);
-            System.out.println(" speler "+user.getNaam()+" heeft "+punten.get(user)+" punten.");
+        if (idEersteKaart == idTweedeKaart) {
+            punten.put(user, punten.get(user) + 1);
+            System.out.println(" speler " + user.getNaam() + " heeft " + punten.get(user) + " punten.");
             reedsGevondenImages.add(idEersteKaart);
             return true;
         }
         return false;
     }
 
-    public boolean voldoendeSpelers(){
+    public boolean voldoendeSpelers() {
         return aantalSpelers == maxAantalSpelers;
     }
 
-    public void setNextBuzzyID(){
+    public void setNextBuzzyID() {
         boolean vorigeGepasseerd = false;
-        System.out.println("vorige buzzy userID is "+buzzyUserID);
+        System.out.println("vorige buzzy userID is " + buzzyUserID);
 
-        for (int i: userIDs) {
-            if (i == buzzyUserID ) {
+        for (int i : userIDs) {
+            if (i == buzzyUserID) {
                 vorigeGepasseerd = true;
-            }
-            else if(vorigeGepasseerd){
+            } else if (vorigeGepasseerd) {
                 buzzyUserID = i;
-                System.out.println("next buzzy userID is "+buzzyUserID);
+                System.out.println("next buzzy userID is " + buzzyUserID);
                 return;
             }
         }//indien de laatste in rij de vorigeBuzzyUser was beginnen we weer opnieuw:
         buzzyUserID = userIDs.get(0);
 
-        System.out.println("next buzzy userID is "+buzzyUserID);
+        System.out.println("next buzzy userID is " + buzzyUserID);
     }
 
-    public int getPunten(int userId){
+    public int getPunten(int userId) {
         User user = getUserFromGame(userId);
         return punten.get(user);
     }
 
-    public String getWinner(){
+    public String getWinner() {
         Map.Entry<User, Integer> maxEntry = null;
 
-        for (Map.Entry<User, Integer> entry : punten.entrySet())
-        {
-            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0)
-            {
+        for (Map.Entry<User, Integer> entry : punten.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
                 maxEntry = entry;
             }
         }
-        return "De winnaar is "+maxEntry.getKey().getNaam()+" met "+maxEntry.getValue()+" punten!";
+        return "De winnaar is " + maxEntry.getKey().getNaam() + " met " + maxEntry.getValue() + " punten!";
     }
 }

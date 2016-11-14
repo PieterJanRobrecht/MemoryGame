@@ -9,6 +9,8 @@ public class User implements Serializable{
     private int id;
     private String naam;
     private String wachtwoord;
+    private int aantalGewonnen;
+    private int aantalVerloren;
 
     public User() {
     }
@@ -16,6 +18,8 @@ public class User implements Serializable{
     public User(String naam, String wachtwoord) {
         this.naam = naam;
         this.wachtwoord = wachtwoord;
+        aantalGewonnen=0;
+        aantalVerloren=0;
     }
 
     public int getId() {
@@ -40,5 +44,13 @@ public class User implements Serializable{
 
     public void setWachtwoord(String wachtwoord) {
         this.wachtwoord = wachtwoord;
+    }
+
+    public void verhoogAantalWinnen() {
+        aantalGewonnen++;
+    }
+
+    public void verhoogAantalVerliezen() {
+        aantalVerloren++;
     }
 }

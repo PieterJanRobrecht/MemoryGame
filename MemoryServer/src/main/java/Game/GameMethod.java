@@ -27,8 +27,8 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
         System.out.println("veld maken:");
         //TODO Veld opmaken (misschien met nummers en 2d array)
-        int aantalFiguren= (int) (Math.pow(game.getGrootteVeld(),2) / 2);
-        game.maakVeld(database.getRandomAfbeeldingen(game.getThema(),aantalFiguren));
+        int aantalFiguren = (int) (Math.pow(game.getGrootteVeld(), 2) / 2);
+        game.maakVeld(database.getRandomAfbeeldingen(game.getThema(), aantalFiguren));
     }
 
 
@@ -49,9 +49,9 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public void SetNextBuzzyUser(int gameID) throws  RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public void setNextBuzzyUser(int gameID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 game.setNextBuzzyID();
             }
         }
@@ -68,9 +68,9 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public Game getGame(Integer ID) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == ID){
+    public Game getGame(Integer ID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == ID) {
                 return game;
             }
         }
@@ -78,9 +78,9 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public boolean doMove(Integer gameID,Integer userID, Move m) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public boolean doMove(Integer gameID, Integer userID, Move m) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 return game.doMove(userID, m);
             }
         }
@@ -88,9 +88,9 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public boolean voldoendeSpelers(Integer gameID) throws  RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public boolean voldoendeSpelers(Integer gameID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 return game.voldoendeSpelers();
             }
         }
@@ -98,9 +98,9 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public boolean isGameDone(int nGevonden,int gameID) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public boolean isGameDone(int nGevonden, int gameID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 return nGevonden == game.getGrootteVeld();
             }
         }
@@ -109,11 +109,11 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
 
     @Override
-    public Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 int nieuweBuzzyUserID = game.getBuzzyUserID();
-                while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
+                while (nieuweBuzzyUserID == vorigeBuzzyUserID) {//wachten
                     System.out.print(""); //vreemd, als je deze syso weg haalt werkt het niet...
                     nieuweBuzzyUserID = game.getBuzzyUserID();
                 }
@@ -124,11 +124,11 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public int getNieuwGevondeImages(List<Integer> reedsGevonden, Integer gameID) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
-                List<Integer>ondertussenGevonden = game.getReedsGevondenImages();
-                while(reedsGevonden.size() == ondertussenGevonden.size()){//wachten
+    public int getNieuwGevondeImages(List<Integer> reedsGevonden, Integer gameID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
+                List<Integer> ondertussenGevonden = game.getReedsGevondenImages();
+                while (reedsGevonden.size() == ondertussenGevonden.size()) {//wachten
                     System.out.print("");
                     ondertussenGevonden = game.getReedsGevondenImages();
                     try {
@@ -145,9 +145,9 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public String getWinner(int gameID) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public String getWinner(int gameID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 return game.getWinner();
             }
         }
