@@ -4,6 +4,7 @@ import Game.IGameMethod;
 import Lobby.ILobbyMethod;
 import Model.User;
 import SpelLogica.Game;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -243,7 +244,7 @@ public class LobbyController {
                             playerList.clear();
                             for (String name :
                                     users) {
-                                playerList.appendText(name + "\r\n");
+                                Platform.runLater(()->playerList.appendText(name + "\r\n"));
                             }
                         }
                     }

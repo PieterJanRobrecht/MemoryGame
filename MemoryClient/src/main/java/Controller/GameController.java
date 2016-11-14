@@ -193,7 +193,7 @@ public class GameController {
             for (int j = 0; j < lengte; j++) {
                 if (veld[i][j] == afbeeldingId) {
                     int index = i * game.getGrootteVeld() + j; //kan ook omgekeerd zijn
-                    ((ImageView) speelveld.getChildren().get(index)).setImage(images.get(afbeeldingId));
+                    Platform.runLater(()->((ImageView) speelveld.getChildren().get(index)).setImage(images.get(afbeeldingId)));
                     speelveld.getChildren().get(index).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
                 }
             }
@@ -246,14 +246,14 @@ public class GameController {
                             y = coordTempImage[1];
                             afbeeldingId1 = game.getVeld()[x][y];
                             index1 = x*game.getGrootteVeld()+y;
-                            ((ImageView)speelveld.getChildren().get(index1)).setImage(images.get(afbeeldingId1));
+                            Platform.runLater(()->((ImageView)speelveld.getChildren().get(index1)).setImage(images.get(afbeeldingId1)));
 
                             coordTempImage = implementation.getCoordFromMove(game.getGameId(),index , 2);
                             x = coordTempImage[0];
                             y = coordTempImage[1];
                             afbeeldingId2 = game.getVeld()[x][y];
                             index2 = x*game.getGrootteVeld()+y;
-                            ((ImageView)speelveld.getChildren().get(index2)).setImage(images.get(afbeeldingId2));
+                            Platform.runLater(()->((ImageView)speelveld.getChildren().get(index2)).setImage(images.get(afbeeldingId2)));
 
                             if(afbeeldingId1 == afbeeldingId2){
                                 gevondenImages.add(afbeeldingId1);
@@ -263,8 +263,8 @@ public class GameController {
                             }
                             else {
                                 TimeUnit.SECONDS.sleep(2);
-                                ((ImageView) speelveld.getChildren().get(index1)).setImage(backImage);
-                                ((ImageView) speelveld.getChildren().get(index2)).setImage(backImage);
+                                Platform.runLater(()->((ImageView) speelveld.getChildren().get(index1)).setImage(backImage));
+                                Platform.runLater(()->((ImageView) speelveld.getChildren().get(index2)).setImage(backImage));
                             }
                             index++;
 
