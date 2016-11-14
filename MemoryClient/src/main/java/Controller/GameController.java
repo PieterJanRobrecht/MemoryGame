@@ -17,10 +17,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
-import org.controlsfx.control.Notifications;
 
 import javax.imageio.ImageIO;
-import javax.management.Notification;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,7 +37,7 @@ public class GameController {
     private IGameMethod implementation;
     private Game game;
     private Image backImage;
-    private Map <Integer, Image> images;
+    private Map<Integer, Image> images;
     private Move move;
     private int buzzyUserID, index=0;
     private List<Integer> gevondenImages;
@@ -76,10 +74,10 @@ public class GameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        backImage = SwingFXUtils.toFXImage(img, null );
+        backImage = SwingFXUtils.toFXImage(img, null);
 
-        for(int i=0; i<grootte;i++){
-            for(int j=0; j<grootte; j++){
+        for (int i = 0; i < grootte; i++) {
+            for (int j = 0; j < grootte; j++) {
                 ImageView imageView = new ImageView(backImage);
                 imageView.setFitWidth(100);
                 imageView.setFitHeight(100);
@@ -95,10 +93,9 @@ public class GameController {
         List<Integer> IDs = game.getImageIDs();
         images = new HashMap<Integer, Image>();
         gevondenImages = new ArrayList<Integer>();
-        if(IDs == null){
+        if (IDs == null) {
             System.out.println("fout met de IDs");
-        }
-        else {
+        } else {
             for (int ID : IDs) {
                 bytes = implementation.getImage(ID);
                 img = null;
@@ -125,17 +122,16 @@ public class GameController {
         return new EventHandler() {
             @Override
             public void handle(Event event) {
-                if(afgelopen){
+                if (afgelopen) {
                     Platform.runLater(() -> afgelopenText.setText("STOP AUB."));
-                    //TODO hier moet een methode komen die de game afsluit, want game is voltooid als men hier op drukt
-                    //TODO + opslaan gegevens naar DB
-
+                    Stage stage = (Stage) speelveld.getScene().getWindow();
+                    closeGameView(stage);
                 }
                 if (!(event.getSource() instanceof ImageView)) return;
-                if(buzzyUserID != user.getId()) return;
+                if (buzzyUserID != user.getId()) return;
                 try {
                     if (!(implementation.voldoendeSpelers(game.getGameId()))) return;
-                }catch (RemoteException e){
+                } catch (RemoteException e) {
                     e.printStackTrace();
                 }
 
@@ -156,8 +152,8 @@ public class GameController {
                 }
                 if (move.isCompleet()) {
                     try {
-                        int index1 = move.getCardX1()*game.getGrootteVeld()+move.getCardY1();
-                        int index2 = move.getCardX2()*game.getGrootteVeld()+move.getCardY2();
+                        int index1 = move.getCardX1() * game.getGrootteVeld() + move.getCardY1();
+                        int index2 = move.getCardX2() * game.getGrootteVeld() + move.getCardY2();
 
                         if (implementation.doMove(game.getGameId(), user.getId(), move)) {
                             speelveld.getChildren().get(index1).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
@@ -171,9 +167,9 @@ public class GameController {
                         }
                         else {
                             TimeUnit.SECONDS.sleep(1);
-                            ((ImageView)speelveld.getChildren().get(index1)).setImage(backImage);
-                            ((ImageView)speelveld.getChildren().get(index2)).setImage(backImage);
-                            implementation.SetNextBuzzyUser(game.getGameId());
+                            ((ImageView) speelveld.getChildren().get(index1)).setImage(backImage);
+                            ((ImageView) speelveld.getChildren().get(index2)).setImage(backImage);
+                            implementation.setNextBuzzyUser(game.getGameId());
                         }
                         implementation.resetMove(game.getGameId());
                         index++;
@@ -190,21 +186,21 @@ public class GameController {
     //Thread maken die vraagt aan de server wat die moet doen
     //Server antwoord ofwel -> gok ofwel -> kijk
 
-    public void toonAfbeelding(int afbeeldingId){
+    public void toonAfbeelding(int afbeeldingId) {
         int[][] veld = game.getVeld();
         int lengte = veld.length;
-        for(int i = 0;i<lengte;i++){
-            for(int j = 0; j<lengte; j++){
-                if (veld[i][j] == afbeeldingId){
-                    int index = i*game.getGrootteVeld()+j; //kan ook omgekeerd zijn
-                    ((ImageView)speelveld.getChildren().get(index)).setImage(images.get(afbeeldingId));
+        for (int i = 0; i < lengte; i++) {
+            for (int j = 0; j < lengte; j++) {
+                if (veld[i][j] == afbeeldingId) {
+                    int index = i * game.getGrootteVeld() + j; //kan ook omgekeerd zijn
+                    ((ImageView) speelveld.getChildren().get(index)).setImage(images.get(afbeeldingId));
                     speelveld.getChildren().get(index).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
                 }
             }
         }
     }
 
-    public void startTreads(){
+    public void startTreads() {
 //        new Thread(){
 //            public void run(){
 //                gevondenImages = new ArrayList<Integer>();
@@ -224,15 +220,15 @@ public class GameController {
 //                }
 //            }
 //        }.start();
-        new Thread(){
-            public void run(){
+        new Thread() {
+            public void run() {
                 int coordTempImage[]= new int[2];//0=x,1=y
                 int indexOud, index1, index2, afbeeldingId1, afbeeldingId2, x, y;
 
                 while (!afgelopen){
-                    try{
+                    try {
                         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
-                        if(buzzyUserID == user.getId()){
+                        if (buzzyUserID == user.getId()) {
                             Platform.runLater(() -> afgelopenText.setText("Jij bent aan de beurt..."));
                             System.out.println("jij bent aan de beurt");
                             indexOud = index;
@@ -275,7 +271,7 @@ public class GameController {
                         }
 //                        Thread.sleep(1000);
                         //System.out.println("bij gebruiker "+user.getId() +" is de buzzyUser veranderd naar "+buzzyUserID);
-                    }catch (RemoteException e){
+                    } catch (RemoteException e) {
                         e.printStackTrace();
 //                    } catch (InterruptedException e) {
 //                        e.printStackTrace();
@@ -286,22 +282,26 @@ public class GameController {
                 }
             }
         }.start();
-        new Thread(){ //voor wergeven spelers naast spel
+        new Thread() { //voor wergeven spelers naast spel
             List<User> gebruikers;
             String string;
+
             public void run() {
                 while (true) {
                     string = "";
+                    Game thisGame =null;
                     try {
-                        gebruikers = implementation.getGame(game.getGameId()).getGamers();
+                        thisGame = implementation.getGame(game.getGameId());
+                        gebruikers = thisGame.getGamers();
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
 
-                    if (gebruikers != null){
+                    if (gebruikers != null) {
                         //gebruikers.clear();
-                        for (User name : gebruikers){
-                            string += name.getNaam() +" "+game.getPunten(name.getId())+ "\r\n";
+//                        System.out.println("This user= "+user.getNaam()+ " Aantal users= " + gebruikers.size());
+                        for (User name : gebruikers) {
+                            string += name.getNaam() + " " + thisGame.getPunten(name.getId()) + "\r\n";
                         }
                     }
                     Platform.runLater(() -> huidigeSpelers.setText(string));
@@ -325,18 +325,20 @@ public class GameController {
 
     public void setOnExitAction() {
         Stage stage = (Stage) speelveld.getScene().getWindow();
-        stage.setOnCloseRequest(we -> {
-            lobbyStage.show();
+        stage.setOnCloseRequest(we -> closeGameView(stage));
+    }
 
-            try {
-                implementation.releaseGame(game,user);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                System.out.println("Error after clossing game");
-            }
+    public void closeGameView(Stage stage){
+        lobbyStage.show();
 
-            stage.close();
-        });
+        try {
+            implementation.releaseGame(game, user);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            System.out.println("Error after clossing game");
+        }
+
+        stage.close();
     }
 
     public void setLobbyStage(Stage lobbyStage) {
@@ -348,18 +350,25 @@ public class GameController {
     }
 
     private void gameAfsluiten() {
-        try{
+        try {
             afgelopen = true;
             String afscheidText = implementation.getWinner(game.getGameId());
-            Platform.runLater(() -> afgelopenText.setText(afscheidText+" Klik hier om terug naar de lobby te gaan."));
+            String[] split = afscheidText.split(" ");
+
+            if (user.getNaam().equals(split[3])) {
+                user.verhoogAantalWinnen();
+            }else{
+                user.verhoogAantalVerliezen();
+            }
+
+            Platform.runLater(() -> afgelopenText.setText(afscheidText + " Klik hier om terug naar de lobby te gaan."));
             afgelopenText.addEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
-            System.out.println("game is afgelopen");
+            System.out.println("Game is afgelopen");
 
         } catch (RemoteException e) {
             e.printStackTrace();
             System.out.println("Error after clossing game");
         }
     }
-
 
 }

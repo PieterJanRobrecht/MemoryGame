@@ -61,23 +61,24 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 
     @Override
     public void logOutUser(User thisUser) throws RemoteException {
-        int index =-1;
-        for(int i=0;i<userList.size();i++){
-            if(userList.get(i).getNaam().equals(thisUser.getNaam())){
+        int index = -1;
+        for (int i = 0; i < userList.size(); i++) {
+            if (userList.get(i).getNaam().equals(thisUser.getNaam())) {
                 index = i;
             }
         }
-        if(index!=-1){
+        if (index != -1) {
+            //TODO schrijft info van gebruiker naar de db
             userList.remove(index);
         }
-        System.out.println("Log uit gebruiker "+thisUser.getNaam());
+        System.out.println("Log uit gebruiker " + thisUser.getNaam());
     }
 
     @Override
     public boolean addUserToGame(User thisUser, Game game) throws RemoteException {
-        if(game.getAantalSpelers() < game.getMaxAantalSpelers()){
-            for(int i=0;i<runningGames.size();i++){
-                if(game.getGameId()==runningGames.get(i).getGameId()){
+        if (game.getAantalSpelers() < game.getMaxAantalSpelers()) {
+            for (int i = 0; i < runningGames.size(); i++) {
+                if (game.getGameId() == runningGames.get(i).getGameId()) {
                     runningGames.get(i).addUser(thisUser);
                 }
             }
