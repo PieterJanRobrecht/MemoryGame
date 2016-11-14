@@ -1,7 +1,9 @@
 package ViewThread;
 
+import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 
 import java.util.Map;
 
@@ -32,5 +34,7 @@ public class CardThread implements Runnable {
         }else{
             imageView.setImage(backImage);
         }
+
+        imageView.snapshot(new SnapshotParameters(), new WritableImage(1, 1));
     }
 }
