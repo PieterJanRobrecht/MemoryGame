@@ -40,10 +40,11 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
                 index = i;
             }
         }
-        runningGames.get(index).removeUser(user);
-        if (runningGames.get(index).getAantalSpelers() == 0) {
-            if (index != -1) {
-                runningGames.remove(index);
+        if(index!=-1) {
+            if (runningGames.get(index).getAantalSpelers() == 0) {
+                if (index != -1) {
+                    runningGames.remove(index);
+                }
             }
         }
     }
