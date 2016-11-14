@@ -26,7 +26,6 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         runningGames.add(game);
 
         System.out.println("veld maken:");
-        //TODO Veld opmaken (misschien met nummers en 2d array)
         int aantalFiguren = (int) (Math.pow(game.getGrootteVeld(), 2) / 2);
         game.maakVeld(database.getRandomAfbeeldingen(game.getThema(), aantalFiguren));
     }

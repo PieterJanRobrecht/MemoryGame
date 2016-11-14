@@ -235,16 +235,19 @@ public class GameController {
             public void run() {
                 while (true) {
                     string = "";
+                    Game thisGame =null;
                     try {
-                        gebruikers = implementation.getGame(game.getGameId()).getGamers();
+                        thisGame = implementation.getGame(game.getGameId());
+                        gebruikers = thisGame.getGamers();
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
 
                     if (gebruikers != null) {
                         //gebruikers.clear();
+//                        System.out.println("This user= "+user.getNaam()+ " Aantal users= " + gebruikers.size());
                         for (User name : gebruikers) {
-                            string += name.getNaam() + " " + game.getPunten(name.getId()) + "\r\n";
+                            string += name.getNaam() + " " + thisGame.getPunten(name.getId()) + "\r\n";
                         }
                     }
                     Platform.runLater(() -> huidigeSpelers.setText(string));
