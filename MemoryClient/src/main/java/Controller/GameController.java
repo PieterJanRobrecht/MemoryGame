@@ -144,7 +144,8 @@ public class GameController {
                 int afbeeldingID = game.getVeld()[col][row];
                 try {
                     if (implementation.addCardToMove(col, row, game.getGameId(), index)) {  //kan ook omgekeerd zijn
-                        clickedImageView.setImage(images.get(afbeeldingID));
+                        Platform.runLater(new CardThread(clickedImageView, images.get(afbeeldingID)));
+//                        clickedImageView.setImage(images.get(afbeeldingID));
                         System.out.println(" afbeelding weergeven");
                     }
                     move=implementation.getMove(game.getGameId(), index);
@@ -164,13 +165,16 @@ public class GameController {
                             gevondenImages.add(afbeeldingID);
                             if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
                                 gameAfsluiten();
-
                             }
                         }
                         else {
                             TimeUnit.SECONDS.sleep(1);
-                            ((ImageView) speelveld.getChildren().get(index1)).setImage(backImage);
-                            ((ImageView) speelveld.getChildren().get(index2)).setImage(backImage);
+                            ImageView first = (ImageView) speelveld.getChildren().get(index1);
+                            ImageView second = (ImageView) speelveld.getChildren().get(index2);
+
+                            Platform.runLater(new CardThread(first,backImage));
+                            Platform.runLater(new CardThread(second, backImage));
+
                             implementation.setNextBuzzyUser(game.getGameId());
                         }
                         implementation.resetMove(game.getGameId());
@@ -195,7 +199,8 @@ public class GameController {
             for (int j = 0; j < lengte; j++) {
                 if (veld[i][j] == afbeeldingId) {
                     int index = i * game.getGrootteVeld() + j; //kan ook omgekeerd zijn
-                    Platform.runLater(()->((ImageView) speelveld.getChildren().get(index)).setImage(images.get(afbeeldingId)));
+                    ImageView view = (ImageView) speelveld.getChildren().get(index);
+                    Platform.runLater(new CardThread(view,images.get(afbeeldingId)));
                     speelveld.getChildren().get(index).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
                 }
             }
@@ -203,25 +208,6 @@ public class GameController {
     }
 
     public void startTreads() {
-//        new Thread(){
-//            public void run(){
-//                gevondenImages = new ArrayList<Integer>();
-//                int nieuweGevondenImage;
-//                while (true){
-//                    try{
-//                        nieuweGevondenImage = implementation.getNieuwGevondeImages(gevondenImages, game.getGameId());
-//                        gevondenImages.add(nieuweGevondenImage);
-//                        toonAfbeelding(nieuweGevondenImage);
-//                        if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
-//                            gameAfsluiten();
-//                        }
-//                    }catch (RemoteException e){
-//                        e.printStackTrace();
-//
-//                    }
-//                }
-//            }
-//        }.start();
         new Thread() {
             public void run() {
                 int coordTempImage[]= new int[2];//0=x,1=y
