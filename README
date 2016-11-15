@@ -12,9 +12,16 @@ De client doet een RMI op de dispatcher die deel is van de StartServer en krijgt
 Heeft een basis implementatie met een beetje code maar dit is nog niet uitgetest.
 
 ## MEMORYDATABASE ##
-Code voor het ontvragen van de database. Bevat onderandere de code voor het maken van een database en een tabel met user (enkel naam en ww op dit moment)
+Code voor het ontvragen van de database. Bevat onderandere de code voor het maken van een database en een tabel met user (enkel naam en ww worden gebruikt op dit moment)
 
 ## MEMORYCLIENT ##
 Start op met een login scherm. Bij duwen op login -> rmi -> opvragen van server aan dispatcher kant. 
 Vanaf dan zou die moeten communiceren met de server via rmi.
-	
+
+How to run:
+-----------
+	1)Run MemoryStart\src\main\java\Main\MainStart.java
+	2)Voeg de afbeeldingen toe in de databank. Bij intellij kan dit door aan de rechter kant 'Database' te selecteren en vervolgens te dubbel klikken op de tabel IMAGES.
+	  De afbeeldingen die wij gebruikten zijn te vinden in de recourses map van de databank. Bij string geef je telkens ofwel 'Fruit' in, ofwel 'Fruit_Background', naargelang waarvoor je de afbeelding wil gebruikten.
+	  Ook bij de User tabel kan je op deze manier gebruikers toevoegen.
+	3)Run MemoryClient\src\main\java\MainClient.java voor iedere gebruiker die je wil opstarten.
