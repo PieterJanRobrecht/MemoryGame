@@ -1,27 +1,39 @@
-Dit is een gedistribueerde memory game.
-Voor dit project werd er gebruik gemaakt van maven voor de verschillende projecten werkende te krijgen.
-Projecten moeten dus geladen worden als maven project in eclipse/intellij.
-Er wordt voor de communicatie gebruik gemaakt van RMI. 
+Dit is het project van Michiel Dhont en Pieter-Jan Robrecht.
+Het project werd gemaakt in Intellij en Maven wordt gebruikt voor de verschillende dependecies.
 
 De algemene structuur is het volgende:
 ## MEMORYSTART ##
-De module start op en met de verschillende final ints kan je kiezen hoeveel db (heeft als naar db1.db in de map van intellij project) en servers die in het begin opstart. (Nu is het 1 db en 1 server)
-De client doet een RMI op de dispatcher die deel is van de StartServer en krijgt dan te horen welke server die moet contacteren om naar in een lobby te komen.
+Dit is de kern van de applicatie. Deze module start de verschillende servers op en zal deze voorzien van een databank.
+De verschillende clients komen toe op de dispatcher die ook zit in de memorystart. De dispatcher zal de client dan doorverwijzen naar een server. 
 
 ## MEMORYSERVER ##
-Heeft een basis implementatie met een beetje code maar dit is nog niet uitgetest.
+Deze module bevat alle logica voor de lobby, het aanmaken van een spel en het spelen van een spel.
 
 ## MEMORYDATABASE ##
-Code voor het ontvragen van de database. Bevat onderandere de code voor het maken van een database en een tabel met user (enkel naam en ww worden gebruikt op dit moment)
+Dit is de module die instaat voor het lezen en wegschrijven van data van en naar de database.
 
 ## MEMORYCLIENT ##
-Start op met een login scherm. Bij duwen op login -> rmi -> opvragen van server aan dispatcher kant. 
-Vanaf dan zou die moeten communiceren met de server via rmi.
+In deze module zitten alle controllers die nodig zijn om de fxml bestanden goed te kunnen gebruiken.
+
+
+Algemene Flow:
+--------------
+	1) Logincontroller maakt verbinding met dispatcher op MEMORYSTART -> geeft een server met adres terug
+	2) De Lobbycontroller wordt opgestart en enkele threads worden opgestart op de verschillende lijsten up-to-date te houden.
+	3) Vanuit de lobby is het mogelijk om een spel te starten of te joinen. (Spel starten in het menu)
+	4) Nieuw scherm met het spel wordt geopend en als er genoeg spelers zijn kan je beginnen spelen.
+	5) Op het einde keer je terug naar de lobby.
+
 
 How to run:
 -----------
-	1)Run MemoryStart\src\main\java\Main\MainStart.java
-	2)Voeg de afbeeldingen toe in de databank. Bij intellij kan dit door aan de rechter kant 'Database' te selecteren en vervolgens te dubbel klikken op de tabel IMAGES.
-	  De afbeeldingen die wij gebruikten zijn te vinden in de recourses map van de databank. Bij string geef je telkens ofwel 'Fruit' in, ofwel 'Fruit_Background', naargelang waarvoor je de afbeelding wil gebruikten.
-	  Ook bij de User tabel kan je op deze manier gebruikers toevoegen.
-	3)Run MemoryClient\src\main\java\MainClient.java voor iedere gebruiker die je wil opstarten.
+	1) Run MainStart in MEMORYSTART
+	2) Er wordt een db0.db bestand aangemaakt in algemene project folder van Intellij. (Deze kan je gebruiken om gebruikers en afbeeldingen toe te voegen)
+	Je kan het db0.db bestand ook vervangen door het meegeleverde db0.db bestand. Bij het heropstarten van de MainStart zal deze gebruikt worden.
+	3)Run MainClient in MEMORYCLIENT voor iedere gebruiker die je wil opstarten. (Je kan inloggen met pj/michiel/bob met als wachtwoord ww)
+
+	
+Features:
+---------
+	*) Verhoogde moeilijkheidsgraad voor de gebruiker die aan zet is.
+	*) Verschillende knoppen met verborgen functionaliteit.
