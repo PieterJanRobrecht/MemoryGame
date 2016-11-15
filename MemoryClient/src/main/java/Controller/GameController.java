@@ -4,6 +4,7 @@ import Game.IGameMethod;
 import Model.User;
 import SpelLogica.Game;
 import SpelLogica.Move;
+import ViewThread.CardThread;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
@@ -194,7 +195,7 @@ public class GameController {
             for (int j = 0; j < lengte; j++) {
                 if (veld[i][j] == afbeeldingId) {
                     int index = i * game.getGrootteVeld() + j; //kan ook omgekeerd zijn
-                    ((ImageView) speelveld.getChildren().get(index)).setImage(images.get(afbeeldingId));
+                    Platform.runLater(()->((ImageView) speelveld.getChildren().get(index)).setImage(images.get(afbeeldingId)));
                     speelveld.getChildren().get(index).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
                 }
             }
@@ -247,14 +248,18 @@ public class GameController {
                             y = coordTempImage[1];
                             afbeeldingId1 = game.getVeld()[x][y];
                             index1 = x*game.getGrootteVeld()+y;
-                            ((ImageView)speelveld.getChildren().get(index1)).setImage(images.get(afbeeldingId1));
+
+                            ImageView first = (ImageView)speelveld.getChildren().get(index1);
+                            Platform.runLater(new CardThread(first,images,afbeeldingId1));
 
                             coordTempImage = implementation.getCoordFromMove(game.getGameId(),index , 2);
                             x = coordTempImage[0];
                             y = coordTempImage[1];
                             afbeeldingId2 = game.getVeld()[x][y];
                             index2 = x*game.getGrootteVeld()+y;
-                            ((ImageView)speelveld.getChildren().get(index2)).setImage(images.get(afbeeldingId2));
+
+                            ImageView second = (ImageView)speelveld.getChildren().get(index2);
+                            Platform.runLater(new CardThread(second,images,afbeeldingId2));
 
                             if(afbeeldingId1 == afbeeldingId2){
                                 gevondenImages.add(afbeeldingId1);
@@ -264,8 +269,11 @@ public class GameController {
                             }
                             else {
                                 TimeUnit.SECONDS.sleep(2);
-                                ((ImageView) speelveld.getChildren().get(index1)).setImage(backImage);
-                                ((ImageView) speelveld.getChildren().get(index2)).setImage(backImage);
+                                first = (ImageView) speelveld.getChildren().get(index1);
+                                Platform.runLater(new CardThread(first,backImage));
+
+                                second = (ImageView) speelveld.getChildren().get(index2);
+                                Platform.runLater(new CardThread(second,backImage));
                             }
                             index++;
 

@@ -40,7 +40,7 @@ public class GameBuilderController {
 
     @FXML
     void cancel(ActionEvent event) {
-        setOnExitAction();
+        closeWindow();
     }
 
     @FXML
@@ -136,18 +136,20 @@ public class GameBuilderController {
 
     public void setOnExitAction() {
         Stage stage = (Stage) playersDropDown.getScene().getWindow();
-        stage.setOnCloseRequest(we -> {
-            lobbyStage.show();
+        stage.setOnCloseRequest(we -> closeWindow());
+    }
 
-            try {
-                implementation.releaseGame(game,user);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+    public void closeWindow(){
+        lobbyStage.show();
 
-            Stage stageBuilder = (Stage) playersDropDown.getScene().getWindow();
-            stageBuilder.close();
-        });
+        try {
+            implementation.releaseGame(game,user);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        Stage stageBuilder = (Stage) playersDropDown.getScene().getWindow();
+        stageBuilder.close();
     }
 
     public void setUser(User user) {
