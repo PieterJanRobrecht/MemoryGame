@@ -248,7 +248,9 @@ public class GameController {
                             Platform.runLater(new CardThread(second,images,afbeeldingId2));
 
                             if(afbeeldingId1 == afbeeldingId2){
-                                gevondenImages.add(afbeeldingId1);
+                                if(!gevondenImages.contains(afbeeldingId1)) {//test laatste moment
+                                    gevondenImages.add(afbeeldingId1);
+                                }
                                 if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
                                     gameAfsluiten();
                                 }

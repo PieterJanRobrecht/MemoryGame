@@ -32,9 +32,9 @@ public class GameBuilderController {
     private ComboBox<String> themeDropDown;
     private IGameMethod implementation;
 
-    private final int AANTAL_SPELERS = 1; //Wordt maal 2 gedaan
-    private final int GROOTTE_VELD = 1; //1 = 2x2 , 2= 2x2 en 4x4, 3= 2x2 4x4 8x8
-    private final int AANTAL_THEMAS = 1;
+    private final int AANTAL_SPELERS = 2; //Wordt maal 2 gedaan
+    private final int GROOTTE_VELD = 2; //1 = 2x2 , 2= 2x2 en 4x4, 3= 2x2 4x4 8x8
+    private final int AANTAL_THEMAS = 2;
     private Game game;
     private User user;
 
@@ -106,7 +106,7 @@ public class GameBuilderController {
 
     public void initMakeGameView() {
 
-        String[] themas = {"Fruit","Pokemon"};
+        String[] themas = {"Fruit","Car"};
 
         for (int i = 1; i < AANTAL_SPELERS+1; i++) {
             playersDropDown.getItems().add(i*2 + " Spelers");
