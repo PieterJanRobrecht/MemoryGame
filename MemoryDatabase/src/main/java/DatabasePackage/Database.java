@@ -39,7 +39,10 @@ public class Database {
             String sql = "CREATE TABLE USER " +
                     "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     " NAME TEXT NOT NULL, " +
-                    " WW TEXT NOT NULL)";
+                    " WW TEXT NOT NULL," +
+                    "NWONGAMES INTEGER NOT NULL DEFAULT 0," +
+                    "NLOSTGAMES INTEGER NOT NULL DEFAULT 0," +
+                    "NSTARTEDGAMES INTEGER NOT NULL DEFAULT 0)";
 
             stmt.executeUpdate(sql);
             stmt.close();
@@ -47,19 +50,18 @@ public class Database {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
 
-        try {
-            stmt = databaseConnection.createStatement();
-            String sql = "ALTER TABLE USER ADD NWONGAMES INTEGER NOT NULL DEFAULT 0;" +
-                    " ALTER TABLE USER ADD NLOSTGAMES INTEGER NOT NULL DEFAULT 0; " +
-                    " ALTER TABLE USER ADD NSTARTEDGAMES INTEGER NOT NULL DEFAULT 0;";
+//        try {
+//            stmt = databaseConnection.createStatement();
+//            String sql = "ALTER TABLE USER ADD NWONGAMES INTEGER NOT NULL DEFAULT 0;" +
+//                    " ALTER TABLE USER ADD NLOSTGAMES INTEGER NOT NULL DEFAULT 0; " +
+//                    " ALTER TABLE USER ADD NSTARTEDGAMES INTEGER NOT NULL DEFAULT 0;";
+//
+//            stmt.executeUpdate(sql);
+//            stmt.close();
+//        } catch (Exception e) {
+//            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+//        }
 
-            stmt.executeUpdate(sql);
-            stmt.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-
-        stmt = null;
         try {
             stmt = databaseConnection.createStatement();
             String sql = "CREATE TABLE IMAGES " +
