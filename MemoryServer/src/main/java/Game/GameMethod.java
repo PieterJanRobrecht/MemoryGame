@@ -110,7 +110,7 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     public boolean isGameDone(int nGevonden, int gameID) throws RemoteException {
         for (Game game : runningGames) {
             if (game.getGameId() == gameID) {
-                return nGevonden == game.getGrootteVeld();
+                return nGevonden == (game.getGrootteVeld() * game.getGrootteVeld())/2;
             }
         }
         return false;

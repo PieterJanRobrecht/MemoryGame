@@ -12,6 +12,7 @@ import java.util.List;
  * Created by Pieter-Jan on 30/10/2016.
  */
 public class MainStart {
+    //TODO gridpane auto scale
     private static List<Server> serverList;
     private static List<User> userList;
     private static List<Database> databaseList;
