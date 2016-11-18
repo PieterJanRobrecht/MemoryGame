@@ -132,6 +132,7 @@
                       <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Naam" />
                       <TableColumn fx:id="numbersOfPlayersColumn" prefWidth="97.0" text="Aantal Spelers" />
                         <TableColumn fx:id="maxPlayersColumn" prefWidth="75.0" text="Max Spelers" />
+                        <TableColumn fx:id="serverColumn" prefWidth="75.0" text="Server" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

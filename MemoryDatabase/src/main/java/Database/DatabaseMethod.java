@@ -1,5 +1,6 @@
 package Database;
 
+import SpelLogica.Game;
 import javafx.scene.image.Image;
 
 import java.awt.image.BufferedImage;
@@ -128,6 +129,16 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
 
     @Override
     public void addGame(Game game) throws RemoteException {
+        try{
+            String query = "INSERT INTO GAME (SERVERID, NAME, GAMEID) VALUES (?,?,?)";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1, game.getServerId()+"");
+            pst.setString(2, game.getName());
+            pst.setString(3, game.getGameId()+"");
 
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

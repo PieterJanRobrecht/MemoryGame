@@ -69,7 +69,8 @@ public class Database {
             stmt = databaseConnection.createStatement();
             String sql = "CREATE TABLE GAME " +
                     "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                    "SERVERID INTEGER NOT NULL, " +
+                    "SERVERID INTEGER NOT NULL," +
+                    "GAMEID INTEGER NOT NULL," +
                     "NAME TEXT NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();

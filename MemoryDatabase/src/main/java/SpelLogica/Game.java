@@ -215,4 +215,8 @@ public class Game implements Serializable {
     public void setServerId(int serverId) {
         this.serverId = serverId;
     }
+
+    public int getServerId() {
+        return serverId;
+    }
 }

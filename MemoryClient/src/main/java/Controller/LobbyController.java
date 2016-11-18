@@ -42,6 +42,9 @@ public class LobbyController {
     private TableColumn<Game, Integer> maxPlayersColumn;
 
     @FXML
+    private TableColumn<Game, Integer> serverColumn;
+
+    @FXML
     private TextArea globalChat;
 
     @FXML
@@ -125,6 +128,7 @@ public class LobbyController {
         nameColumn.setCellValueFactory(new PropertyValueFactory<Game, String>("name"));
         maxPlayersColumn.setCellValueFactory(new PropertyValueFactory<Game, Integer>("maxAantalSpelers"));
         numbersOfPlayersColumn.setCellValueFactory(new PropertyValueFactory<Game, Integer>("aantalSpelers"));
+        serverColumn.setCellValueFactory(new PropertyValueFactory<Game, Integer>("serverId"));
 
         TableColumn actionCol = makeColumn("Join");
         lobbyPane.getColumns().add(actionCol);
