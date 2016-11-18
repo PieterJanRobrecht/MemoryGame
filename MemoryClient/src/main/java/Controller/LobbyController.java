@@ -78,8 +78,14 @@ public class LobbyController {
 
     @FXML
     void showDetails(ActionEvent event) {
+        setDetailsPaneInfo();
         detailsPane.setVisible(true);
         lobbyPane.setVisible(false);
+    }
+
+    private void setDetailsPaneInfo() {
+        labelGewonnen.setText(thisUser.getAantalGewonnen()+"");
+        labelVerloren.setText(thisUser.getAantalVerloren()+"");
     }
 
     @FXML

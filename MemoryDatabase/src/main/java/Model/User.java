@@ -62,4 +62,20 @@ public class User implements Serializable{
     public void setToken(String token) {
         this.token = token;
     }
+
+    public int getAantalGewonnen() {
+        return aantalGewonnen;
+    }
+
+    public int getAantalVerloren() {
+        return aantalVerloren;
+    }
+
+    public void setAantalGewonnen(int aantalGewonnen) {
+        this.aantalGewonnen = aantalGewonnen;
+    }
+
+    public void setAantalVerloren(int aantalVerloren) {
+        this.aantalVerloren = aantalVerloren;
+    }
 }

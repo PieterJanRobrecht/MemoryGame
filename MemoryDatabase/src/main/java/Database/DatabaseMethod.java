@@ -1,7 +1,9 @@
 package Database;
 
+import Model.User;
 import SpelLogica.Game;
 import javafx.scene.image.Image;
+import sun.dc.pr.PRError;
 
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
@@ -24,7 +26,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         this.databaseConnection = databaseConnection;
     }
 
-    public boolean checkCredentials(String name, String pas) throws RemoteException{
+    public boolean checkCredentials(String name, String pas) throws RemoteException {
         try {
             String query = "SELECT (count(*) > 0) as found FROM USER WHERE \"NAME\" LIKE ? AND \"WW\" LIKE ?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
@@ -48,7 +50,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         return false;
     }
 
-    public int getID(String userName) throws RemoteException{
+    public int getID(String userName) throws RemoteException {
         int id = -1;
         System.out.println("LOOKUP USER " + userName);
         try {
@@ -68,7 +70,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         return id;
     }
 
-    public List<Integer> getRandomAfbeeldingen(String thema, int aantal) throws RemoteException{
+    public List<Integer> getRandomAfbeeldingen(String thema, int aantal) throws RemoteException {
         List<Integer> mogelijkeIDs = new ArrayList<Integer>();
         try {
             String query = "SELECT ID FROM IMAGES WHERE THEMA=?";
@@ -88,7 +90,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         return mogelijkeIDs;
     }
 
-    public byte[] getBackgroundImage(String thema) throws RemoteException{
+    public byte[] getBackgroundImage(String thema) throws RemoteException {
         Image achtergrond;
         BufferedImage img;
         byte[] fileBytes = null;
@@ -108,7 +110,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         return fileBytes;
     }
 
-    public byte[] getImage(int id) throws RemoteException{
+    public byte[] getImage(int id) throws RemoteException {
         Image img;
         BufferedImage bufImg;
         byte[] fileBytes = null;
@@ -129,16 +131,56 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
 
     @Override
     public void addGame(Game game) throws RemoteException {
-        try{
+        try {
             String query = "INSERT INTO GAME (SERVERID, NAME, GAMEID) VALUES (?,?,?)";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1, game.getServerId()+"");
+            pst.setString(1, game.getServerId() + "");
             pst.setString(2, game.getName());
-            pst.setString(3, game.getGameId()+"");
+            pst.setString(3, game.getGameId() + "");
 
             pst.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void logoutUser(User user) throws RemoteException {
+        try {
+            String query = "UPDATE USER SET " +
+                    "NWONGAMES =? ," +
+                    "NLOSTGAMES=? " +
+                    "WHERE ID =?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1,user.getAantalGewonnen()+"");
+            pst.setString(2,user.getAantalVerloren()+"");
+            pst.setString(3,user.getId()+"");
+
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public User getInfo(User user) throws RemoteException {
+        try{
+            String query = "SELECT * FROM USER WHERE ID = ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1,getID(user.getNaam())+"");
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    user.setNaam(rs.getString("NAME"));
+                    user.setId(rs.getInt("ID"));
+                    user.setAantalGewonnen(rs.getInt("NWONGAMES"));
+                    user.setAantalVerloren(rs.getInt("NLOSTGAMES"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
     }
 }

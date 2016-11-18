@@ -17,10 +17,8 @@ public class RegistreerMethod extends UnicastRemoteObject implements IRegistreer
     }
 
     public User getUser(String userName, User user) throws RemoteException {
-        User gebruiker = user;
-
-        gebruiker.setNaam(userName);
-        gebruiker.setId(database.getID(userName));
+        user.setNaam(userName);
+        User gebruiker = database.getInfo(user);
 
         return gebruiker;
     }

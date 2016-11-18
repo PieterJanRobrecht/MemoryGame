@@ -18,11 +18,13 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
     private final IDatabaseMethod database;
     private List<User> userList;
     private List<Game> runningGames;
+    private int serverId;
 
-    public LobbyMethod(IDatabaseMethod database, List<Game> runningGames) throws RemoteException {
+    public LobbyMethod(IDatabaseMethod database, List<Game> runningGames, int serverId) throws RemoteException {
         this.database = database;
         userList = new ArrayList<>();
         this.runningGames = runningGames;
+        this.serverId = serverId;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
             }
         }
         if (index != -1) {
-            //TODO schrijft info van gebruiker naar de db
+            database.logoutUser(thisUser);
             userList.remove(index);
         }
         System.out.println("Log uit gebruiker " + thisUser.getNaam());
@@ -74,12 +76,14 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
     @Override
     public boolean addUserToGame(User thisUser, Game game) throws RemoteException {
         if (game.getAantalSpelers() < game.getMaxAantalSpelers()) {
-            for (int i = 0; i < runningGames.size(); i++) {
-                if (game.getGameId() == runningGames.get(i).getGameId()) {
-                    runningGames.get(i).addUser(thisUser);
+            if(game.getServerId() == serverId){
+                for (int i = 0; i < runningGames.size(); i++) {
+                    if (game.getGameId() == runningGames.get(i).getGameId()) {
+                        runningGames.get(i).addUser(thisUser);
+                    }
                 }
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -109,5 +113,9 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 //           runningGames.add(game);
         }
         return game;
+    }
+
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
     }
 }

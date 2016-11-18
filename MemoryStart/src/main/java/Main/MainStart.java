@@ -15,7 +15,6 @@ public class MainStart {
     //TODO notification dat er iemand weg is gegaan
     //TODO als client stopt en die is aan beurt dan crasht de thread -> lobbycontroller 266
     //Wie moet met wie communiceren
-    //TODO inloggen op server niet op dispatcher
     //TODO caching op de server en db
     private static List<Server> serverList;
     private static List<User> userList;

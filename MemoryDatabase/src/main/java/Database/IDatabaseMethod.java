@@ -3,6 +3,8 @@ package Database;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+
+import Model.User;
 import SpelLogica.Game;
 
 /**
@@ -15,4 +17,6 @@ public interface IDatabaseMethod extends Remote{
     byte[] getBackgroundImage(String thema) throws RemoteException;
     byte[] getImage(int id) throws RemoteException;
     void addGame(Game game) throws RemoteException;
+    void logoutUser(User user) throws RemoteException;
+    User getInfo(User user) throws RemoteException;
 }

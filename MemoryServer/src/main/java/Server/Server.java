@@ -70,7 +70,7 @@ public class Server implements Serializable{
             Registry registry = LocateRegistry.createRegistry(SERVERPOORT + serverID * 3);
 
             // create a new service named CounterService
-            registry.rebind("LobbyService", new LobbyMethod(database, runningGames));
+            registry.rebind("LobbyService", new LobbyMethod(database, runningGames, serverID));
         } catch (Exception e) {
             e.printStackTrace();
         }
