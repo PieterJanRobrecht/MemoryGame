@@ -1,6 +1,6 @@
 package Lobby;
 
-import DatabasePackage.Database;
+import Database.IDatabaseMethod;
 import Model.User;
 import SpelLogica.Game;
 
@@ -9,20 +9,17 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Pieter-Jan on 05/11/2016.
  */
 public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 
-    private final Database database;
+    private final IDatabaseMethod database;
     private List<User> userList;
     private List<Game> runningGames;
 
-    public LobbyMethod(Database database, List<Game> runningGames) throws RemoteException {
+    public LobbyMethod(IDatabaseMethod database, List<Game> runningGames) throws RemoteException {
         this.database = database;
         userList = new ArrayList<>();
         this.runningGames = runningGames;

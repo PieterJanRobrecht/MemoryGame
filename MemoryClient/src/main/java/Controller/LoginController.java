@@ -4,7 +4,6 @@ import Lobby.ILobbyMethod;
 import Model.User;
 import Registreer.IRegistreerMethod;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
@@ -30,6 +28,7 @@ public class LoginController {
 
     private IRegistreerMethod implementation;
     private User user;
+    private int serverId;
 
     @FXML
     void login(ActionEvent event) {
@@ -38,7 +37,7 @@ public class LoginController {
 
         try {
             if (implementation.checkCredentials(name, pas)) {
-                user = implementation.getUser(name);
+                user = implementation.getUser(name,user);
                 setViewLobby();
             } else {
                 Notifications.create()
@@ -83,10 +82,7 @@ public class LoginController {
 
     private void registry(LobbyController lobbyController) {
         try{
-            //Zodanig dat de dispatcher weet welke user er op welke server zit
-            int serverpoort = implementation.getServer(user);
-
-            Registry myRegistry = LocateRegistry.getRegistry ("localhost", serverpoort);
+            Registry myRegistry = LocateRegistry.getRegistry ("localhost", 45062 + serverId * 3);
 
             ILobbyMethod impl = (ILobbyMethod) myRegistry.lookup("LobbyService");
 
@@ -95,8 +91,7 @@ public class LoginController {
             //Zodanig dat de server weet welke user er bij hem zit
             impl.addUser(user);
             lobbyController.startUpdateThreads();
-            lobbyController.setServerPoort(serverpoort);
-            System.out.println("Client verbonden met registry op poort "+serverpoort);
+            lobbyController.setServerId(serverId);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -104,5 +99,13 @@ public class LoginController {
 
     public void setImplementation(IRegistreerMethod implementation) {
         this.implementation = implementation;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
     }
 }

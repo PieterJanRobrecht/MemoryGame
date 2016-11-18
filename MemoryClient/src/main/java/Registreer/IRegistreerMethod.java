@@ -12,7 +12,6 @@ import java.rmi.RemoteException;
  */
 public interface IRegistreerMethod extends Remote {
 //    void addClient(User user) throws RemoteException;
-    User getUser(String userName) throws RemoteException;
-    int getServer(User user) throws RemoteException;
+    User getUser(String userName, User user) throws RemoteException;
     boolean checkCredentials(String name, String pas) throws RemoteException;
 }

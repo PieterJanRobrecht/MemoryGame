@@ -1,9 +1,8 @@
 package Main;
 
-import DatabasePackage.Database;
 import Model.User;
-import Threads.Dispatcher;
-import Threads.Server;
+import Dispatcher.Dispatcher;
+import Server.Server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,23 +17,20 @@ public class MainStart {
     //TODO als client stopt en die is aan beurt dan crasht de thread -> lobbycontroller 266
     //Wie moet met wie communiceren
     //TODO inloggen op server niet op dispatcher
+    //TODO caching op de server en db
     private static List<Server> serverList;
     private static List<User> userList;
     private static List<Database> databaseList;
 
-    private final static int NUMBER_OF_SERVERS = 1;
-    private final static int NUMBER_OF_DATABASES = 1;
+    private final static int NUMBER_OF_SERVERS = 2;
+    private final static int NUMBER_OF_DATABASES = 3;
 
     public static void main(String[] args) {
         System.out.println("Main Start");
 
         userList = new ArrayList<>();
 
-        serverList = new ArrayList<Server>();
-        for (int i = 0; i < NUMBER_OF_SERVERS; i++) {
-            Server s = new Server(i);
-            serverList.add(s);
-        }
+        startDispatchingService();
 
         //TODO Kijken voor methode om db connectie te sluiten
         databaseList = new ArrayList<Database>();
@@ -43,8 +39,11 @@ public class MainStart {
             databaseList.add(db);
         }
 
-        handOutDatabases();
-        startDispatchingUsers();
+        serverList = new ArrayList<Server>();
+        for (int i = 0; i < NUMBER_OF_SERVERS; i++) {
+            Server s = new Server(i);
+            serverList.add(s);
+        }
 
         for (Server s :
                 serverList) {
@@ -52,13 +51,8 @@ public class MainStart {
         }
     }
 
-    private static void handOutDatabases() {
-        serverList.get(0).setDatabase(databaseList.get(0));
-    }
-
-    private static void startDispatchingUsers() {
-        System.out.println("Starting dispatcher");
-        Dispatcher dispatcher = new Dispatcher(serverList,databaseList.get(0));
+    private static void startDispatchingService() {
+        Dispatcher dispatcher = new Dispatcher(serverList, databaseList, userList);
     }
 
     public static List<User> getUserList() {

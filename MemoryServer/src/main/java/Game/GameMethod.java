@@ -1,6 +1,6 @@
 package Game;
 
-import DatabasePackage.Database;
+import Database.IDatabaseMethod;
 import Model.User;
 import SpelLogica.Game;
 import SpelLogica.Move;
@@ -13,10 +13,10 @@ import java.util.List;
  * Created by Pieter-Jan on 09/11/2016.
  */
 public class GameMethod extends UnicastRemoteObject implements IGameMethod {
-    private Database database;
+    private IDatabaseMethod database;
     private List<Game> runningGames;
 
-    public GameMethod(Database database, List<Game> runningGames) throws RemoteException {
+    public GameMethod(IDatabaseMethod database, List<Game> runningGames) throws RemoteException {
         this.database = database;
         this.runningGames = runningGames;
     }

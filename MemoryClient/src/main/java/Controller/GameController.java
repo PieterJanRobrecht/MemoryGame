@@ -14,7 +14,9 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
@@ -66,7 +68,6 @@ public class GameController {
         int grootte = game.getGrootteVeld();
         grootteSpel.setText(grootte + " op " + grootte);
         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), -2);
-
 
         byte[] bytes = implementation.getBackgroundImage(game.getThema());
         BufferedImage img = null;

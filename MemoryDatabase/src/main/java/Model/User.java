@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class User implements Serializable{
     private int id;
+    private String token;
     private String naam;
     private String wachtwoord;
     private int aantalGewonnen;
@@ -52,5 +53,13 @@ public class User implements Serializable{
 
     public void verhoogAantalVerliezen() {
         aantalVerloren++;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

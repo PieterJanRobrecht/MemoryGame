@@ -65,7 +65,7 @@ public class LobbyController {
     private ILobbyMethod implementation;
     private IGameMethod implementationGame;
     private User thisUser;
-    private int serverPoort;
+    private int serverId;
     private Stage thisStage;
 
     @FXML
@@ -311,11 +311,11 @@ public class LobbyController {
 
     private void registry() {
         try {
-            Registry myRegistry = LocateRegistry.getRegistry("localhost", serverPoort + 1);
+            Registry myRegistry = LocateRegistry.getRegistry("localhost", 45062 + serverId * 3 + 1);
 
             implementationGame = (IGameMethod) myRegistry.lookup("GameService");
 
-            System.out.println("Client verbonden met game registry op poort " + serverPoort + 1);
+            System.out.println("Client verbonden met game registry op poort " + serverId + 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -329,8 +329,8 @@ public class LobbyController {
         this.implementation = implementation;
     }
 
-    public void setServerPoort(int serverPoort) {
-        this.serverPoort = serverPoort;
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
     }
 
     public void setOnExitAction() {

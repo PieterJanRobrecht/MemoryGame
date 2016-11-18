@@ -1,6 +1,8 @@
 
 import Controller.LobbyController;
 import Controller.LoginController;
+import Dispatcher.IDispatcherMethod;
+import Model.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,14 +16,14 @@ import java.rmi.registry.Registry;
 /**
  * Created by Pieter-Jan on 30/10/2016.
  */
-public class MainClient extends Application{
+public class MainClient extends Application {
 
     public static void main(String[] args) {
         System.out.println("Main Client");
         launch(args);
     }
 
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) {
         try {
             //Laden van de fxml file waarin alle gui elementen zitten
             FXMLLoader loader = new FXMLLoader();
@@ -33,7 +35,7 @@ public class MainClient extends Application{
             primaryStage.show();
 
             //Ophalen van de controller horende bij de view klasse
-            LoginController loginController= loader.<LoginController>getController();
+            LoginController loginController = loader.<LoginController>getController();
             assert (loginController != null);
 
             registry(loginController);
@@ -42,14 +44,23 @@ public class MainClient extends Application{
         }
     }
 
-    private void registry(LoginController loginController){
-        try{
-            Registry myRegistry = LocateRegistry.getRegistry ("localhost", 45016);
+    private void registry(LoginController loginController) {
+        User thisUser = new User();
+        try {
+            Registry myRegistry = LocateRegistry.getRegistry("localhost", 45016);
+            IDispatcherMethod impl = (IDispatcherMethod) myRegistry.lookup("DispatcherService");
 
-            Registreer.IRegistreerMethod impl = (Registreer.IRegistreerMethod) myRegistry.lookup("RegistreerService");
+            String UID = impl.getToken();
+            thisUser.setToken(UID);
+            int serverId = impl.getServerId(thisUser);
 
-            loginController.setImplementation(impl);
-        }catch (Exception e){
+            myRegistry = LocateRegistry.getRegistry("localhost", 45062 + serverId * 3 + 2);
+            Registreer.IRegistreerMethod method = (Registreer.IRegistreerMethod) myRegistry.lookup("RegistreerService");
+
+            loginController.setImplementation(method);
+            loginController.setUser(thisUser);
+            loginController.setServerId(serverId);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
