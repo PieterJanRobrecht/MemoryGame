@@ -97,6 +97,7 @@ public class LobbyController {
 
         try {
             game = implementation.canMakeGame(thisUser);
+            game.setServerId(serverId);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

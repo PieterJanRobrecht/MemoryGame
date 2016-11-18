@@ -18,6 +18,7 @@ public class Game implements Serializable {
     private int[][] veld;//ontdekte combinaties zijn negatief
     private boolean uitgespeeld = false;
     private List<Move> moves;
+    private int serverId;
 
     public Game(int gameID) {
         this.gameId = gameID;
@@ -209,5 +210,9 @@ public class Game implements Serializable {
 
     public void resetMove(){
         moves.add(new Move());
+    }
+
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
     }
 }

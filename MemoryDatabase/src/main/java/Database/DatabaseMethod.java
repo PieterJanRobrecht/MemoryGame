@@ -125,4 +125,9 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         }
         return fileBytes;
     }
+
+    @Override
+    public void addGame(Game game) throws RemoteException {
+
+    }
 }

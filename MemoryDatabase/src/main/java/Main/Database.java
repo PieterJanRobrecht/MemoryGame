@@ -65,6 +65,18 @@ public class Database {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
 
+        try{
+            stmt = databaseConnection.createStatement();
+            String sql = "CREATE TABLE GAME " +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "SERVERID INTEGER NOT NULL, " +
+                    "NAME TEXT NOT NULL)";
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch (SQLException e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+        }
+
         try {
             stmt = databaseConnection.createStatement();
             String sql = "CREATE TABLE IMAGES " +

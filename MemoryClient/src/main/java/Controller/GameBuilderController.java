@@ -11,7 +11,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import SpelLogica.Game;
+import org.controlsfx.control.Notifications;
 
+import javax.management.Notification;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
@@ -45,21 +47,32 @@ public class GameBuilderController {
 
     @FXML
     void makeGame(ActionEvent event) throws RemoteException {
-        //TODO Beveiligen op slechte input
-
         String name = nameField.getText();
-        game.setName(name);
+        if(name!= null) {
+            game.setName(name);
+        }else{
+            Notifications.create()
+                    .title("ERROR")
+                    .text("Gelieve alles in te vullen")
+                    .showWarning();
+        }
+        try {
+            String output = playersDropDown.getSelectionModel().getSelectedItem();
+            String[] split = output.split(" ");
+            game.setMaxAantalSpelers(Integer.parseInt(split[0]));
 
-        String output = playersDropDown.getSelectionModel().getSelectedItem();
-        String[] split = output.split(" ");
-        game.setMaxAantalSpelers(Integer.parseInt(split[0]));
+            output = sizeDropDown.getSelectionModel().getSelectedItem();
+            split = output.split("x");
+            game.setGrootteVeld(Integer.parseInt(split[0]));
 
-        output = sizeDropDown.getSelectionModel().getSelectedItem();
-        split = output.split("x");
-        game.setGrootteVeld(Integer.parseInt(split[0]));
-
-        output = themeDropDown.getSelectionModel().getSelectedItem();
-        game.setThema(output);
+            output = themeDropDown.getSelectionModel().getSelectedItem();
+            game.setThema(output);
+        }catch (Exception e){
+            Notifications.create()
+                    .title("ERROR")
+                    .text("Gelieve alles in te vullen")
+                    .showWarning();
+        }
 
         try {
             implementation.makeGame(game);

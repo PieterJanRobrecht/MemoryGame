@@ -1,5 +1,7 @@
 package Database;
 
+import SpelLogica.Game;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -13,4 +15,5 @@ public interface IDatabaseMethod extends Remote{
     List<Integer> getRandomAfbeeldingen(String thema, int aantal) throws RemoteException;
     byte[] getBackgroundImage(String thema) throws RemoteException;
     byte[] getImage(int id) throws RemoteException;
+    void addGame(Game game) throws RemoteException;
 }

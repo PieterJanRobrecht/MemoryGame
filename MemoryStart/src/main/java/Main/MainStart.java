@@ -13,7 +13,6 @@ import java.util.List;
 public class MainStart {
     //TODO gridpane auto scale
     //TODO notification dat er iemand weg is gegaan
-    //TODO datbase moet met RMI
     //TODO als client stopt en die is aan beurt dan crasht de thread -> lobbycontroller 266
     //Wie moet met wie communiceren
     //TODO inloggen op server niet op dispatcher

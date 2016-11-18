@@ -24,6 +24,7 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     @Override
     public void makeGame(Game game) throws RemoteException {
         runningGames.add(game);
+        database.addGame(game);
 
         System.out.println("veld maken:");
         int aantalFiguren = (int) (Math.pow(game.getGrootteVeld(), 2) / 2);
