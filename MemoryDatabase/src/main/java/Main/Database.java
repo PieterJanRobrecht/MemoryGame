@@ -5,6 +5,8 @@ import Database.DatabaseMethod;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Pieter-Jan on 05/11/2016.
@@ -12,6 +14,7 @@ import java.sql.*;
 public class Database {
     private Connection databaseConnection;
     private String databaseNaam;
+    private List<Database> andereDatabases;
 
     private static int DATABASEPOORT;
 
@@ -20,6 +23,7 @@ public class Database {
         connectDatabase();
         createTables();
         startRepository();
+        andereDatabases = new ArrayList<Database>();
     }
 
     public static int getDATABASEPOORT() {
@@ -28,6 +32,10 @@ public class Database {
 
     public String getDatabaseNaam() {
         return databaseNaam;
+    }
+
+    public void addAndereDatabases(Database db){
+        andereDatabases.add(db);
     }
 
     private void startRepository() {
@@ -54,6 +62,30 @@ public class Database {
             System.exit(0);
         }
         System.out.println("Opened database " + databaseNaam);
+    }
+
+    public void broadCastQueryToAllDB(String query, List<String> variabelen){
+        boolean ack;
+        for(Database db: andereDatabases){
+            ack=false;
+            while(!ack) { //als geen ack ontvangen opnieuw versturen of NIET?   DIT VERTRAAGT ALLES MAAR ZORGT VOOR RELIABILITY?
+                ack=db.ontvangBroadCastQuery(query, variabelen);
+            }
+        }
+    }
+    public boolean ontvangBroadCastQuery(String query, List<String> variabelen){
+        try {
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            int i = 0;
+            for(String var: variabelen){
+                pst.setString(i, var);
+                i++;
+            }
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     private void createTables() {

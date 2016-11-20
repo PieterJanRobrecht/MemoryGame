@@ -180,7 +180,6 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return user;
     }
 }

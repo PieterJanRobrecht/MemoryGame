@@ -34,6 +34,7 @@ public class MainStart {
             Database db = new Database("db"+i);
             databaseList.add(db);
         }
+        legConnectieTussenDBes();
 
         serverList = new ArrayList<Server>();
         for (int i = 0; i < NUMBER_OF_SERVERS; i++) {
@@ -52,6 +53,17 @@ public class MainStart {
 
 
     }
+
+    private static void legConnectieTussenDBes(){
+        for(Database db1: databaseList) {
+            for (Database db2 : databaseList) {
+                if (db1 != db2) {
+                    db1.addAndereDatabases(db2);
+                }
+            }
+        }
+    }
+
 
     private static void startDispatchingService() {
         Dispatcher dispatcher = new Dispatcher(serverList, databaseList, userList);

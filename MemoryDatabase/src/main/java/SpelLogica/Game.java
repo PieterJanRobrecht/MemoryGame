@@ -137,6 +137,7 @@ public class Game implements Serializable {
         int id, index, lengte = veld[0].length;
         for (int i = 0; i < lengte; i++) {
             for (int j = 0; j < lengte; j++) {
+                System.out.println("mogelijke ID's zijn "+mogelijkeIDs.size());
                 index = new Random().nextInt(mogelijkeIDs.size());
                 id = mogelijkeIDs.get(index);
                 veld[i][j] = id;
