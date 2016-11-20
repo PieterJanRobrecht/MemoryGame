@@ -25,21 +25,21 @@ public class Server implements Serializable{
 
     private final static int SERVERPOORT = 45062;
     private final static int DISPATCHERPOORT = 45016;
-    private final static int DATABASEPOORT = 48745;
+    private static int DATABASEPOORT;
 
     public Server(int serverID) {
         this.serverID = serverID;
         System.out.println("Running Server " + serverID);
         runningGames = new ArrayList<>();
-        connectToDatabase();
+
     }
 
-    private void connectToDatabase() {
+    public void connectToDatabase() {
         IDispatcherMethod impl = connectToDispatcher();
         Registry myRegistry = null;
         try {
-            int databaseId = impl.getDatabaseId(this);
-            myRegistry = LocateRegistry.getRegistry("localhost", DATABASEPOORT+databaseId);
+            DATABASEPOORT = impl.getDatabasePoort(this);
+            myRegistry = LocateRegistry.getRegistry("localhost", DATABASEPOORT);
 
             database = (IDatabaseMethod) myRegistry.lookup("DatabaseService");
         } catch (RemoteException e) {

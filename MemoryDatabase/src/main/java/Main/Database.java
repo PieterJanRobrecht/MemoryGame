@@ -13,7 +13,7 @@ public class Database {
     private Connection databaseConnection;
     private String databaseNaam;
 
-    private static final int DATABASEPOORT = 48745;
+    private static int DATABASEPOORT;
 
     public Database(String dbNaam){
         databaseNaam = dbNaam;
@@ -22,10 +22,19 @@ public class Database {
         startRepository();
     }
 
+    public static int getDATABASEPOORT() {
+        return DATABASEPOORT;
+    }
+
+    public String getDatabaseNaam() {
+        return databaseNaam;
+    }
+
     private void startRepository() {
         int dbId = Integer.parseInt(databaseNaam.substring(2));
         try {
-            Registry registry = LocateRegistry.createRegistry(DATABASEPOORT + dbId );
+            DATABASEPOORT =48745 + dbId;
+            Registry registry = LocateRegistry.createRegistry(DATABASEPOORT);
 
             // create a new service named CounterService
             registry.rebind("DatabaseService", new DatabaseMethod(databaseConnection));

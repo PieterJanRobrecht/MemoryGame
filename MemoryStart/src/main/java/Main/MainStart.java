@@ -28,8 +28,6 @@ public class MainStart {
 
         userList = new ArrayList<>();
 
-        startDispatchingService();
-
         //TODO Kijken voor methode om db connectie te sluiten
         databaseList = new ArrayList<Database>();
         for (int i = 0; i < NUMBER_OF_DATABASES; i++) {
@@ -42,15 +40,22 @@ public class MainStart {
             Server s = new Server(i);
             serverList.add(s);
         }
+        startDispatchingService();
+        for (Server s: serverList){
+            s.connectToDatabase();
+        }
 
         for (Server s :
                 serverList) {
             s.startRegistry();
         }
+
+
     }
 
     private static void startDispatchingService() {
         Dispatcher dispatcher = new Dispatcher(serverList, databaseList, userList);
+
     }
 
     public static List<User> getUserList() {

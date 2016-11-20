@@ -6,9 +6,7 @@ import Server.Server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Pieter-Jan on 18/11/2016.
@@ -25,12 +23,29 @@ public class DispatcherMethod extends UnicastRemoteObject implements IDispatcher
         servers = serverList;
         databases = databaseList;
         users = userList;
+
+        serverToDatabase = new HashMap<Server, Database>();
+        userToServer = new HashMap<User, Server>();
+        //System.out.println("aantal databases is "+ databaseList.size());
     }
 
     @Override
-    public int getDatabaseId(Server server) throws RemoteException {
-        //TODO schrijven van logica voor het verdelen van de databases
-        return 0;
+    public int getDatabasePoort(Server server) throws RemoteException {
+        if(serverToDatabase.get(server)!=null){ //indien de server reeds een db is toegewezen
+            return serverToDatabase.get(server).getDATABASEPOORT();
+        }
+        Database minstBelastteDB = databases.get(0);
+        int minBelasting = Collections.frequency(serverToDatabase.values(),databases.get(0));
+        for(int i =1;i<databases.size();i++){ //db zoeken met minst aantal servers
+            if (minBelasting > Collections.frequency(serverToDatabase.values(),databases.get(i))){
+                minBelasting = Collections.frequency(serverToDatabase.values(),databases.get(i));
+                minstBelastteDB = databases.get(i);
+            }
+        }
+        serverToDatabase.put(server, minstBelastteDB);
+        System.out.println("Server "+server.getServerID()+" is gekoppeld aan "+minstBelastteDB.getDatabaseNaam());
+
+        return minstBelastteDB.getDATABASEPOORT();
     }
 
     @Override
