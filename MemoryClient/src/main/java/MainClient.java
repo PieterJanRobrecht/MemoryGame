@@ -55,6 +55,7 @@ public class MainClient extends Application {
             int serverId = impl.getServerId(thisUser);
 
             myRegistry = LocateRegistry.getRegistry("localhost", 45062 + serverId * 3 + 2);
+            System.out.println(" connected with server "+serverId);
             Registreer.IRegistreerMethod method = (Registreer.IRegistreerMethod) myRegistry.lookup("RegistreerService");
 
             loginController.setImplementation(method);

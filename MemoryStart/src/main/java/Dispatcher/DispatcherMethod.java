@@ -56,7 +56,27 @@ public class DispatcherMethod extends UnicastRemoteObject implements IDispatcher
 
     @Override
     public int getServerId(User thisUser) throws RemoteException {
-        //TODO schrijven van logica voor het verdelen van de users
-        return 0;
+        //TODO eventuueel ook een metehode toevoegen die amper gebruikte servers verwijderd
+        boolean nogServersOver = true;
+        int loper = 0;
+        while (nogServersOver){
+            if(20 > Collections.frequency(userToServer.values(),servers.get(loper))){
+                userToServer.put(thisUser,servers.get(loper));
+                return servers.get(loper).getServerID();
+            }
+
+            loper++;
+            nogServersOver = (servers.size() > loper);
+        }
+
+        //starten nieuwe server
+        Server s = new Server(loper);
+        s.connectToDatabase();
+        s.startRegistry();
+
+        servers.add(s);
+        userToServer.put(thisUser,servers.get(loper));
+
+        return loper;
     }
 }
