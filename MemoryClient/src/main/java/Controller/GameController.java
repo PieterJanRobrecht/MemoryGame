@@ -165,7 +165,7 @@ public class GameController {
                         }
                         else {
                             System.out.println("We gaan nu wachten om de kaarten terug om te draaien");
-//                            TimeUnit.SECONDS.sleep(1);
+                            TimeUnit.SECONDS.sleep(2);
                             ImageView first = (ImageView) speelveld.getChildren().get(index1);
                             ImageView second = (ImageView) speelveld.getChildren().get(index2);
 
@@ -178,8 +178,8 @@ public class GameController {
                         index++;
                     } catch (RemoteException e) {
                         e.printStackTrace();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
