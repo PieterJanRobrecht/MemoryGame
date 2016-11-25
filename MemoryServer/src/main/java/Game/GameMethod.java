@@ -42,9 +42,9 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         }
         if(index!=-1) {
             runningGames.get(index).removeUser(user);
-            database.removeGame(runningGames.get(index).getGameId(), runningGames.get(index).getServerId());
             if (runningGames.get(index).getAantalSpelers() == 0) {
                 runningGames.remove(index);
+                database.removeGame(runningGames.get(index).getGameId(), runningGames.get(index).getServerId());
             }
         }
     }

@@ -164,7 +164,8 @@ public class GameController {
                             }
                         }
                         else {
-                            TimeUnit.SECONDS.sleep(1);
+                            System.out.println("We gaan nu wachten om de kaarten terug om te draaien");
+//                            TimeUnit.SECONDS.sleep(1);
                             ImageView first = (ImageView) speelveld.getChildren().get(index1);
                             ImageView second = (ImageView) speelveld.getChildren().get(index2);
 
@@ -177,8 +178,8 @@ public class GameController {
                         index++;
                     } catch (RemoteException e) {
                         e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
                     }
                 }
             }
@@ -252,7 +253,6 @@ public class GameController {
                                 }
                             }
                             else {
-                                System.out.println("We gaan nu wachten om de kaarten terug om te draaien");
                                 TimeUnit.SECONDS.sleep(2);
                                 first = (ImageView) speelveld.getChildren().get(index1);
                                 Platform.runLater(new CardThread(first,backImage));
@@ -330,7 +330,7 @@ public class GameController {
             }
         }
 
-        user.setSpectator(true);
+        user.setSpectator(false);
         stage.close();
     }
 
