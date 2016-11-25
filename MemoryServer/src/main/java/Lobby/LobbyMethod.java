@@ -28,6 +28,19 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
     }
 
     @Override
+    public void removeUser(User user) throws RemoteException {
+        int index = -1;
+        for (int i = 0; i < userList.size(); i++) {
+            if (userList.get(i).getNaam().equals(user.getNaam())) {
+                index = i;
+            }
+        }
+        if (index != -1) {
+            userList.remove(index);
+        }
+    }
+
+    @Override
     public void addUser(User user) throws RemoteException {
         userList.add(user);
     }
@@ -56,7 +69,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return runningGames;
+        return allRunningGames;
     }
 
     @Override

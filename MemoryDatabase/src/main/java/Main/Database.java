@@ -114,7 +114,9 @@ public class Database {
                     "GAMEID INTEGER NOT NULL," +
                     "NAME TEXT NOT NULL," +
                     "MAXPLAYERS INTEGER NOT NULL," +
-                    "CURRENTPLAYERS INTEGER)";
+                    "CURRENTPLAYERS INTEGER," +
+                    "THEME TEXT," +
+                    "SIZE INTEGER)";
             stmt.executeUpdate(sql);
             stmt.close();
         } catch (SQLException e) {

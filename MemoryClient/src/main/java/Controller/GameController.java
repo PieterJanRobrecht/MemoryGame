@@ -252,6 +252,7 @@ public class GameController {
                                 }
                             }
                             else {
+                                System.out.println("We gaan nu wachten om de kaarten terug om te draaien");
                                 TimeUnit.SECONDS.sleep(2);
                                 first = (ImageView) speelveld.getChildren().get(index1);
                                 Platform.runLater(new CardThread(first,backImage));
@@ -262,12 +263,8 @@ public class GameController {
                             index++;
 
                         }
-//                        Thread.sleep(1000);
-                        //System.out.println("bij gebruiker "+user.getId() +" is de buzzyUser veranderd naar "+buzzyUserID);
                     } catch (RemoteException e) {
                         e.printStackTrace();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

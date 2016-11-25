@@ -132,13 +132,15 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
     @Override
     public void addGame(Game game) throws RemoteException {
         try {
-            String query = "INSERT INTO GAME (SERVERID, NAME, GAMEID, MAXPLAYERS, CURRENTPLAYERS) VALUES (?,?,?,?,?)";
+            String query = "INSERT INTO GAME (SERVERID, NAME, GAMEID, MAXPLAYERS, CURRENTPLAYERS, SIZE, THEME) VALUES (?,?,?,?,?,?,?)";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
             pst.setString(1, game.getServerId() + "");
             pst.setString(2, game.getName());
             pst.setString(3, game.getGameId() + "");
             pst.setString(4, game.getMaxAantalSpelers()+"");
             pst.setString(5, game.getAantalSpelers()+"");
+            pst.setString(6,game.getGrootteVeld()+"");
+            pst.setString(7,game.getThema());
 
             pst.executeUpdate();
         } catch (SQLException e) {
@@ -203,7 +205,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
     public List<Game> getAllGames() throws RemoteException {
         List<Game> games = new ArrayList<>();
         try {
-            String query = "SELECT * FROM GAMES";
+            String query = "SELECT * FROM GAME";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
 
             try (ResultSet rs = pst.executeQuery()) {
@@ -213,6 +215,8 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
                     g.setMaxAantalSpelers(rs.getInt("MAXPLAYERS"));
                     g.setAantalSpelers(rs.getInt("CURRENTPLAYERS"));
                     g.setServerId(rs.getInt("SERVERID"));
+                    g.setGrootteVeld(rs.getInt("SIZE"));
+                    g.setThema(rs.getString("THEME"));
                     games.add(g);
                 }
             }

@@ -20,7 +20,7 @@ public class MainStart {
     private static List<User> userList;
     private static List<Database> databaseList;
 
-    private final static int NUMBER_OF_SERVERS = 2;
+    private final static int NUMBER_OF_SERVERS = 3;
     private final static int NUMBER_OF_DATABASES = 3;
 
     public static void main(String[] args) {

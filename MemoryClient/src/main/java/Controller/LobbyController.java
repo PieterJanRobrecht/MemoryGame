@@ -195,7 +195,10 @@ public class LobbyController {
 
                 } else {
                     //Migrate user to new server
+                    implementation.removeUser(thisUser);
                     registry(game.getServerId());
+                    serverId = game.getServerId();
+                    implementation.addUser(thisUser);
                     result = implementation.addUserToGame(thisUser, game);
                 }
             }
