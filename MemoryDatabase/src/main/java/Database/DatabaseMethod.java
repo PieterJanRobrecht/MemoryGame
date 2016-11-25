@@ -240,4 +240,22 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean createAccount(String name, String pas) throws RemoteException {
+        if(!checkCredentials(name,pas)){
+            try {
+                String query = "INSERT INTO USER (NAME, WW) VALUES (?,?)";
+                PreparedStatement pst = databaseConnection.prepareStatement(query);
+                pst.setString(1, name);
+                pst.setString(2, pas);
+
+                pst.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        return false;
+    }
 }

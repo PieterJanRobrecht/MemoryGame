@@ -38,13 +38,43 @@ public class LoginController {
 
         try {
             if (implementation.checkCredentials(name, pas)) {
-                user = implementation.getUser(name,user);
+                user = implementation.getUser(name, user);
                 setViewLobby();
             } else {
                 Notifications.create()
                         .title("ERROR")
                         .text("Gebruiksnaam en/of wachtwoord fout")
                         .showWarning();
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void registerAccount(ActionEvent event) {
+        String name = userNameText.getText();
+        String pas = passwordText.getText();
+
+        try {
+            if (name.equals("") || pas.equals("")) {
+                Notifications.create()
+                        .title("ERROR")
+                        .text("Gelieve iets in te vullen")
+                        .showWarning();
+
+            } else if (implementation.checkCredentials(name, pas)) {
+                Notifications.create()
+                        .title("ERROR")
+                        .text("Gebruikersnaam bestaat al")
+                        .showWarning();
+            } else {
+                if (implementation.createAccount(name,pas)){
+                    Notifications.create()
+                            .title("INFO")
+                            .text("Gebruiker aangemaakt")
+                            .showInformation();
+                }
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -82,8 +112,8 @@ public class LoginController {
     }
 
     private void registry(LobbyController lobbyController) {
-        try{
-            Registry myRegistry = LocateRegistry.getRegistry ("localhost", 45062 + serverId * 3);
+        try {
+            Registry myRegistry = LocateRegistry.getRegistry("localhost", 45062 + serverId * 3);
 
             ILobbyMethod impl = (ILobbyMethod) myRegistry.lookup("LobbyService");
 
@@ -93,7 +123,7 @@ public class LoginController {
             impl.addUser(user);
             lobbyController.startUpdateThreads();
             lobbyController.setServerId(serverId);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

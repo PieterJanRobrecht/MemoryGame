@@ -11,4 +11,5 @@ import java.rmi.RemoteException;
 public interface IRegistreerMethod extends Remote {
     User getUser(String userName, User user) throws RemoteException;
     boolean checkCredentials(String name, String pas) throws RemoteException;
+    boolean createAccount(String name, String pas) throws RemoteException;
 }

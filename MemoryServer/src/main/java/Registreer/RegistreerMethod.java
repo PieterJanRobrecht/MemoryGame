@@ -27,4 +27,10 @@ public class RegistreerMethod extends UnicastRemoteObject implements IRegistreer
         boolean check = database.checkCredentials(name,pas);
         return check;
     }
+
+    @Override
+    public boolean createAccount(String name, String pas) throws RemoteException {
+        boolean check = database.createAccount(name,pas);
+        return check;
+    }
 }
