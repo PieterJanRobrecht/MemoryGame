@@ -19,4 +19,7 @@ public interface IDatabaseMethod extends Remote{
     void addGame(Game game) throws RemoteException;
     void logoutUser(User user) throws RemoteException;
     User getInfo(User user) throws RemoteException;
+    void removeGame(int gameId, int serverId) throws RemoteException;
+    List<Game> getAllGames() throws  RemoteException;
+    void addUserToGame( Game game) throws RemoteException;
 }

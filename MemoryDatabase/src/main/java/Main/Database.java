@@ -16,7 +16,7 @@ public class Database {
     private String databaseNaam;
     private List<Database> andereDatabases;
 
-    private static int DATABASEPOORT;
+    private int DATABASEPOORT;
 
     public Database(String dbNaam){
         databaseNaam = dbNaam;
@@ -26,7 +26,7 @@ public class Database {
         andereDatabases = new ArrayList<Database>();
     }
 
-    public static int getDATABASEPOORT() {
+    public int getDATABASEPOORT() {
         return DATABASEPOORT;
     }
 
@@ -112,7 +112,9 @@ public class Database {
                     "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     "SERVERID INTEGER NOT NULL," +
                     "GAMEID INTEGER NOT NULL," +
-                    "NAME TEXT NOT NULL)";
+                    "NAME TEXT NOT NULL," +
+                    "MAXPLAYERS INTEGER NOT NULL," +
+                    "CURRENTPLAYERS INTEGER)";
             stmt.executeUpdate(sql);
             stmt.close();
         } catch (SQLException e) {

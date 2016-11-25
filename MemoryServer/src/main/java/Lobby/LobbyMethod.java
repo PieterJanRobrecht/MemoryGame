@@ -50,6 +50,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 
     @Override
     public List<Game> getRunningGames() throws RemoteException {
+        List<Game> allRunningGames = database.getAllGames();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -80,6 +81,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
                 for (int i = 0; i < runningGames.size(); i++) {
                     if (game.getGameId() == runningGames.get(i).getGameId()) {
                         runningGames.get(i).addUser(thisUser);
+                        database.addUserToGame(game);
                     }
                 }
                 return true;

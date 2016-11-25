@@ -25,7 +25,7 @@ public class Server implements Serializable{
 
     private final static int SERVERPOORT = 45062;
     private final static int DISPATCHERPOORT = 45016;
-    private static int DATABASEPOORT;
+    private int DATABASEPOORT;
 
     public Server(int serverID) {
         this.serverID = serverID;

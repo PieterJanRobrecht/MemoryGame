@@ -84,8 +84,8 @@ public class LobbyController {
     }
 
     private void setDetailsPaneInfo() {
-        labelGewonnen.setText(thisUser.getAantalGewonnen()+"");
-        labelVerloren.setText(thisUser.getAantalVerloren()+"");
+        labelGewonnen.setText(thisUser.getAantalGewonnen() + "");
+        labelVerloren.setText(thisUser.getAantalVerloren() + "");
     }
 
     @FXML
@@ -187,7 +187,14 @@ public class LobbyController {
 
     private void joinGame(Game game) {
         try {
-            boolean result = implementation.addUserToGame(thisUser, game);
+            boolean result = false;
+            if (serverId == game.getServerId()) {
+                result = implementation.addUserToGame(thisUser, game);
+
+            } else {
+                registry(game.getServerId());
+                result = implementation.addUserToGame(thisUser, game);
+            }
             if (!result) {
                 Notifications.create()
                         .title("ERROR")
@@ -205,7 +212,7 @@ public class LobbyController {
     }
 
     private void setViewGame(Game game) throws RemoteException {
-        registry();
+        registryGame();
         Stage stage = new Stage();
         Parent root = null;
 
@@ -255,7 +262,7 @@ public class LobbyController {
                             playerList.clear();
                             for (String name :
                                     users) {
-                                Platform.runLater(()->playerList.appendText(name + "\r\n"));
+                                Platform.runLater(() -> playerList.appendText(name + "\r\n"));
                             }
                         }
                     }
@@ -285,7 +292,7 @@ public class LobbyController {
     }
 
     private void setViewGameBuilder(Game game) {
-        registry();
+        registryGame();
         Stage stage = new Stage();
         Parent root = null;
 
@@ -320,13 +327,25 @@ public class LobbyController {
         gameBuilderController.setUser(thisUser);
     }
 
-    private void registry() {
+    private void registryGame() {
         try {
             Registry myRegistry = LocateRegistry.getRegistry("localhost", 45062 + serverId * 3 + 1);
 
             implementationGame = (IGameMethod) myRegistry.lookup("GameService");
 
-            System.out.println("Client verbonden met game registry op poort " + serverId + 1);
+            System.out.println("Client verbonden met game registryGame op poort " + serverId + 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void registry(int serverId){
+        try {
+            Registry myRegistry = LocateRegistry.getRegistry("localhost", 45062 + serverId * 3);
+
+            implementation = (ILobbyMethod) myRegistry.lookup("LobbyService");
+
+            System.out.println("Client verbonden met game registryGame op poort " + serverId + 1);
         } catch (Exception e) {
             e.printStackTrace();
         }

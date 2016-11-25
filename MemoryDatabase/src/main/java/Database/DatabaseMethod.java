@@ -132,11 +132,13 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
     @Override
     public void addGame(Game game) throws RemoteException {
         try {
-            String query = "INSERT INTO GAME (SERVERID, NAME, GAMEID) VALUES (?,?,?)";
+            String query = "INSERT INTO GAME (SERVERID, NAME, GAMEID, MAXPLAYERS, CURRENTPLAYERS) VALUES (?,?,?,?,?)";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
             pst.setString(1, game.getServerId() + "");
             pst.setString(2, game.getName());
             pst.setString(3, game.getGameId() + "");
+            pst.setString(4, game.getMaxAantalSpelers()+"");
+            pst.setString(5, game.getAantalSpelers()+"");
 
             pst.executeUpdate();
         } catch (SQLException e) {
@@ -181,5 +183,61 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             e.printStackTrace();
         }
         return user;
+    }
+
+    @Override
+    public void removeGame(int gameId, int serverId) throws RemoteException {
+        try{
+            String query = "DELETE FROM GAME WHERE GAMEID = ? AND SERVERID = ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1,gameId+"");
+            pst.setString(2,serverId+"");
+
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Game> getAllGames() throws RemoteException {
+        List<Game> games = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM GAMES";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Game g = new Game(rs.getInt("GAMEID"));
+                    g.setName(rs.getString("NAME"));
+                    g.setMaxAantalSpelers(rs.getInt("MAXPLAYERS"));
+                    g.setAantalSpelers(rs.getInt("CURRENTPLAYERS"));
+                    g.setServerId(rs.getInt("SERVERID"));
+                    games.add(g);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return games;
+    }
+
+    @Override
+    public void addUserToGame(Game game) throws RemoteException {
+        try {
+            String query = "UPDATE GAME SET " +
+                    "CURRENTPLAYERS =? " +
+                    "WHERE GAMEID = ? " +
+                    "AND SERVERID = ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1,game.getAantalSpelers()+"");
+            pst.setString(2,game.getGameId()+"");
+            pst.setString(3,game.getServerId()+"");
+
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

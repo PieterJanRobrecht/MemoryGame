@@ -12,6 +12,7 @@ import java.util.*;
  * Created by Pieter-Jan on 18/11/2016.
  */
 public class DispatcherMethod extends UnicastRemoteObject implements IDispatcherMethod{
+    private static final int MAX_AANTAL_SPELERS = 20;
     private List<Server> servers;
     private List<Database> databases;
     private List<User> users;
@@ -56,11 +57,11 @@ public class DispatcherMethod extends UnicastRemoteObject implements IDispatcher
 
     @Override
     public int getServerId(User thisUser) throws RemoteException {
-        //TODO eventuueel ook een metehode toevoegen die amper gebruikte servers verwijderd
+        //TODO eventueel ook een methode toevoegen die amper gebruikte servers verwijderd
         boolean nogServersOver = true;
         int loper = 0;
         while (nogServersOver){
-            if(20 > Collections.frequency(userToServer.values(),servers.get(loper))){
+            if(MAX_AANTAL_SPELERS > Collections.frequency(userToServer.values(),servers.get(loper))){
                 userToServer.put(thisUser,servers.get(loper));
                 return servers.get(loper).getServerID();
             }
