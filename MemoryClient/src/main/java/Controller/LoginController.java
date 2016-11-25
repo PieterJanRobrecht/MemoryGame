@@ -19,7 +19,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class LoginController {
-    //TODO nieuwe user kunnen aanmaken
 
     @FXML
     private PasswordField passwordText;

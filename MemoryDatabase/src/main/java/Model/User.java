@@ -12,6 +12,7 @@ public class User implements Serializable{
     private String wachtwoord;
     private int aantalGewonnen;
     private int aantalVerloren;
+    private boolean spectator;
 
     public User() {
     }
@@ -21,6 +22,7 @@ public class User implements Serializable{
         this.wachtwoord = wachtwoord;
         aantalGewonnen=0;
         aantalVerloren=0;
+        spectator = false;
     }
 
     public int getId() {
@@ -77,5 +79,13 @@ public class User implements Serializable{
 
     public void setAantalVerloren(int aantalVerloren) {
         this.aantalVerloren = aantalVerloren;
+    }
+
+    public boolean getSpectator() {
+        return spectator;
+    }
+
+    public void setSpectator(boolean spectator) {
+        this.spectator = spectator;
     }
 }

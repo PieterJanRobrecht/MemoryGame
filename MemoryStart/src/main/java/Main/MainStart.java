@@ -50,8 +50,6 @@ public class MainStart {
                 serverList) {
             s.startRegistry();
         }
-
-
     }
 
     private static void legConnectieTussenDBes(){
@@ -67,7 +65,6 @@ public class MainStart {
 
     private static void startDispatchingService() {
         Dispatcher dispatcher = new Dispatcher(serverList, databaseList, userList);
-
     }
 
     public static List<User> getUserList() {

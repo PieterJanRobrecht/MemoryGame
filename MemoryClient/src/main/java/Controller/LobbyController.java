@@ -166,10 +166,11 @@ public class LobbyController {
                                     {
                                         if (input.equals("Join")) {
                                             Game game = getTableView().getItems().get(getIndex());
-                                            joinGame(game);
+                                            joinGame(game,false);
                                         }
                                         if (input.equals("Spectate")) {
-                                            //TODO kom in spectator mode
+                                            Game game = getTableView().getItems().get(getIndex());
+                                            joinGame(game,true);
                                             //Gewoon gebruik maken van de kijk methode?
                                         }
                                     });
@@ -185,22 +186,26 @@ public class LobbyController {
         return actionCol;
     }
 
-    private void joinGame(Game game) {
+    private void joinGame(Game game, boolean spectator) {
         try {
             boolean result = false;
-            if (serverId == game.getServerId()) {
-                result = implementation.addUserToGame(thisUser, game);
+            if(!spectator) {
+                if (serverId == game.getServerId()) {
+                    result = implementation.addUserToGame(thisUser, game);
 
-            } else {
-                registry(game.getServerId());
-                result = implementation.addUserToGame(thisUser, game);
+                } else {
+                    //Migrate user to new server
+                    registry(game.getServerId());
+                    result = implementation.addUserToGame(thisUser, game);
+                }
             }
-            if (!result) {
+            if (!result && !spectator) {
                 Notifications.create()
                         .title("ERROR")
                         .text("Maximum aantal spelers bereikt")
                         .showWarning();
             } else {
+                thisUser.setSpectator(spectator);
                 Stage stage = (Stage) lobbyPane.getScene().getWindow();
                 stage.hide();
                 setViewGame(game);

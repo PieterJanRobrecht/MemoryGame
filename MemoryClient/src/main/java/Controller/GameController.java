@@ -107,15 +107,10 @@ public class GameController {
                     e.printStackTrace();
                 }
                 images.put(ID, SwingFXUtils.toFXImage(img, null));
-//                System.out.println("foto op client opgeslagen met id " + ID);
             }
         }
 
         move = new Move();
-
-        //Haal info op over waar welke figuren komen
-        //Maken van de nodige click listeners
-        //Starten van thread die luistert naar de server
 
         startTreads();
     }
@@ -129,6 +124,7 @@ public class GameController {
                     Stage stage = (Stage) speelveld.getScene().getWindow();
                     closeGameView(stage);
                 }
+                if(user.getSpectator()) return;
                 if (!(event.getSource() instanceof ImageView)) return;
                 if (buzzyUserID != user.getId()) return;
                 try {
@@ -146,7 +142,6 @@ public class GameController {
                 try {
                     if (implementation.addCardToMove(col, row, game.getGameId(), index)) {  //kan ook omgekeerd zijn
                         Platform.runLater(new CardThread(clickedImageView, images.get(afbeeldingID)));
-//                        clickedImageView.setImage(images.get(afbeeldingID));
                         System.out.println(" afbeelding weergeven");
                     }
                     move=implementation.getMove(game.getGameId(), index);
@@ -217,7 +212,7 @@ public class GameController {
                 while (!afgelopen){
                     try {
                         buzzyUserID = implementation.getbuzzyUserID(game.getGameId(), buzzyUserID);
-                        if (buzzyUserID == user.getId()) {
+                        if (buzzyUserID == user.getId() && !user.getSpectator()) {
                             Platform.runLater(() -> afgelopenText.setText("Jij bent aan de beurt..."));
                             System.out.println("jij bent aan de beurt");
                             indexOud = index;
@@ -329,13 +324,16 @@ public class GameController {
     public void closeGameView(Stage stage){
         lobbyStage.show();
 
-        try {
-            implementation.releaseGame(game, user);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            System.out.println("Error after clossing game");
+        if(!user.getSpectator()) {
+            try {
+                implementation.releaseGame(game, user);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                System.out.println("Error after clossing game");
+            }
         }
 
+        user.setSpectator(true);
         stage.close();
     }
 
@@ -353,10 +351,13 @@ public class GameController {
             String afscheidText = implementation.getWinner(game.getGameId());
             String[] split = afscheidText.split(" ");
 
-            if (user.getNaam().equals(split[3])) {
-                user.verhoogAantalWinnen();
-            }else{
-                user.verhoogAantalVerliezen();
+            if(!user.getSpectator()){
+                if (user.getNaam().equals(split[3])) {
+                    user.verhoogAantalWinnen();
+                }else{
+                    user.verhoogAantalVerliezen();
+                }
+
             }
 
             Platform.runLater(() -> afgelopenText.setText(afscheidText + " Klik hier om terug naar de lobby te gaan."));
