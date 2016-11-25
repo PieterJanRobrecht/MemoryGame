@@ -47,40 +47,62 @@ public class GameBuilderController {
 
     @FXML
     void makeGame(ActionEvent event) throws RemoteException {
-        String name = nameField.getText();
-        if(name!= null) {
-            game.setName(name);
-        }else{
-            Notifications.create()
-                    .title("ERROR")
-                    .text("Gelieve alles in te vullen")
-                    .showWarning();
+        if (setValues()) {
+            try {
+                implementation.makeGame(game);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            startGameWindow();
         }
-        try {
-            String output = playersDropDown.getSelectionModel().getSelectedItem();
+    }
+
+    private boolean setValues() {
+        boolean alles = true;
+
+        String name = nameField.getText();
+        if (!name.equals("")) {
+            game.setName(name);
+        } else {
+            alles = false;
+            createMessage("Gelieve een naam in te geven");
+        }
+
+        String output = playersDropDown.getSelectionModel().getSelectedItem();
+        if (output == null) {
+            alles = false;
+            createMessage("Aantal spelers te selecteren");
+        } else {
             String[] split = output.split(" ");
             game.setMaxAantalSpelers(Integer.parseInt(split[0]));
+        }
 
-            output = sizeDropDown.getSelectionModel().getSelectedItem();
-            split = output.split("x");
+        output = sizeDropDown.getSelectionModel().getSelectedItem();
+        if (output == null) {
+            alles = false;
+            createMessage("Gelieve grootte te selecteren");
+        } else {
+            String [] split = output.split("x");
             game.setGrootteVeld(Integer.parseInt(split[0]));
+        }
 
-            output = themeDropDown.getSelectionModel().getSelectedItem();
+        output = themeDropDown.getSelectionModel().getSelectedItem();
+        if (output == null) {
+            alles = false;
+            createMessage("Gelieve een thema te selecteren");
+        } else {
             game.setThema(output);
-        }catch (Exception e){
-            Notifications.create()
-                    .title("ERROR")
-                    .text("Gelieve alles in te vullen")
-                    .showWarning();
         }
 
-        try {
-            implementation.makeGame(game);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        return alles;
+    }
 
-        startGameWindow();
+    private void createMessage(String s) {
+        Notifications.create()
+                .title("ERROR")
+                .text(s)
+                .showWarning();
     }
 
     private void startGameWindow() throws RemoteException {
@@ -119,18 +141,18 @@ public class GameBuilderController {
 
     public void initMakeGameView() {
 
-        String[] themas = {"Fruit","Car"};
+        String[] themas = {"Fruit", "Car"};
 
-        for (int i = 1; i < AANTAL_SPELERS+1; i++) {
-            playersDropDown.getItems().add(i*2 + " Spelers");
+        for (int i = 1; i < AANTAL_SPELERS + 1; i++) {
+            playersDropDown.getItems().add(i * 2 + " Spelers");
         }
 
-        for(int i=1;i<GROOTTE_VELD+1;i++){
-            int grootte = (int) Math.pow(2,i);
-            sizeDropDown.getItems().add(grootte+"x"+grootte);
+        for (int i = 1; i < GROOTTE_VELD + 1; i++) {
+            int grootte = (int) Math.pow(2, i);
+            sizeDropDown.getItems().add(grootte + "x" + grootte);
         }
 
-        for(int i=0;i<AANTAL_THEMAS;i++){
+        for (int i = 0; i < AANTAL_THEMAS; i++) {
             themeDropDown.getItems().add(themas[i]);
         }
     }
@@ -152,11 +174,11 @@ public class GameBuilderController {
         stage.setOnCloseRequest(we -> closeWindow());
     }
 
-    public void closeWindow(){
+    public void closeWindow() {
         lobbyStage.show();
 
         try {
-            implementation.releaseGame(game,user);
+            implementation.releaseGame(game, user);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
