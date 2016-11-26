@@ -2,6 +2,7 @@ package Database;
 
 import Model.User;
 import SpelLogica.Game;
+import Main.Database;
 import javafx.scene.image.Image;
 import sun.dc.pr.PRError;
 
@@ -13,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -21,9 +23,11 @@ import java.util.Random;
  */
 public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMethod {
     private Connection databaseConnection;
+    private Database database;
 
-    public DatabaseMethod(Connection databaseConnection) throws RemoteException {
+    public DatabaseMethod(Connection databaseConnection, Database db) throws RemoteException {
         this.databaseConnection = databaseConnection;
+        database = db;
     }
 
     public boolean checkCredentials(String name, String pas) throws RemoteException {
@@ -143,6 +147,8 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             pst.setString(7,game.getThema());
 
             pst.executeUpdate();
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getServerId() + "",game.getName(), game.getGameId() + "",game.getMaxAantalSpelers()+"", game.getAantalSpelers()+"", game.getGrootteVeld()+"", game.getThema())));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -229,6 +235,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
 
     @Override
     public void addUserToGame(Game game) throws RemoteException {
+        System.out.println("users in db updaten, er zitten zoveel users: "+game.getAantalSpelers());
         try {
             String query = "UPDATE GAME SET " +
                     "CURRENTPLAYERS =? " +

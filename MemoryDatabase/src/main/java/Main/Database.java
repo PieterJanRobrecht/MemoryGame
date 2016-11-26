@@ -45,7 +45,7 @@ public class Database {
             Registry registry = LocateRegistry.createRegistry(DATABASEPOORT);
 
             // create a new service named CounterService
-            registry.rebind("DatabaseService", new DatabaseMethod(databaseConnection));
+            registry.rebind("DatabaseService", new DatabaseMethod(databaseConnection, this));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,18 +65,14 @@ public class Database {
     }
 
     public void broadCastQueryToAllDB(String query, List<String> variabelen){
-        boolean ack;
         for(Database db: andereDatabases){
-            ack=false;
-            while(!ack) { //als geen ack ontvangen opnieuw versturen of NIET?   DIT VERTRAAGT ALLES MAAR ZORGT VOOR RELIABILITY?
-                ack=db.ontvangBroadCastQuery(query, variabelen);
-            }
+            db.ontvangBroadCastQuery(query, variabelen);
         }
     }
-    public boolean ontvangBroadCastQuery(String query, List<String> variabelen){
+    public void ontvangBroadCastQuery(String query, List<String> variabelen){
         try {
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            int i = 0;
+            int i = 1;
             for(String var: variabelen){
                 pst.setString(i, var);
                 i++;
@@ -85,7 +81,6 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true;
     }
 
     private void createTables() {
