@@ -237,7 +237,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
     }
 
     @Override
-    public void addUserToGame(Game game) throws RemoteException {
+    public void updateUsersInGame(Game game) throws RemoteException {
         try {
             String query = "UPDATE GAME SET " +
                     "CURRENTPLAYERS =? " +
@@ -254,6 +254,26 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void RemoveUserInGame(Game game) throws RemoteException{
+        try {
+            String query = "UPDATE GAME SET " +
+                    "CURRENTPLAYERS = CURRENTPLAYERS - ? " +
+                    "WHERE GAMEID = ? " +
+                    "AND SERVERID = ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1, "1");
+            pst.setString(2,game.getGameId()+"");
+            pst.setString(3,game.getServerId()+"");
+
+            pst.executeUpdate();
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList("1", game.getGameId()+"", game.getServerId()+"")));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public boolean createAccount(String name, String pas) throws RemoteException {

@@ -69,6 +69,20 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
+    public void removeUser(int gameID, User user) throws  RemoteException{
+        for (int i = 0; i < runningGames.size(); i++) {
+            if (gameID == runningGames.get(i).getGameId()) {
+                System.out.println("users voor verwijderen op server "+runningGames.get(i).getAantalSpelers());
+                runningGames.get(i).removeUser(user);
+                System.out.println("users voor verwijderen op server "+runningGames.get(i).getAantalSpelers());
+
+                database.RemoveUserInGame(runningGames.get(i));
+            }
+        }
+    }
+
+
+    @Override
     public byte[] getBackgroundImage(String thema) throws RemoteException {
         return database.getBackgroundImage(thema);
     }

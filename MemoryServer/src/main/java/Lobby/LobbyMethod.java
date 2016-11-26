@@ -94,7 +94,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
                 for (int i = 0; i < runningGames.size(); i++) {
                     if (game.getGameId() == runningGames.get(i).getGameId()) {
                         runningGames.get(i).addUser(thisUser);
-                        database.addUserToGame(runningGames.get(i));
+                        database.updateUsersInGame(runningGames.get(i));
                     }
                 }
                 return true;
