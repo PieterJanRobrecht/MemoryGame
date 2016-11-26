@@ -4,6 +4,7 @@ import Database.IDatabaseMethod;
 import Dispatcher.IDispatcherMethod;
 import Game.GameMethod;
 import Lobby.LobbyMethod;
+import Model.User;
 import Registreer.RegistreerMethod;
 import SpelLogica.Game;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class Server implements Serializable{
     private int serverID;
     private IDatabaseMethod database;
+    private GameMethod gameMethod;
     private List<Game> runningGames;
 
     private final static int SERVERPOORT = 45062;
@@ -70,7 +72,7 @@ public class Server implements Serializable{
             Registry registry = LocateRegistry.createRegistry(SERVERPOORT + serverID * 3);
 
             // create a new service named CounterService
-            registry.rebind("LobbyService", new LobbyMethod(database, runningGames, serverID));
+            registry.rebind("LobbyService", new LobbyMethod(database, this, serverID));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,7 +81,8 @@ public class Server implements Serializable{
             Registry registry = LocateRegistry.createRegistry(SERVERPOORT + serverID * 3 + 1);
 
             // create a new service named CounterService
-            registry.rebind("GameService", new GameMethod(database, runningGames));
+            gameMethod = new GameMethod(database, runningGames);
+            registry.rebind("GameService", gameMethod);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,11 +98,20 @@ public class Server implements Serializable{
         System.out.println("Registry ready on server " + serverID);
     }
 
+
     public int getServerID() {
         return serverID;
     }
 
     public static int getSERVERPOORT() {
         return SERVERPOORT;
+    }
+
+    public Game canMakeGame(User user) throws RemoteException {
+        return gameMethod.canMakeGame(user);
+    }
+
+    public boolean addUserToGame(User thisUser, Game game) throws RemoteException {
+        return gameMethod.addUserToGame(thisUser,game, serverID);
     }
 }

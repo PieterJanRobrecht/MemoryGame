@@ -30,7 +30,4 @@ public interface IGameMethod extends Remote {
     String getWinner(int gameID) throws RemoteException;
     Move getMove(int gameID, int index) throws RemoteException;
 
-
-
-
 }
