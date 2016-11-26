@@ -167,6 +167,8 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             pst.setString(3,user.getId()+"");
 
             pst.executeUpdate();
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(user.getAantalGewonnen()+"", user.getAantalVerloren()+"", user.getId()+"")));
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -235,7 +237,6 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
 
     @Override
     public void addUserToGame(Game game) throws RemoteException {
-        System.out.println("users in db updaten, er zitten zoveel users: "+game.getAantalSpelers());
         try {
             String query = "UPDATE GAME SET " +
                     "CURRENTPLAYERS =? " +
