@@ -204,6 +204,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             pst.setString(2,serverId+"");
 
             pst.executeUpdate();
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(gameId+"", serverId+"")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -248,6 +249,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             pst.setString(3,game.getServerId()+"");
 
             pst.executeUpdate();
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getAantalSpelers()+"", game.getGameId()+"", game.getServerId()+"")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -263,6 +265,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
                 pst.setString(2, pas);
 
                 pst.executeUpdate();
+                database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(name, pas)));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
