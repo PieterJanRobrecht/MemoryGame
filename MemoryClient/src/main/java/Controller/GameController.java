@@ -222,7 +222,12 @@ public class GameController {
                             }
                         }
                         else {
-                            Platform.runLater(() -> afgelopenText.setText("Wacht op jouw beurt..."));
+                            if(user.getSpectator()) {
+                                Platform.runLater(() -> afgelopenText.setText("Kijk naar het spelverloop."));
+                            }
+                            else {
+                                Platform.runLater(() -> afgelopenText.setText("Wacht op jouw beurt..."));
+                            }
                             System.out.println("Iemand anders is aan de beurt");
 
 
