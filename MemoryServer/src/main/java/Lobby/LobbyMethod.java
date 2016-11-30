@@ -2,6 +2,7 @@ package Lobby;
 
 import Database.IDatabaseMethod;
 import Model.User;
+import Server.Server;
 import SpelLogica.Game;
 
 import java.rmi.RemoteException;
@@ -17,13 +18,15 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 
     private final IDatabaseMethod database;
     private List<User> userList;
-    private List<Game> runningGames;
+    //private List<Game> runningGames;
+    private Server server;
     private int serverId;
 
-    public LobbyMethod(IDatabaseMethod database, List<Game> runningGames, int serverId) throws RemoteException {
+    public LobbyMethod(IDatabaseMethod database, Server s, int serverId) throws RemoteException {
         this.database = database;
         userList = new ArrayList<>();
-        this.runningGames = runningGames;
+        //this.runningGames = runningGames;
+        this.server = s;
         this.serverId = serverId;
     }
 
@@ -89,45 +92,12 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 
     @Override
     public boolean addUserToGame(User thisUser, Game game) throws RemoteException {
-        if (game.getAantalSpelers() < game.getMaxAantalSpelers()) {
-            if(game.getServerId() == serverId){
-                for (int i = 0; i < runningGames.size(); i++) {
-                    if (game.getGameId() == runningGames.get(i).getGameId()) {
-                        runningGames.get(i).addUser(thisUser);
-                        database.addUserToGame(runningGames.get(i));
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
+        return server.addUserToGame(thisUser, game);
     }
 
     @Override
     public Game canMakeGame(User user) throws RemoteException {
-        int gameID = -1;
-        Game game = null;
-        if (runningGames.size() != 20) {
-            Collections.sort(runningGames, (o1, o2) -> o1.getGameId() - o2.getGameId());
-
-            boolean found = false;
-            for (int i = 0; i < runningGames.size(); i++) {
-                if (runningGames.get(i).getGameId() != i) {
-                    gameID = i;
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                gameID = runningGames.size();
-            }
-
-            game = new Game(gameID);
-            game.addUser(user);
-//           runningGames.add(game);
-        }
-        return game;
+        return server.canMakeGame(user);
     }
 
     public void setServerId(int serverId) {

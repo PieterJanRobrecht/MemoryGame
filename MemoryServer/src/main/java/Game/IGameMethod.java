@@ -16,6 +16,7 @@ public interface IGameMethod extends Remote {
     void releaseGame(Game game, User user) throws RemoteException;
     void setNextBuzzyUser(int gameID) throws  RemoteException;
     void resetMove(int gameID) throws RemoteException;
+    void removeUser(int gamID, User user) throws  RemoteException;
     byte[] getBackgroundImage(String thema) throws RemoteException;
     byte[] getImage(int id) throws RemoteException;
     Game getGame(Integer in) throws RemoteException;
@@ -28,8 +29,5 @@ public interface IGameMethod extends Remote {
     int[] getCoordFromMove(int gameID, int index, int i) throws RemoteException, InterruptedException;
     String getWinner(int gameID) throws RemoteException;
     Move getMove(int gameID, int index) throws RemoteException;
-
-
-
 
 }

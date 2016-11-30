@@ -18,9 +18,10 @@ public interface IDatabaseMethod extends Remote{
     byte[] getImage(int id) throws RemoteException;
     void addGame(Game game) throws RemoteException;
     void logoutUser(User user) throws RemoteException;
-    User getInfo(User user) throws RemoteException;
+    void updateUsersInGame(Game game) throws RemoteException;
+    void RemoveUserInGame(Game game) throws RemoteException;
     void removeGame(int gameId, int serverId) throws RemoteException;
+    User getInfo(User user) throws RemoteException;
     List<Game> getAllGames() throws  RemoteException;
-    void addUserToGame( Game game) throws RemoteException;
     boolean createAccount(String name, String pas) throws RemoteException;
 }

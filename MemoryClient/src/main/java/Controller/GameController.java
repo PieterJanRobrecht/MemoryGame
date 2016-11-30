@@ -222,7 +222,12 @@ public class GameController {
                             }
                         }
                         else {
-                            Platform.runLater(() -> afgelopenText.setText("Wacht op jouw beurt..."));
+                            if(user.getSpectator()) {
+                                Platform.runLater(() -> afgelopenText.setText("Kijk naar het spelverloop."));
+                            }
+                            else {
+                                Platform.runLater(() -> afgelopenText.setText("Wacht op jouw beurt..."));
+                            }
                             System.out.println("Iemand anders is aan de beurt");
 
 
@@ -314,8 +319,18 @@ public class GameController {
     }
 
     public void setOnExitAction() {
+
         Stage stage = (Stage) speelveld.getScene().getWindow();
-        stage.setOnCloseRequest(we -> closeGameView(stage));
+        stage.setOnCloseRequest(we -> {
+            closeGameView(stage);
+            try {
+                if (!afgelopen) {//user verwijderen uit game
+                    implementation.removeUser(game.getGameId(), user);
+                }
+            }catch(RemoteException e){
+                e.printStackTrace();
+            }
+        });
     }
 
     public void closeGameView(Stage stage){

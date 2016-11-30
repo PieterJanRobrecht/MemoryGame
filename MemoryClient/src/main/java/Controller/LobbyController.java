@@ -208,6 +208,14 @@ public class LobbyController {
                         .text("Maximum aantal spelers bereikt")
                         .showWarning();
             } else {
+                if (serverId != game.getServerId()) {
+                    //Migrate user to new server
+                    implementation.removeUser(thisUser);
+                    registry(game.getServerId());
+                    serverId = game.getServerId();
+                    implementation.addUser(thisUser);
+                }
+
                 thisUser.setSpectator(spectator);
                 Stage stage = (Stage) lobbyPane.getScene().getWindow();
                 stage.hide();
