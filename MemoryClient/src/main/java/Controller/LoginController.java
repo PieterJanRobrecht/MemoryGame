@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class LoginController {
 
@@ -34,6 +36,7 @@ public class LoginController {
     void login(ActionEvent event) {
         String name = userNameText.getText();
         String pas = passwordText.getText();
+        pas = hashPas(pas);
 
         try {
             if (implementation.checkCredentials(name, pas)) {
@@ -50,10 +53,27 @@ public class LoginController {
         }
     }
 
+    private String hashPas(String pas) {
+        StringBuilder stringBuffer = new StringBuilder();
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            md.update(pas.getBytes());
+            byte[] messageDigestMD5 = md.digest();
+            for (byte bytes : messageDigestMD5) {
+                stringBuffer.append(String.format("%02x", bytes & 0xff));
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return stringBuffer.toString();
+    }
+
     @FXML
     void registerAccount(ActionEvent event) {
         String name = userNameText.getText();
         String pas = passwordText.getText();
+        pas = hashPas(pas);
 
         try {
             if (name.equals("") || pas.equals("")) {
