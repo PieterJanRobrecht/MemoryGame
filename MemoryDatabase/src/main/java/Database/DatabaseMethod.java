@@ -259,16 +259,16 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
     public void RemoveUserInGame(Game game) throws RemoteException{
         try {
             String query = "UPDATE GAME SET " +
-                    "CURRENTPLAYERS = CURRENTPLAYERS - ? " +
+                    "CURRENTPLAYERS = ? " +
                     "WHERE GAMEID = ? " +
                     "AND SERVERID = ?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1, "1");
+            pst.setString(1, game.getAantalSpelers()+"");
             pst.setString(2,game.getGameId()+"");
             pst.setString(3,game.getServerId()+"");
 
             pst.executeUpdate();
-            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList("1", game.getGameId()+"", game.getServerId()+"")));
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getAantalSpelers()+"", game.getGameId()+"", game.getServerId()+"")));
         } catch (SQLException e) {
             e.printStackTrace();
         }

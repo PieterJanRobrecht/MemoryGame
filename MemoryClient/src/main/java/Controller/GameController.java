@@ -322,7 +322,6 @@ public class GameController {
 
         Stage stage = (Stage) speelveld.getScene().getWindow();
         stage.setOnCloseRequest(we -> {
-            closeGameView(stage);
             try {
                 if (!afgelopen) {//user verwijderen uit game
                     implementation.removeUser(game.getGameId(), user);
@@ -330,6 +329,7 @@ public class GameController {
             }catch(RemoteException e){
                 e.printStackTrace();
             }
+            closeGameView(stage);
         });
     }
 
