@@ -50,8 +50,6 @@ public class MainClient extends Application {
             Registry myRegistry = LocateRegistry.getRegistry("localhost", 45016);
             IDispatcherMethod impl = (IDispatcherMethod) myRegistry.lookup("DispatcherService");
 
-            String UID = impl.getToken();
-            thisUser.setToken(UID);
             int serverId = impl.getServerId(thisUser);
 
             myRegistry = LocateRegistry.getRegistry("localhost", 45062 + serverId * 3 + 2);

@@ -24,4 +24,5 @@ public interface IDatabaseMethod extends Remote{
     User getInfo(User user) throws RemoteException;
     List<Game> getAllGames() throws  RemoteException;
     boolean createAccount(String name, String pas) throws RemoteException;
+    String getToken(User user) throws RemoteException;
 }

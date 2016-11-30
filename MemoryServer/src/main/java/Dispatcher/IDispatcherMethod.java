@@ -11,6 +11,5 @@ import java.rmi.RemoteException;
  */
 public interface IDispatcherMethod extends Remote {
     int getDatabasePoort(Server server) throws RemoteException;
-    String getToken() throws RemoteException;
     int getServerId(User thisUser) throws RemoteException;
 }

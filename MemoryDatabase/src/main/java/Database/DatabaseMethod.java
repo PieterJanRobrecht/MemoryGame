@@ -9,14 +9,12 @@ import sun.dc.pr.PRError;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.sql.*;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Pieter-Jan on 18/11/2016.
@@ -141,13 +139,13 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             pst.setString(1, game.getServerId() + "");
             pst.setString(2, game.getName());
             pst.setString(3, game.getGameId() + "");
-            pst.setString(4, game.getMaxAantalSpelers()+"");
-            pst.setString(5, game.getAantalSpelers()+"");
-            pst.setString(6,game.getGrootteVeld()+"");
-            pst.setString(7,game.getThema());
+            pst.setString(4, game.getMaxAantalSpelers() + "");
+            pst.setString(5, game.getAantalSpelers() + "");
+            pst.setString(6, game.getGrootteVeld() + "");
+            pst.setString(7, game.getThema());
 
             pst.executeUpdate();
-            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getServerId() + "",game.getName(), game.getGameId() + "",game.getMaxAantalSpelers()+"", game.getAantalSpelers()+"", game.getGrootteVeld()+"", game.getThema())));
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getServerId() + "", game.getName(), game.getGameId() + "", game.getMaxAantalSpelers() + "", game.getAantalSpelers() + "", game.getGrootteVeld() + "", game.getThema())));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -159,15 +157,19 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         try {
             String query = "UPDATE USER SET " +
                     "NWONGAMES =? ," +
-                    "NLOSTGAMES=? " +
+                    "NLOSTGAMES=?," +
+                    "TOKEN=?," +
+                    "TIME=?" +
                     "WHERE ID =?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1,user.getAantalGewonnen()+"");
-            pst.setString(2,user.getAantalVerloren()+"");
-            pst.setString(3,user.getId()+"");
+            pst.setString(1, user.getAantalGewonnen() + "");
+            pst.setString(2, user.getAantalVerloren() + "");
+            pst.setString(3, null);
+            pst.setString(4, null);
+            pst.setString(5, user.getId() + "");
 
             pst.executeUpdate();
-            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(user.getAantalGewonnen()+"", user.getAantalVerloren()+"", user.getId()+"")));
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(user.getAantalGewonnen() + "", user.getAantalVerloren() + "", null, null, user.getId() + "")));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -176,10 +178,10 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
 
     @Override
     public User getInfo(User user) throws RemoteException {
-        try{
+        try {
             String query = "SELECT * FROM USER WHERE ID = ?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1,getID(user.getNaam())+"");
+            pst.setString(1, getID(user.getNaam()) + "");
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
@@ -197,14 +199,14 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
 
     @Override
     public void removeGame(int gameId, int serverId) throws RemoteException {
-        try{
+        try {
             String query = "DELETE FROM GAME WHERE GAMEID = ? AND SERVERID = ?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1,gameId+"");
-            pst.setString(2,serverId+"");
+            pst.setString(1, gameId + "");
+            pst.setString(2, serverId + "");
 
             pst.executeUpdate();
-            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(gameId+"", serverId+"")));
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(gameId + "", serverId + "")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -244,31 +246,31 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
                     "WHERE GAMEID = ? " +
                     "AND SERVERID = ?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1,game.getAantalSpelers()+"");
-            pst.setString(2,game.getGameId()+"");
-            pst.setString(3,game.getServerId()+"");
+            pst.setString(1, game.getAantalSpelers() + "");
+            pst.setString(2, game.getGameId() + "");
+            pst.setString(3, game.getServerId() + "");
 
             pst.executeUpdate();
-            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getAantalSpelers()+"", game.getGameId()+"", game.getServerId()+"")));
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getAantalSpelers() + "", game.getGameId() + "", game.getServerId() + "")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void RemoveUserInGame(Game game) throws RemoteException{
+    public void RemoveUserInGame(Game game) throws RemoteException {
         try {
             String query = "UPDATE GAME SET " +
                     "CURRENTPLAYERS = ? " +
                     "WHERE GAMEID = ? " +
                     "AND SERVERID = ?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1, game.getAantalSpelers()+"");
-            pst.setString(2,game.getGameId()+"");
-            pst.setString(3,game.getServerId()+"");
+            pst.setString(1, game.getAantalSpelers() + "");
+            pst.setString(2, game.getGameId() + "");
+            pst.setString(3, game.getServerId() + "");
 
             pst.executeUpdate();
-            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getAantalSpelers()+"", game.getGameId()+"", game.getServerId()+"")));
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(game.getAantalSpelers() + "", game.getGameId() + "", game.getServerId() + "")));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -277,7 +279,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
 
     @Override
     public boolean createAccount(String name, String pas) throws RemoteException {
-        if(!checkCredentials(name,pas)){
+        if (!checkCredentials(name, pas)) {
             try {
                 String query = "INSERT INTO USER (NAME, WW) VALUES (?,?)";
                 PreparedStatement pst = databaseConnection.prepareStatement(query);
@@ -292,5 +294,68 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String getToken(User user) throws RemoteException {
+        try {
+            String query = "SELECT * FROM USER WHERE ID = ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1, getID(user.getNaam()) + "");
+
+            String d = null;
+            String token = null;
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    d = rs.getString("TIME");
+                    token = rs.getString("TOKEN");
+                }
+            }
+
+            if (d != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                java.util.Date date = sdf.parse(d);
+                java.util.Date now = new java.util.Date();
+                long time = now.getTime() - date.getTime();
+                if (token != null && time > TimeUnit.HOURS.toSeconds(24)) {
+                    return token;
+                } else {
+                    token = UUID.randomUUID().toString();
+                    setToken(token, user);
+                    return token;
+                }
+            } else {
+                token = UUID.randomUUID().toString();
+                setToken(token, user);
+                return token;
+            }
+
+        } catch (SQLException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void setToken(String token, User user) {
+        try {
+            String query = "UPDATE USER SET " +
+                    "TOKEN =? ," +
+                    "TIME=? " +
+                    "WHERE ID =?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1, token);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            String date = sdf.format(new java.util.Date());
+
+            pst.setString(2, date);
+            pst.setString(3, getID(user.getNaam()) + "");
+
+            pst.executeUpdate();
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(token, date, getID(user.getNaam()) + "")));
+
+        } catch (SQLException | RemoteException e) {
+            e.printStackTrace();
+        }
     }
 }

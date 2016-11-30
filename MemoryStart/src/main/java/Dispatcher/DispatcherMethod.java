@@ -50,12 +50,6 @@ public class DispatcherMethod extends UnicastRemoteObject implements IDispatcher
     }
 
     @Override
-    public String getToken() throws RemoteException {
-        String token = UUID.randomUUID().toString();
-        return token;
-    }
-
-    @Override
     public int getServerId(User thisUser) throws RemoteException {
         //TODO eventueel ook een methode toevoegen die amper gebruikte servers verwijderd
         boolean nogServersOver = true;
