@@ -18,14 +18,12 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 
     private final IDatabaseMethod database;
     private List<User> userList;
-    //private List<Game> runningGames;
     private Server server;
     private int serverId;
 
     public LobbyMethod(IDatabaseMethod database, Server s, int serverId) throws RemoteException {
         this.database = database;
         userList = new ArrayList<>();
-        //this.runningGames = runningGames;
         this.server = s;
         this.serverId = serverId;
     }
@@ -33,6 +31,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
     @Override
     public void removeUser(User user) throws RemoteException {
         int index = -1;
+        database.getToken(user);
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i).getNaam().equals(user.getNaam())) {
                 index = i;
@@ -46,6 +45,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
     @Override
     public void addUser(User user) throws RemoteException {
         userList.add(user);
+        database.getToken(user);
     }
 
     @Override
@@ -77,6 +77,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 
     @Override
     public void logOutUser(User thisUser) throws RemoteException {
+        database.getToken(thisUser);
         int index = -1;
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i).getNaam().equals(thisUser.getNaam())) {
@@ -92,11 +93,13 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
 
     @Override
     public boolean addUserToGame(User thisUser, Game game) throws RemoteException {
+        database.getToken(thisUser);
         return server.addUserToGame(thisUser, game);
     }
 
     @Override
     public Game canMakeGame(User user) throws RemoteException {
+        database.getToken(user);
         return server.canMakeGame(user);
     }
 

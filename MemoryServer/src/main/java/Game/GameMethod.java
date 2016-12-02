@@ -8,6 +8,7 @@ import SpelLogica.Move;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -35,6 +36,7 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
     @Override
     public void releaseGame(Game game, User user) throws RemoteException {
+        database.getToken(user);
         int index = -1;
         for (int i = 0; i < runningGames.size(); i++) {
             if (runningGames.get(i).getGameId() == game.getGameId()) {
@@ -42,7 +44,6 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
             }
         }
         if(index!=-1) {
-//            runningGames.get(index).removeUser(user);
             if (runningGames.get(index).getAantalSpelers() == 0) {
                 database.removeGame(runningGames.get(index).getGameId(), runningGames.get(index).getServerId());
                 runningGames.remove(index);
@@ -71,6 +72,7 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
     @Override
     public void removeUser(int gameID, User user) throws  RemoteException{
+        database.getToken(user);
         for (int i = 0; i < runningGames.size(); i++) {
             if (gameID == runningGames.get(i).getGameId()) {
                 System.out.println("users voor verwijderen op server "+runningGames.get(i).getAantalSpelers());
@@ -217,10 +219,11 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
     //methode voor de LobbyMethod
     public Game canMakeGame(User user) throws RemoteException {
+        database.getToken(user);
         int gameID = -1;
         Game game = null;
         if (runningGames.size() != 20) {
-            Collections.sort(runningGames, (o1, o2) -> o1.getGameId() - o2.getGameId());
+            Collections.sort(runningGames, Comparator.comparingInt(Game::getGameId));
 
             boolean found = false;
             for (int i = 0; i < runningGames.size(); i++) {
@@ -237,13 +240,13 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
             game = new Game(gameID);
             game.addUser(user);
-//           runningGames.add(game);
         }
         return game;
     }
 
     //methode voor de LobbyMethod
     public boolean addUserToGame(User thisUser, Game game, int serverID) throws RemoteException {
+        database.getToken(thisUser);
         if (game.getAantalSpelers() < game.getMaxAantalSpelers()) {
             if(game.getServerId() == serverID){
                 for (int i = 0; i < runningGames.size(); i++) {
