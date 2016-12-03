@@ -317,7 +317,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
                 java.util.Date date = sdf.parse(d);
                 java.util.Date now = new java.util.Date();
                 long time = now.getTime() - date.getTime();
-                if (token != null && time > TimeUnit.HOURS.toSeconds(24)) {
+                if (token != null && time < TimeUnit.HOURS.toSeconds(24)) {
                     return token;
                 } else {
                     token = UUID.randomUUID().toString();

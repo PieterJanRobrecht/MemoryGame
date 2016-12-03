@@ -370,6 +370,7 @@ public class GameController {
 
         if(!user.getSpectator()) {
             try {
+                implementation.removeUser(game.getGameId(),user);
                 implementation.releaseGame(game, user);
             } catch (RemoteException e) {
                 e.printStackTrace();
