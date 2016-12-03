@@ -52,6 +52,7 @@ public class GameController {
     private List<Integer> gevondenImages;
     private final EventHandler imageViewClickEventHandler = clickEventHandler();
     private boolean afgelopen = false;
+    private int index1,index2;
 
     @FXML
     private Label grootteSpel;
@@ -68,6 +69,7 @@ public class GameController {
     private Stage lobbyStage;
     private User user;
     private LobbyController lobbyController;
+    private Boolean vorigeWasFout=false;
 
 
     public void constructGrid() throws RemoteException {
@@ -132,6 +134,30 @@ public class GameController {
                     closeGameView(stage);
                 }
                 if(user.getSpectator()) return;
+
+                try {
+                    if(implementation.vorigeWasFout(game.getGameId())){
+                        ImageView first = (ImageView) speelveld.getChildren().get(index1);
+                        ImageView second = (ImageView) speelveld.getChildren().get(index2);
+
+                        Platform.runLater(new CardThread(first,backImage));
+                        Platform.runLater(new CardThread(second, backImage));
+
+                        try{
+                            implementation.setNextBuzzyUser(game.getGameId());
+                            implementation.resetMove(game.getGameId());
+                            index++;
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        implementation.setVorigeWasFout(game.getGameId(), false);
+                        //vorigeWasFout=false;
+
+                        return;
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 if (!(event.getSource() instanceof ImageView)) return;
                 if (buzzyUserID != user.getId()) return;
                 try {
@@ -158,8 +184,8 @@ public class GameController {
                 }
                 if (move.isCompleet()) {
                     try {
-                        int index1 = move.getCardX1() * game.getGrootteVeld() + move.getCardY1();
-                        int index2 = move.getCardX2() * game.getGrootteVeld() + move.getCardY2();
+                        index1 = move.getCardX1() * game.getGrootteVeld() + move.getCardY1();
+                        index2 = move.getCardX2() * game.getGrootteVeld() + move.getCardY2();
 
                         if (implementation.doMove(game.getGameId(), user.getId(), move)) {
                             speelveld.getChildren().get(index1).removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
@@ -169,24 +195,28 @@ public class GameController {
                             if(implementation.isGameDone(gevondenImages.size(), game.getGameId())){
                                 gameAfsluiten();
                             }
+                            implementation.resetMove(game.getGameId());
+                            index++;
                         }
                         else {
+                            implementation.setVorigeWasFout(game.getGameId(), true);
+                            //vorigeWasFout= true;
                             System.out.println("We gaan nu wachten om de kaarten terug om te draaien");
-                            TimeUnit.SECONDS.sleep(2);
-                            ImageView first = (ImageView) speelveld.getChildren().get(index1);
-                            ImageView second = (ImageView) speelveld.getChildren().get(index2);
-
-                            Platform.runLater(new CardThread(first,backImage));
-                            Platform.runLater(new CardThread(second, backImage));
-
-                            implementation.setNextBuzzyUser(game.getGameId());
+//                            TimeUnit.SECONDS.sleep(2);
+//                            ImageView first = (ImageView) speelveld.getChildren().get(index1);
+//                            ImageView second = (ImageView) speelveld.getChildren().get(index2);
+//
+//                            Platform.runLater(new CardThread(first,backImage));
+//                            Platform.runLater(new CardThread(second, backImage));
+//
+//                            implementation.setNextBuzzyUser(game.getGameId());
                         }
-                        implementation.resetMove(game.getGameId());
-                        index++;
+//                        implementation.resetMove(game.getGameId());
+//                        index++;
                     } catch (RemoteException e) {
                         e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
                     }
                 }
             }
@@ -227,6 +257,9 @@ public class GameController {
                             while(indexOud == index){
                                 Thread.sleep(20);
                             }
+                        }
+                        else if(implementation.vorigeWasFout(game.getGameId())){
+                            Thread.sleep(20);
                         }
                         else {
                             if(user.getSpectator()) {

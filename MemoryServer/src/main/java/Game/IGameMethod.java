@@ -24,6 +24,8 @@ public interface IGameMethod extends Remote {
     boolean voldoendeSpelers(Integer gameID) throws  RemoteException;
     boolean isGameDone(int nGevonden,int gameID) throws RemoteException;
     boolean addCardToMove(int col, int row, int gameID, int index) throws RemoteException;
+    boolean vorigeWasFout(int gameID) throws RemoteException;
+    void setVorigeWasFout(int gameID, boolean b) throws RemoteException;
     Integer getbuzzyUserID(Integer gameID, Integer vorigeBuzzyUserID) throws RemoteException;
     int getNieuwGevondeImages(List<Integer> reedsGevonden, Integer gameID) throws RemoteException;
     int[] getCoordFromMove(int gameID, int index, int i) throws RemoteException, InterruptedException;

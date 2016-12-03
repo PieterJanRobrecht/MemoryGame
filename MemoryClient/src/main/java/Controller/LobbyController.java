@@ -86,6 +86,7 @@ public class LobbyController {
     private void setDetailsPaneInfo() {
         labelGewonnen.setText(thisUser.getAantalGewonnen() + "");
         labelVerloren.setText(thisUser.getAantalVerloren() + "");
+        labelGespeeld.setText((thisUser.getAantalGewonnen()+thisUser.getAantalVerloren())+"");
     }
 
     @FXML
@@ -96,7 +97,12 @@ public class LobbyController {
 
     @FXML
     void logOut(ActionEvent event) {
-
+        try {
+            implementation.logOutUser(thisUser);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
     }
 
     @FXML

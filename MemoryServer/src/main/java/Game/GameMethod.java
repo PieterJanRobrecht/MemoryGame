@@ -260,4 +260,21 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         }
         return false;
     }
+
+    public boolean vorigeWasFout(int gameID) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                return game.isVorigeWasFout();
+            }
+        }
+        return false;
+    }
+
+    public void setVorigeWasFout(int gameID, boolean b) throws RemoteException{
+        for(Game game: runningGames){
+            if (game.getGameId() == gameID){
+                game.setVorigeWasFout(b);
+            }
+        }
+    }
 }
