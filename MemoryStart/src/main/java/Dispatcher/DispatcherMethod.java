@@ -54,15 +54,22 @@ public class DispatcherMethod extends UnicastRemoteObject implements IDispatcher
         //TODO eventueel ook een methode toevoegen die amper gebruikte servers verwijderd
         boolean nogServersOver = true;
         int loper = 0;
+        User hulp = null;
+        Server serverHulp = null;
+        for (Map.Entry pair : userToServer.entrySet()) {
+            User u = (User) pair.getKey();
+            if (u.getId() == thisUser.getId() && u.getToken() != null) {
+                hulp = u;
+                serverHulp = userToServer.get(hulp);
+            }
+        }
+        if (serverHulp != null && MAX_AANTAL_SPELERS >= Collections.frequency(userToServer.values(), serverHulp)) {
+            return serverHulp.getServerID();
+        }
         while (nogServersOver) {
+
             if (MAX_AANTAL_SPELERS > Collections.frequency(userToServer.values(), servers.get(loper))) {
-                User hulp = null;
-                for (Map.Entry pair : userToServer.entrySet()) {
-                    User u = (User) pair.getKey();
-                    if (u.getId() == thisUser.getId() && u.getToken() == null) {
-                        hulp = u;
-                    }
-                }
+
                 if (hulp == null) {
                     userToServer.put(thisUser, servers.get(loper));
                 } else {
