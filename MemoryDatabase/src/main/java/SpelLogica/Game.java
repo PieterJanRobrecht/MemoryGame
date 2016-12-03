@@ -16,7 +16,7 @@ public class Game implements Serializable {
     private String name, thema;
     private int aantalSpelers, maxAantalSpelers, gameId, buzzyUserID = -1;
     private int[][] veld;//ontdekte combinaties zijn negatief
-    private boolean uitgespeeld = false;
+    private boolean uitgespeeld = false, vorigeWasFout = false;
     private List<Move> moves;
     private int serverId;
 
@@ -38,6 +38,14 @@ public class Game implements Serializable {
                 buzzyUserID = u.getId(); //deze speler mag beginnen
             }
         }
+    }
+
+    public boolean isVorigeWasFout() {
+        return vorigeWasFout;
+    }
+
+    public void setVorigeWasFout(boolean vorigeWasFout) {
+        this.vorigeWasFout = vorigeWasFout;
     }
 
     public boolean isUitgespeeld() {

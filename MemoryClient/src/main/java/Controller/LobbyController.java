@@ -86,6 +86,7 @@ public class LobbyController {
     private void setDetailsPaneInfo() {
         labelGewonnen.setText(thisUser.getAantalGewonnen() + "");
         labelVerloren.setText(thisUser.getAantalVerloren() + "");
+        labelGespeeld.setText((thisUser.getAantalGewonnen()+thisUser.getAantalVerloren())+"");
     }
 
     @FXML
