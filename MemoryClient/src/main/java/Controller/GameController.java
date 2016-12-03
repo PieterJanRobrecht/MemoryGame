@@ -127,7 +127,7 @@ public class GameController {
                     closeGameView(stage);
                 }
                 if(user.getSpectator()) return;
-                if (!(event.getSource() instanceof ImageView)) return;
+
                 try {
                     if(implementation.vorigeWasFout(game.getGameId())){
                         ImageView first = (ImageView) speelveld.getChildren().get(index1);
@@ -151,6 +151,7 @@ public class GameController {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+                if (!(event.getSource() instanceof ImageView)) return;
                 if (buzzyUserID != user.getId()) return;
                 try {
                     if (!(implementation.voldoendeSpelers(game.getGameId()))) return;
