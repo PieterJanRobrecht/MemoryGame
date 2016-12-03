@@ -103,6 +103,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
             }
         }
         if (index != -1) {
+            implementation.removeUser(thisUser);
             database.logoutUser(thisUser);
             userList.remove(index);
         }

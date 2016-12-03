@@ -59,6 +59,7 @@ public class MainClient extends Application {
             loginController.setImplementation(method);
             loginController.setUser(thisUser);
             loginController.setServerId(serverId);
+            loginController.setOnExitAction();
         } catch (Exception e) {
             e.printStackTrace();
         }

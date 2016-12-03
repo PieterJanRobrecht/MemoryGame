@@ -12,7 +12,7 @@ import java.util.*;
  * Created by Pieter-Jan on 18/11/2016.
  */
 public class DispatcherMethod extends UnicastRemoteObject implements IDispatcherMethod {
-    private static final int MAX_AANTAL_SPELERS = 2;
+    private static final int MAX_AANTAL_SPELERS = 20;
     private List<Server> servers;
     private List<Database> databases;
     private List<User> users;
@@ -114,5 +114,27 @@ public class DispatcherMethod extends UnicastRemoteObject implements IDispatcher
             }
         }
         userToServer.put(user, servers.get(serverId));
+    }
+
+    @Override
+    public void removeUser(User thisUser) throws RemoteException {
+        for (Map.Entry pair : userToServer.entrySet()) {
+            User u = (User) pair.getKey();
+            if (u.getId() == thisUser.getId()) {
+                userToServer.remove(u);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void removeEmptyUser() throws RemoteException {
+        for (Map.Entry pair : userToServer.entrySet()) {
+            User u = (User) pair.getKey();
+            if (u.getToken() == null) {
+                userToServer.remove(u);
+                break;
+            }
+        }
     }
 }

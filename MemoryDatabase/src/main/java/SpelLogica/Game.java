@@ -127,6 +127,21 @@ public class Game implements Serializable {
 
     public List<User> getGamers() {
         List spelers = new ArrayList<User>(punten.keySet());
+        List indexen = new ArrayList<Integer>();
+        for(int i = 0; i<spelers.size(); i++){
+            User u = (User) spelers.get(i);
+            if(!userIDs.contains(u.getId())){
+                indexen.add(i);
+            }
+        }
+        for(int i =0;i<indexen.size();i++){
+            spelers.remove(spelers.get((Integer) indexen.get(i)));
+            for (int j = 0;j<indexen.size();j++){
+                Integer integer = new Integer((Integer) indexen.get(j));
+                integer--;
+                indexen.set(j,integer);
+            }
+        }
         return spelers;
     }
 
@@ -227,5 +242,9 @@ public class Game implements Serializable {
 
     public int getServerId() {
         return serverId;
+    }
+
+    public List<Integer> getUserIDs() {
+        return userIDs;
     }
 }

@@ -14,4 +14,6 @@ public interface IDispatcherMethod extends Remote {
     int getServerId(User thisUser) throws RemoteException;
     void changeServerUser(User user, int serverId) throws RemoteException;
     void updateUserServer(User user, int serverId) throws RemoteException;
+    void removeUser(User thisUser) throws RemoteException;
+    void removeEmptyUser() throws RemoteException;
 }

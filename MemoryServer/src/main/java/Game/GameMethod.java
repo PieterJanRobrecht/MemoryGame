@@ -43,7 +43,7 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
                 index = i;
             }
         }
-        if(index!=-1) {
+        if (index != -1) {
             if (runningGames.get(index).getAantalSpelers() == 0) {
                 database.removeGame(runningGames.get(index).getGameId(), runningGames.get(index).getServerId());
                 runningGames.remove(index);
@@ -61,9 +61,9 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public void resetMove(int gameID) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public void resetMove(int gameID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 game.resetMove();
             }
         }
@@ -71,15 +71,26 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public void removeUser(int gameID, User user) throws  RemoteException{
+    public void removeUser(int gameID, User user) throws RemoteException {
         database.getToken(user);
         for (int i = 0; i < runningGames.size(); i++) {
             if (gameID == runningGames.get(i).getGameId()) {
-                System.out.println("users voor verwijderen op server "+runningGames.get(i).getAantalSpelers());
+                System.out.println("users voor verwijderen op server " + runningGames.get(i).getAantalSpelers());
                 runningGames.get(i).removeUser(user);
-                System.out.println("users voor verwijderen op server "+runningGames.get(i).getAantalSpelers());
+                System.out.println("users voor verwijderen op server " + runningGames.get(i).getAantalSpelers());
 
-                database.RemoveUserInGame(runningGames.get(i));
+                database.removeUserInGame(runningGames.get(i));
+
+                Game g = runningGames.get(i);
+                int index=-1;
+                for (int j = 0; j < g.getUserIDs().size(); j++) {
+                    if (g.getUserIDs().get(j) == user.getId()) {
+                        index = j;
+                    }
+                }
+                if (index!=-1){
+                    g.getUserIDs().remove(index);
+                }
             }
         }
     }
@@ -129,16 +140,16 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     public boolean isGameDone(int nGevonden, int gameID) throws RemoteException {
         for (Game game : runningGames) {
             if (game.getGameId() == gameID) {
-                return nGevonden == (game.getGrootteVeld() * game.getGrootteVeld())/2;
+                return nGevonden == (game.getGrootteVeld() * game.getGrootteVeld()) / 2;
             }
         }
         return false;
     }
 
     @Override
-    public boolean addCardToMove(int col, int row, int gameID, int index) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public boolean addCardToMove(int col, int row, int gameID, int index) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 return game.addCardToMove(col, row, index);
             }
         }
@@ -151,8 +162,8 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
             if (game.getGameId() == gameID) {
                 int nieuweBuzzyUserID = game.getBuzzyUserID();
                 //while(nieuweBuzzyUserID == vorigeBuzzyUserID){//wachten
-                    System.out.print(""); //vreemd, als je deze syso weg haalt werkt het niet...
-                    nieuweBuzzyUserID = game.getBuzzyUserID();
+                System.out.print(""); //vreemd, als je deze syso weg haalt werkt het niet...
+                nieuweBuzzyUserID = game.getBuzzyUserID();
                 //}
                 return game.getBuzzyUserID();
             }
@@ -184,8 +195,8 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
 
     @Override
     public int[] getCoordFromMove(int gameID, int index, int i) throws RemoteException, InterruptedException {
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 return game.getMove(index).getLastCoord(i);
             }
         }
@@ -203,13 +214,12 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     }
 
     @Override
-    public Move getMove(int gameID, int index) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public Move getMove(int gameID, int index) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 try {
                     return game.getMove(index);
-                }
-                catch(InterruptedException e){
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -248,7 +258,7 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
     public boolean addUserToGame(User thisUser, Game game, int serverID) throws RemoteException {
         database.getToken(thisUser);
         if (game.getAantalSpelers() < game.getMaxAantalSpelers()) {
-            if(game.getServerId() == serverID){
+            if (game.getServerId() == serverID) {
                 for (int i = 0; i < runningGames.size(); i++) {
                     if (game.getGameId() == runningGames.get(i).getGameId()) {
                         runningGames.get(i).addUser(thisUser);
@@ -261,18 +271,18 @@ public class GameMethod extends UnicastRemoteObject implements IGameMethod {
         return false;
     }
 
-    public boolean vorigeWasFout(int gameID) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public boolean vorigeWasFout(int gameID) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 return game.isVorigeWasFout();
             }
         }
         return false;
     }
 
-    public void setVorigeWasFout(int gameID, boolean b) throws RemoteException{
-        for(Game game: runningGames){
-            if (game.getGameId() == gameID){
+    public void setVorigeWasFout(int gameID, boolean b) throws RemoteException {
+        for (Game game : runningGames) {
+            if (game.getGameId() == gameID) {
                 game.setVorigeWasFout(b);
             }
         }

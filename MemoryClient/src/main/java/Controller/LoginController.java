@@ -5,6 +5,7 @@ import Lobby.ILobbyMethod;
 import Model.User;
 import Registreer.IRegistreerMethod;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
@@ -31,6 +33,7 @@ public class LoginController {
     private TextField userNameText;
 
     private IRegistreerMethod implementation;
+    private IDispatcherMethod dispatcher;
     private User user;
     private int serverId;
 
@@ -137,7 +140,7 @@ public class LoginController {
     private void connectDispatcher() {
         try {
             Registry myRegistry = LocateRegistry.getRegistry("localhost", 45016);
-            IDispatcherMethod dispatcher = (IDispatcherMethod) myRegistry.lookup("DispatcherService");
+            dispatcher= (IDispatcherMethod) myRegistry.lookup("DispatcherService");
             dispatcher.updateUserServer(user, serverId);
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -171,5 +174,16 @@ public class LoginController {
 
     public void setServerId(int serverId) {
         this.serverId = serverId;
+    }
+
+    public void setOnExitAction() {
+        Stage s = (Stage) userNameText.getScene().getWindow();
+        s.setOnCloseRequest(event -> {
+            try {
+                dispatcher.removeEmptyUser();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

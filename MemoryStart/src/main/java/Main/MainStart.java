@@ -11,22 +11,19 @@ import java.util.List;
  * Created by Pieter-Jan on 30/10/2016.
  */
 public class MainStart {
-    //TODO gridpane auto scale
     //TODO notification dat er iemand weg is gegaan
-    //TODO als client stopt en die is aan beurt dan crasht de thread -> lobbycontroller 266
     private static List<Server> serverList;
     private static List<User> userList;
     private static List<Database> databaseList;
 
     private final static int NUMBER_OF_SERVERS = 3;
-    private final static int NUMBER_OF_DATABASES = 1;
+    private final static int NUMBER_OF_DATABASES = 3;
 
     public static void main(String[] args) {
         System.out.println("Main Start");
 
         userList = new ArrayList<>();
 
-        //TODO Kijken voor methode om db connectie te sluiten
         databaseList = new ArrayList<Database>();
         for (int i = 0; i < NUMBER_OF_DATABASES; i++) {
             Database db = new Database("db"+i);

@@ -258,7 +258,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
     }
 
     @Override
-    public void RemoveUserInGame(Game game) throws RemoteException {
+    public void removeUserInGame(Game game) throws RemoteException {
         try {
             String query = "UPDATE GAME SET " +
                     "CURRENTPLAYERS = ? " +

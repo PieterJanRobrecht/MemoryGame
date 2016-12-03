@@ -333,8 +333,6 @@ public class GameController {
                     }
 
                     if (gebruikers != null) {
-                        //gebruikers.clear();
-//                        System.out.println("This user= "+user.getNaam()+ " Aantal users= " + gebruikers.size());
                         for (User name : gebruikers) {
                             string += name.getNaam() + " " + thisGame.getPunten(name.getId()) + "\r\n";
                         }
@@ -359,18 +357,8 @@ public class GameController {
     }
 
     public void setOnExitAction() {
-
         Stage stage = (Stage) speelveld.getScene().getWindow();
-        stage.setOnCloseRequest(we -> {
-            try {
-                if (!afgelopen) {//user verwijderen uit game
-                    implementation.removeUser(game.getGameId(), user);
-                }
-            }catch(RemoteException e){
-                e.printStackTrace();
-            }
-            closeGameView(stage);
-        });
+        stage.setOnCloseRequest(we -> closeGameView(stage));
     }
 
     public void closeGameView(Stage stage){
