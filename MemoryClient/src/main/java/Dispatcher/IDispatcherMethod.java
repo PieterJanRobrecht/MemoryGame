@@ -12,4 +12,6 @@ import java.rmi.RemoteException;
 public interface IDispatcherMethod extends Remote {
     int getDatabasePoort(Server server) throws RemoteException;
     int getServerId(User thisUser) throws RemoteException;
+    void changeServerUser(User user, int serverId) throws RemoteException;
+    void updateUserServer(User user, int serverId) throws RemoteException;
 }

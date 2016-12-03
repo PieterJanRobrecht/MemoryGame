@@ -39,6 +39,7 @@ public class GameBuilderController {
     private final int AANTAL_THEMAS = 2;
     private Game game;
     private User user;
+    private LobbyController lobbyController;
 
     @FXML
     void cancel(ActionEvent event) {
@@ -133,6 +134,7 @@ public class GameBuilderController {
         gameController.setImplementation(implementation);
         gameController.setGame(game);
         gameController.setUser(user);
+        gameController.setLobbyController(lobbyController);
         gameController.setLobbyStage(lobbyStage);
 
         gameController.constructGrid();
@@ -189,5 +191,9 @@ public class GameBuilderController {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setLobbyController(LobbyController lobbyController) {
+        this.lobbyController = lobbyController;
     }
 }

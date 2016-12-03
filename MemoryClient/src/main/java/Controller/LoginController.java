@@ -1,5 +1,6 @@
 package Controller;
 
+import Dispatcher.IDispatcherMethod;
 import Lobby.ILobbyMethod;
 import Model.User;
 import Registreer.IRegistreerMethod;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -128,6 +130,18 @@ public class LoginController {
         registry(lobbyController);
         lobbyController.setThisUser(user);
         lobbyController.setOnExitAction();
+
+        connectDispatcher();
+    }
+
+    private void connectDispatcher() {
+        try {
+            Registry myRegistry = LocateRegistry.getRegistry("localhost", 45016);
+            IDispatcherMethod dispatcher = (IDispatcherMethod) myRegistry.lookup("DispatcherService");
+            dispatcher.updateUserServer(user, serverId);
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void registry(LobbyController lobbyController) {

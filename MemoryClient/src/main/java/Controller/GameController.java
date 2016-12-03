@@ -1,5 +1,6 @@
 package Controller;
 
+import Dispatcher.IDispatcherMethod;
 import Game.IGameMethod;
 import Model.User;
 import SpelLogica.Game;
@@ -9,6 +10,8 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -25,7 +28,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +67,7 @@ public class GameController {
 
     private Stage lobbyStage;
     private User user;
+    private LobbyController lobbyController;
 
 
     public void constructGrid() throws RemoteException {
@@ -346,8 +353,28 @@ public class GameController {
             }
         }
 
+        migrateUser();
+
         user.setSpectator(false);
         stage.close();
+    }
+
+    private void migrateUser() {
+        try {
+
+            Registry myRegistry = LocateRegistry.getRegistry("localhost", 45016);
+            IDispatcherMethod dipatcher = (IDispatcherMethod) myRegistry.lookup("DispatcherService");
+
+            int newServerId = dipatcher.getServerId(user);
+
+            lobbyController.getImplementation().removeUser(user);
+            lobbyController.registry(newServerId);
+            lobbyController.setServerId(newServerId);
+            lobbyController.getImplementation().addUser(user);
+
+        } catch (IOException | NotBoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setLobbyStage(Stage lobbyStage) {
@@ -383,4 +410,7 @@ public class GameController {
         }
     }
 
+    public void setLobbyController(LobbyController lobbyController) {
+        this.lobbyController = lobbyController;
+    }
 }

@@ -1,11 +1,15 @@
 package Lobby;
 
 import Database.IDatabaseMethod;
+import Dispatcher.IDispatcherMethod;
 import Model.User;
 import Server.Server;
 import SpelLogica.Game;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +23,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
     private final IDatabaseMethod database;
     private List<User> userList;
     private Server server;
+    private IDispatcherMethod implementation;
     private int serverId;
 
     public LobbyMethod(IDatabaseMethod database, Server s, int serverId) throws RemoteException {
@@ -26,6 +31,18 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
         userList = new ArrayList<>();
         this.server = s;
         this.serverId = serverId;
+
+        connectDispatcher();
+    }
+
+    private void connectDispatcher() {
+        Registry myRegistry = null;
+        try {
+            myRegistry = LocateRegistry.getRegistry("localhost", 45016);
+            implementation = (IDispatcherMethod) myRegistry.lookup("DispatcherService");
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -45,6 +62,7 @@ public class LobbyMethod extends UnicastRemoteObject implements ILobbyMethod {
     @Override
     public void addUser(User user) throws RemoteException {
         userList.add(user);
+        implementation.changeServerUser(user,serverId);
         database.getToken(user);
     }
 

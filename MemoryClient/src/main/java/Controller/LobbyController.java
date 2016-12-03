@@ -192,7 +192,6 @@ public class LobbyController {
             if(!spectator) {
                 if (serverId == game.getServerId()) {
                     result = implementation.addUserToGame(thisUser, game);
-
                 } else {
                     //Migrate user to new server
                     implementation.removeUser(thisUser);
@@ -233,8 +232,8 @@ public class LobbyController {
         Parent root = null;
 
         stage.setTitle("Game");
-        FXMLLoader loader = new FXMLLoader();
 
+        FXMLLoader loader = new FXMLLoader();
         try {
             //root = FXMLLoader.load(getClass().getResource("Lobby.fxml"));
             root = (Parent) loader.load(getClass().getClassLoader().getResource("Game.fxml").openStream());
@@ -253,6 +252,7 @@ public class LobbyController {
 
         gameController.setImplementation(implementationGame);
         gameController.setGame(game);
+        gameController.setLobbyController(this);
         gameController.setUser(thisUser);
         gameController.setLobbyStage((Stage) lobbyPane.getScene().getWindow());
 
@@ -339,6 +339,7 @@ public class LobbyController {
         thisStage.hide();
 
         gameBuilderController.setLobbyStage(thisStage);
+        gameBuilderController.setLobbyController(this);
         gameBuilderController.setOnExitAction();
         gameBuilderController.setUser(thisUser);
     }
@@ -355,7 +356,7 @@ public class LobbyController {
         }
     }
 
-    private void registry(int serverId){
+    public void registry(int serverId){
         try {
             Registry myRegistry = LocateRegistry.getRegistry("localhost", 45062 + serverId * 3);
 
@@ -390,4 +391,9 @@ public class LobbyController {
             System.exit(0);
         });
     }
+
+    public ILobbyMethod getImplementation() {
+        return implementation;
+    }
+
 }
