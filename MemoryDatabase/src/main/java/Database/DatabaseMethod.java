@@ -6,9 +6,12 @@ import Main.Database;
 import javafx.scene.image.Image;
 import sun.dc.pr.PRError;
 
+import javax.crypto.*;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.sql.Date;
 import java.text.ParseException;
@@ -16,16 +19,28 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static javax.crypto.Cipher.DECRYPT_MODE;
+
 /**
  * Created by Pieter-Jan on 18/11/2016.
  */
 public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMethod {
     private Connection databaseConnection;
     private Database database;
+    private SecretKey aesKey;
+    private Cipher aesCipher;;
 
     public DatabaseMethod(Connection databaseConnection, Database db) throws RemoteException {
         this.databaseConnection = databaseConnection;
         database = db;
+        try {
+            KeyGenerator keygen = KeyGenerator.getInstance("AES");
+            aesKey = keygen.generateKey();
+            // Create the cipher
+            aesCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean checkCredentials(String name, String pas) throws RemoteException {
@@ -309,6 +324,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
                 if (rs.next()) {
                     d = rs.getString("TIME");
                     token = rs.getString("TOKEN");
+                    token = decryptToken(token);
                 }
             }
 
@@ -343,7 +359,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
                     "TIME=? " +
                     "WHERE ID =?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1, token);
+            pst.setString(1, encryptToken(token));
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String date = sdf.format(new java.util.Date());
@@ -357,5 +373,36 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         } catch (SQLException | RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    private String encryptToken(String plaintoken){
+        System.out.println(plaintoken);
+        // Initialize the cipher for encryption
+        byte[] ciphertext = new byte[0];
+        try {
+            aesCipher.init(Cipher.ENCRYPT_MODE, aesKey);
+
+            // Our cleartext
+            byte[] cleartext = plaintoken.getBytes();
+
+            // Encrypt the cleartext
+            ciphertext = aesCipher.doFinal(cleartext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new String(ciphertext);
+    }
+
+    private String decryptToken(String ciphertoken){
+        // Initialize the same cipher for decryption
+        byte[] cleartext = new byte[0];
+        try {
+            aesCipher.init(DECRYPT_MODE, aesKey);
+            // Decrypt the ciphertext
+            cleartext= aesCipher.doFinal(ciphertoken.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new String(cleartext);
     }
 }
