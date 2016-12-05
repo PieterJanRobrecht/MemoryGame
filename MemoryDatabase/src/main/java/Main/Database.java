@@ -94,7 +94,7 @@ public class Database {
                     "NWONGAMES INTEGER NOT NULL DEFAULT 0," +
                     "NLOSTGAMES INTEGER NOT NULL DEFAULT 0," +
                     "NSTARTEDGAMES INTEGER NOT NULL DEFAULT 0," +
-                    "TOKEN TEXT," +
+                    "TOKEN BLOB," +
                     "TIME TEXT)";
 
             stmt.executeUpdate(sql);

@@ -319,12 +319,15 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             pst.setString(1, getID(user.getNaam()) + "");
 
             String d = null;
+            byte[] tokenbytes = null;
             String token = null;
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     d = rs.getString("TIME");
-                    token = rs.getString("TOKEN");
-                    token = decryptToken(token);
+                    tokenbytes = rs.getBytes("TOKEN");
+                    if(tokenbytes != null){
+                        token = decryptToken(tokenbytes);
+                    }
                 }
             }
 
@@ -359,7 +362,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
                     "TIME=? " +
                     "WHERE ID =?";
             PreparedStatement pst = databaseConnection.prepareStatement(query);
-            pst.setString(1, encryptToken(token));
+            pst.setBytes(1, encryptToken(token));
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String date = sdf.format(new java.util.Date());
@@ -375,8 +378,8 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         }
     }
 
-    private String encryptToken(String plaintoken){
-        System.out.println(plaintoken);
+    private byte[] encryptToken(String plaintoken){
+        System.out.println("Encrypt "+ plaintoken);
         // Initialize the cipher for encryption
         byte[] ciphertext = new byte[0];
         try {
@@ -390,19 +393,20 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new String(ciphertext);
+        return ciphertext;
     }
 
-    private String decryptToken(String ciphertoken){
+    private String decryptToken(byte[] ciphertoken){
         // Initialize the same cipher for decryption
         byte[] cleartext = new byte[0];
         try {
             aesCipher.init(DECRYPT_MODE, aesKey);
             // Decrypt the ciphertext
-            cleartext= aesCipher.doFinal(ciphertoken.getBytes());
+            cleartext= aesCipher.doFinal(ciphertoken);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("Decrypt "+new String(cleartext));
         return new String(cleartext);
     }
 }
