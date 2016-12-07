@@ -12,4 +12,6 @@ public interface IRegistreerMethod extends Remote {
     User getUser(String userName, User user) throws RemoteException;
     boolean checkCredentials(String name, String pas) throws RemoteException;
     boolean createAccount(String name, String pas) throws RemoteException;
+    boolean createSalt(byte[] salt, String name) throws RemoteException;
+    byte[] getSalt(String name) throws RemoteException;
 }

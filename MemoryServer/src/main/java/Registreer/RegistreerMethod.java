@@ -35,4 +35,14 @@ public class RegistreerMethod extends UnicastRemoteObject implements IRegistreer
         boolean check = database.createAccount(name,pas);
         return check;
     }
+
+    @Override
+    public boolean createSalt(byte[] salt, String name) throws RemoteException {
+        return database.createSalt(salt,name);
+    }
+
+    @Override
+    public byte[] getSalt(String name) throws RemoteException {
+        return database.getSalt(name);
+    }
 }

@@ -355,6 +355,49 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
         return null;
     }
 
+    @Override
+    public boolean createSalt(byte[] salt, String name) throws RemoteException {
+        try {
+            String query = "UPDATE USER SET " +
+                    "SALT = ? " +
+                    "WHERE ID = ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setBytes(1, salt);
+            pst.setString(2, getID(name) + "");
+
+            pst.executeUpdate();
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(Arrays.toString(salt), getID(name)+"")));
+
+        } catch (SQLException | RemoteException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    @Override
+    public byte[] getSalt(String name) throws RemoteException {
+        try {
+            String query = "SELECT * FROM USER WHERE ID = ?";
+            PreparedStatement pst = databaseConnection.prepareStatement(query);
+            pst.setString(1, getID(name) + "");
+
+            byte[] salt = null;
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    salt = rs.getBytes("SALT");
+                }
+            }
+
+            if(salt != null){
+                return salt;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void setToken(String token, User user) {
         try {
             String query = "UPDATE USER SET " +
@@ -371,7 +414,7 @@ public class DatabaseMethod extends UnicastRemoteObject implements IDatabaseMeth
             pst.setString(3, getID(user.getNaam()) + "");
 
             pst.executeUpdate();
-            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(token, date, getID(user.getNaam()) + "")));
+            database.broadCastQueryToAllDB(query, new ArrayList<String>(Arrays.asList(Arrays.toString(encryptToken(token)), date, getID(user.getNaam()) + "")));
 
         } catch (SQLException | RemoteException e) {
             e.printStackTrace();

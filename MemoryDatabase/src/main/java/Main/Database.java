@@ -90,6 +90,7 @@ public class Database {
             String sql = "CREATE TABLE USER " +
                     "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     " NAME TEXT NOT NULL, " +
+                    "SALT BLOB,"+
                     " WW TEXT NOT NULL," +
                     "NWONGAMES INTEGER NOT NULL DEFAULT 0," +
                     "NLOSTGAMES INTEGER NOT NULL DEFAULT 0," +

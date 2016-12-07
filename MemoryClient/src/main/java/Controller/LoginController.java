@@ -5,7 +5,6 @@ import Lobby.ILobbyMethod;
 import Model.User;
 import Registreer.IRegistreerMethod;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.controlsfx.control.Notifications;
 
 import java.io.IOException;
@@ -23,6 +21,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class LoginController {
 
@@ -41,7 +40,13 @@ public class LoginController {
     void login(ActionEvent event) {
         String name = userNameText.getText();
         String pas = passwordText.getText();
-        pas = hashPas(pas);
+        byte[] salt = new byte[0];
+        try {
+            salt = implementation.getSalt(name);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        pas = hashPas(pas, salt);
 
         try {
             if (implementation.checkCredentials(name, pas)) {
@@ -58,11 +63,12 @@ public class LoginController {
         }
     }
 
-    private String hashPas(String pas) {
+    private String hashPas(String pas, byte[] salt) {
         StringBuilder stringBuffer = new StringBuilder();
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
 
+            md.update(salt);
             md.update(pas.getBytes());
             byte[] messageDigestMD5 = md.digest();
             for (byte bytes : messageDigestMD5) {
@@ -74,11 +80,19 @@ public class LoginController {
         return stringBuffer.toString();
     }
 
+    private byte[] generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte bytes[] = new byte[20];
+        random.nextBytes(bytes);
+        return random.generateSeed(20);
+    }
+
     @FXML
     void registerAccount(ActionEvent event) {
         String name = userNameText.getText();
         String pas = passwordText.getText();
-        pas = hashPas(pas);
+        byte[] salt = generateSalt();
+        pas = hashPas(pas, salt);
 
         try {
             if (name.equals("") || pas.equals("")) {
@@ -93,7 +107,7 @@ public class LoginController {
                         .text("Gebruikersnaam bestaat al")
                         .showWarning();
             } else {
-                if (implementation.createAccount(name,pas)){
+                if (implementation.createAccount(name, pas) && implementation.createSalt(salt, name)) {
                     Notifications.create()
                             .title("INFO")
                             .text("Gebruiker aangemaakt")
@@ -140,7 +154,7 @@ public class LoginController {
     private void connectDispatcher() {
         try {
             Registry myRegistry = LocateRegistry.getRegistry("localhost", 45016);
-            dispatcher= (IDispatcherMethod) myRegistry.lookup("DispatcherService");
+            dispatcher = (IDispatcherMethod) myRegistry.lookup("DispatcherService");
             dispatcher.updateUserServer(user, serverId);
         } catch (RemoteException | NotBoundException e) {
             e.printStackTrace();
@@ -179,11 +193,11 @@ public class LoginController {
     public void setOnExitAction() {
         Stage s = (Stage) userNameText.getScene().getWindow();
         s.setOnCloseRequest(event -> {
-            try {
-                dispatcher.removeEmptyUser();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                dispatcher.removeEmptyUser();
+//            } catch (RemoteException e) {
+//                e.printStackTrace();
+//            }
         });
     }
 }
